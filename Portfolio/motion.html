@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion - Rafael Mediodia</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="motion-page">
+    <div class="cursor"></div>
+    
+    <div class="info-container">
+        <!-- Sidebar content will be injected here -->
+    </div>
+
+    <main class="gallery-container">
+        <a href="index.html" class="project-back-link">← back</a>
+        <div class="motion-header">
+            <h1 class="motion-title">Motion</h1>
+            <p class="motion-subtitle">Take a peek at what I've made move! (◕‿◕) ✧ ˚ ༘</p>
+        </div>
+        
+        <div class="motion-featured" id="motionFeatured">
+            <!-- Featured video player will be here -->
+        </div>
+        
+        <div class="motion-gallery" id="motionGallery">
+            <!-- Videos will be injected here -->
+        </div>
+    </main>
+    
+    <!-- Video Zoom Modal -->
+    <div class="video-zoom-modal" id="videoZoomModal">
+        <div class="video-zoom-close" id="videoZoomClose"></div>
+        <div class="video-zoom-container">
+            <video id="zoomedVideo" controls></video>
+        </div>
+    </div>
+
+    <script src="cursor.js"></script>
+    <script src="sidebar.js"></script>
+    <script src="motion.js"></script>
+</body>
+</html>
+

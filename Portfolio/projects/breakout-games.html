@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breakout Games - Rafael Mediodia</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="cursor"></div>
+    
+    <div class="info-container">
+        <!-- Sidebar content will be injected here -->
+    </div>
+    
+    <div class="project-text-panel">
+        <a href="../index.html" class="project-back-link">← back</a>
+        <div class="project-header">
+            <h1 class="project-title">Breakout Games</h1>
+            <p class="project-blurb">
+                Motion identity work for Breakout Escape Games focusing on discovery and exploration. Made during internship under Mediocre in Lexington, Kentucky.
+            </p>
+        </div>
+        
+        <div class="project-meta">
+            <div class="project-meta-item">
+                <div class="project-meta-label">Year</div>
+                <div class="project-meta-value">2025</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Role</div>
+                <div class="project-meta-value">Motion Designer</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Client</div>
+                <div class="project-meta-value">Breakout Escape Games</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Tools</div>
+                <div class="project-meta-value">After Effects</div>
+            </div>
+        </div>
+        
+        <div class="project-text-content">
+        </div>
+    </div>
+    
+    <div class="project-images-panel">
+        <video data-src="../Breakout/BreakoutMotion1.mp4" muted loop playsinline autoplay preload="none"></video>
+        <video data-src="../Breakout/Breakout-Transition.mp4" muted loop playsinline autoplay preload="none"></video>
+    </div>
+    
+    <script>
+        // Lazy load project videos
+        document.addEventListener('DOMContentLoaded', () => {
+            const videos = document.querySelectorAll('.project-images-panel video[data-src]');
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const video = entry.target;
+                        video.src = video.getAttribute('data-src');
+                        video.removeAttribute('data-src');
+                        video.load();
+                        videoObserver.unobserve(video);
+                    }
+                });
+            }, { rootMargin: '100px' });
+            
+            videos.forEach(video => videoObserver.observe(video));
+        });
+    </script>
+    <script src="../cursor.js"></script>
+    <script src="../sidebar.js"></script>
+</body>
+</html>
+

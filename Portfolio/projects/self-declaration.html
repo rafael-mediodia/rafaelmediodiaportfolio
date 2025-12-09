@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self Declaration - Rafael Mediodia</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="cursor"></div>
+    
+    <div class="info-container">
+        <!-- Sidebar content will be injected here -->
+    </div>
+    
+    <div class="project-text-panel">
+        <a href="../index.html" class="project-back-link">← back</a>
+        <div class="project-header">
+            <h1 class="project-title">Self Declaration</h1>
+            <p class="project-blurb">
+                This series of forms using the vernacular of the United States customs form aims to allow immigrants to reflect on their identities and experiences through personal questions and an anthology of poems.
+            </p>
+        </div>
+        
+        <div class="project-meta">
+            <div class="project-meta-item">
+                <div class="project-meta-label">Year</div>
+                <div class="project-meta-value">2024</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Role</div>
+                <div class="project-meta-value">Designer</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Type</div>
+                <div class="project-meta-value">Print Design</div>
+            </div>
+        </div>
+        
+        <div class="project-section">
+            Set in Roboto.
+        </div>
+    </div>
+    
+    <div class="project-images-panel">
+        <img data-src="../SelfDeclaration/DS3UNIT17_23.jpg" alt="Self Declaration">
+        <img data-src="../SelfDeclaration/DS3UNIT17_22.jpg" alt="Self Declaration">
+        <img data-src="../SelfDeclaration/DS3UNIT17_20.jpg" alt="Self Declaration">
+        <img data-src="../SelfDeclaration/DS3UNIT17_19.jpg" alt="Self Declaration">
+    </div>
+    
+    <script>
+        // Lazy load project images
+        document.addEventListener('DOMContentLoaded', () => {
+            const images = document.querySelectorAll('.project-images-panel img[data-src]');
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.getAttribute('data-src');
+                        img.removeAttribute('data-src');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, { rootMargin: '100px' });
+            
+            images.forEach(img => imageObserver.observe(img));
+        });
+    </script>
+    <script src="../cursor.js"></script>
+    <script src="../sidebar.js"></script>
+</body>
+</html>
+

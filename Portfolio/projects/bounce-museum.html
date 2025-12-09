@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bounce museum of rubber - Rafael Mediodia</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="cursor"></div>
+    
+    <div class="info-container">
+        <!-- Sidebar content will be injected here -->
+    </div>
+    
+    <div class="project-text-panel">
+        <a href="../index.html" class="project-back-link">← back</a>
+        <div class="project-header">
+            <h1 class="project-title">bounce museum of rubber</h1>
+            <p class="project-blurb">
+                Brand identity of bounce museum of rubber aims to emulate energy through vibrant colors and elastic forms. It captures the playful qualities of rubber translating them into an identity that feels both kinetic and approachable.
+            </p>
+        </div>
+        
+        <div class="project-meta">
+            <div class="project-meta-item">
+                <div class="project-meta-label">Year</div>
+                <div class="project-meta-value">2025</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Role</div>
+                <div class="project-meta-value">Identity Designer</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Client</div>
+                <div class="project-meta-value">bounce museum of rubber</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Tools</div>
+                <div class="project-meta-value">Figma, After Effects</div>
+            </div>
+        </div>
+        
+        <div class="project-text-content">
+            <div class="project-section">
+                <div class="project-text">
+                    <p>Set in Plus Jakarta Sans.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="project-images-panel">
+        <video data-src="../BounceMuseum/bouncemuseum.mp4" muted loop playsinline autoplay preload="none"></video>
+        <video data-src="../BounceMuseum/bounce-Signage.mp4" muted loop playsinline autoplay preload="none"></video>
+        <video data-src="../BounceMuseum/Stationery.mp4" muted loop playsinline autoplay preload="none"></video>
+        <video data-src="../BounceMuseum/Bounce-Merch.mp4" muted loop playsinline autoplay preload="none"></video>
+    </div>
+    
+    <script>
+        // Lazy load project videos
+        document.addEventListener('DOMContentLoaded', () => {
+            const videos = document.querySelectorAll('.project-images-panel video[data-src]');
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const video = entry.target;
+                        video.src = video.getAttribute('data-src');
+                        video.removeAttribute('data-src');
+                        video.load();
+                        videoObserver.unobserve(video);
+                    }
+                });
+            }, { rootMargin: '100px' });
+            
+            videos.forEach(video => videoObserver.observe(video));
+        });
+    </script>
+    <script src="../cursor.js"></script>
+    <script src="../sidebar.js"></script>
+</body>
+</html>
+
