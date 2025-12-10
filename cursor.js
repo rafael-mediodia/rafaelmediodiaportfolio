@@ -16,12 +16,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let cursorX = mouseX;
     let cursorY = mouseY;
     
-    // Set initial position immediately
-    cursor.style.left = cursorX + 'px';
-    cursor.style.top = cursorY + 'px';
-    
-    // Track mouse position
+    // Use transform for GPU-accelerated positioning (better for Safari)
+    // Track mouse position with passive listener for better performance
     let hasMoved = false;
+    let rafId = null;
+    let isAnimating = false;
+    let hoverScale = 1;
+    
+    function updateCursorTransform() {
+        cursor.style.transform = `translate(${cursorX - 4}px, ${cursorY - 4}px) scale(${hoverScale})`;
+    }
+    
+    // Set initial position
+    updateCursorTransform();
+    
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
@@ -29,27 +37,65 @@ document.addEventListener('DOMContentLoaded', () => {
             // On first move, snap cursor to mouse position
             cursorX = mouseX;
             cursorY = mouseY;
-            cursor.style.left = cursorX + 'px';
-            cursor.style.top = cursorY + 'px';
+            updateCursorTransform();
             hasMoved = true;
+            // Start animation immediately
+            if (!isAnimating) {
+                isAnimating = true;
+                animateCursor();
+            }
         }
-    });
+        
+        // Start animation loop if not already running
+        if (!isAnimating) {
+            isAnimating = true;
+            animateCursor();
+        }
+    }, { passive: true });
     
     function animateCursor() {
-        cursorX += (mouseX - cursorX) * 0.1;
-        cursorY += (mouseY - cursorY) * 0.1;
-        cursor.style.left = cursorX + 'px';
-        cursor.style.top = cursorY + 'px';
-        requestAnimationFrame(animateCursor);
+        // Use faster easing for better responsiveness
+        const ease = 0.15;
+        const dx = mouseX - cursorX;
+        const dy = mouseY - cursorY;
+        
+        // Only animate if there's meaningful movement (reduces unnecessary updates)
+        if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
+            cursorX += dx * ease;
+            cursorY += dy * ease;
+            
+            // Use transform for GPU-accelerated positioning (Safari optimized)
+            updateCursorTransform();
+            
+            rafId = requestAnimationFrame(animateCursor);
+        } else {
+            // Snap to final position when close enough
+            cursorX = mouseX;
+            cursorY = mouseY;
+            updateCursorTransform();
+            isAnimating = false;
+        }
     }
+    
+    // Start initial animation
     animateCursor();
     
-    // Hover states
-    const hoverElements = document.querySelectorAll('a, button, .project-thumb, .name-trigger, .back-link, .bio-link');
-    hoverElements.forEach(el => {
-        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
+    // Hover states - use event delegation for better performance
+    document.addEventListener('mouseenter', (e) => {
+        const target = e.target;
+        if (target.matches('a, button, .project-thumb, .name-trigger, .back-link, .bio-link, .project-back-link')) {
+            hoverScale = 1.5;
+            updateCursorTransform();
+        }
+    }, true);
+    
+    document.addEventListener('mouseleave', (e) => {
+        const target = e.target;
+        if (target.matches('a, button, .project-thumb, .name-trigger, .back-link, .bio-link, .project-back-link')) {
+            hoverScale = 1;
+            updateCursorTransform();
+        }
+    }, true);
     
 });
 
