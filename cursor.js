@@ -10,14 +10,29 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-    let mouseX = 0;
-    let mouseY = 0;
-    let cursorX = 0;
-    let cursorY = 0;
+    // Initialize cursor position to center of viewport (will update on first mouse move)
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let cursorX = mouseX;
+    let cursorY = mouseY;
     
+    // Set initial position immediately
+    cursor.style.left = cursorX + 'px';
+    cursor.style.top = cursorY + 'px';
+    
+    // Track mouse position
+    let hasMoved = false;
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
+        if (!hasMoved) {
+            // On first move, snap cursor to mouse position
+            cursorX = mouseX;
+            cursorY = mouseY;
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            hasMoved = true;
+        }
     });
     
     function animateCursor() {
