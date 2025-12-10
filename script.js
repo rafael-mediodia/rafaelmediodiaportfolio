@@ -37,7 +37,7 @@ const projects = [
         id: 'project-2',
         title: 'Woodland Art Fair',
         subtitle: 'Motion Design',
-        thumbnail: 'WoodlandArtFair/WoodlandArtFair.mp4',
+        thumbnail: 'WoodlandArtFair/WoodlandArtFairMain.mp4',
         page: 'projects/woodland-art-fair.html'
     },
     {
