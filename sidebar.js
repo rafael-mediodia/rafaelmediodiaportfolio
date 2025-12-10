@@ -23,7 +23,6 @@ function initSidebar() {
         <div class="info-links">
             <a href="${prefix}motion.html" class="info-link">MOTION</a>
             <a href="${prefix}illustrations.html" class="info-link">ILLUSTRATION</a>
-            <a href="${prefix}archive.html" class="info-link">ARCHIVE</a>
         </div>
         <div class="info-links">
             <a href="mailto:rmediodi@risd.edu" class="info-link">EMAIL</a>
