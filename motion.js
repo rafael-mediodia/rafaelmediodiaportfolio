@@ -9,7 +9,9 @@ const motionVideos = [
     { file: 'Bubbles (2).mp4', tooltip: 'Particles' },
     { file: 'RAFAELMEDIODIA_ASSIGNMENT4_COLORLIGHTSHADOW.mp4', tooltip: 'RISD Museum Show' },
     { file: 'girldinneranimation2-gs-color-addedtext.mp4', tooltip: 'Girl Dinner Titlecard' },
-    { file: 'WoodlandArtFair/WoodlandArtFairMain.mp4', tooltip: 'Woodland Art Fair' }
+    { file: 'WoodlandArtFair/WoodlandArtFairMain.mp4', tooltip: 'Woodland Art Fair' },
+    { file: 'Chemistry.mp4', tooltip: 'Movement Exploration' },
+    { file: 'EXPIRATIONDATE-POST-GREEN.mp4', tooltip: 'Expiration Date' }
 ];
 
 function getMotionVideoFile(videoData) {
