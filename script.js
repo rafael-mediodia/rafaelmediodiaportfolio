@@ -34,13 +34,6 @@ const projects = [
         page: 'projects/bounce-museum.html'
     },
     {
-        id: 'project-2',
-        title: 'Woodland Art Fair',
-        subtitle: 'Motion Design',
-        thumbnail: 'WoodlandArtFair/WoodlandArtFairMain.mp4',
-        page: 'projects/woodland-art-fair.html'
-    },
-    {
         id: 'project-6',
         title: 'American Dream Series: Part 0',
         subtitle: 'Motion Design, Video',

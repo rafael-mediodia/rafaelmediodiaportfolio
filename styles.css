@@ -171,7 +171,7 @@ body {
 .gallery-container {
     margin-left: 360px;
     width: calc(100% - 360px);
-    padding: var(--spacing) var(--spacing) 0 var(--spacing);
+    padding: var(--spacing) var(--spacing) calc(var(--spacing) * 1.5) var(--spacing);
     box-sizing: border-box;
     min-height: 100vh;
 }

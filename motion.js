@@ -8,11 +8,17 @@ const motionVideos = [
     { file: '2nd Ad.mp4', tooltip: 'Jazz TV Ad' },
     { file: 'Bubbles (2).mp4', tooltip: 'Particles' },
     { file: 'RAFAELMEDIODIA_ASSIGNMENT4_COLORLIGHTSHADOW.mp4', tooltip: 'RISD Museum Show' },
-    { file: 'girldinneranimation2-gs-color-addedtext.mp4', tooltip: 'Girl Dinner Titlecard' }
+    { file: 'girldinneranimation2-gs-color-addedtext.mp4', tooltip: 'Girl Dinner Titlecard' },
+    { file: 'WoodlandArtFair/WoodlandArtFairMain.mp4', tooltip: 'Woodland Art Fair' }
 ];
 
 function getMotionVideoFile(videoData) {
     return typeof videoData === 'string' ? videoData : videoData.file;
+}
+
+function getMotionVideoSrc(videoData) {
+    const file = getMotionVideoFile(videoData);
+    return file.includes('/') ? file : `Motion/${file}`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -40,11 +46,11 @@ function initMotionFeatured() {
     if (videosToUse.length === 0) return;
     
     // Shuffle videos for random order
-    shuffledVideos = shuffleArray(videosToUse.map(v => typeof v === 'string' ? v : v.file));
+    shuffledVideos = shuffleArray(videosToUse.map(getMotionVideoSrc));
     currentFeaturedIndex = 0;
     
     featuredVideo = document.createElement('video');
-    featuredVideo.src = `Motion/${shuffledVideos[0]}`;
+    featuredVideo.src = shuffledVideos[0];
     featuredVideo.muted = true;
     featuredVideo.loop = true;
     featuredVideo.playsInline = true;
@@ -70,7 +76,7 @@ function initMotionFeatured() {
     if (shuffledVideos.length > 1) {
         setInterval(() => {
             currentFeaturedIndex = (currentFeaturedIndex + 1) % shuffledVideos.length;
-            featuredVideo.src = `Motion/${shuffledVideos[currentFeaturedIndex]}`;
+            featuredVideo.src = shuffledVideos[currentFeaturedIndex];
         }, 5000);
     }
 }
@@ -88,15 +94,16 @@ function initMotionGallery() {
     }
     
     videosToLoad.forEach((videoData, index) => {
-        const videoFile = typeof videoData === 'string' ? videoData : videoData.file;
+        const videoFile = getMotionVideoFile(videoData);
+        const videoSrc = getMotionVideoSrc(videoData);
         const tooltipText = typeof videoData === 'string' ? 'More Motion' : (videoData.tooltip || 'More Motion');
         
         const videoContainer = document.createElement('div');
         videoContainer.className = 'motion-video-item';
-        videoContainer.setAttribute('data-video-src', `Motion/${videoFile}`);
+        videoContainer.setAttribute('data-video-src', videoSrc);
         
         const video = document.createElement('video');
-        video.setAttribute('data-src', `Motion/${videoFile}`);
+        video.setAttribute('data-src', videoSrc);
         video.muted = true;
         video.loop = true;
         video.playsInline = true;
@@ -155,7 +162,7 @@ function initMotionGallery() {
         });
         
         videoContainer.addEventListener('click', () => {
-            openVideoZoom(`Motion/${videoFile}`);
+            openVideoZoom(videoSrc);
         });
         
         gallery.appendChild(videoContainer);
@@ -208,11 +215,9 @@ function navigateVideo(direction) {
     
     currentVideoIndex = (currentVideoIndex + direction + videoZoomArray.length) % videoZoomArray.length;
     const video = document.getElementById('zoomedVideo');
-    const videoFile = typeof videoZoomArray[currentVideoIndex] === 'string' 
-        ? videoZoomArray[currentVideoIndex] 
-        : videoZoomArray[currentVideoIndex].file;
+    const videoFile = getMotionVideoSrc(videoZoomArray[currentVideoIndex]);
     
-    video.src = `Motion/${videoFile}`;
+    video.src = videoFile;
     video.load();
     video.addEventListener('loadedmetadata', () => {
         video.play();
@@ -224,11 +229,7 @@ function openVideoZoom(videoSrc) {
     const video = document.getElementById('zoomedVideo');
     
     videoZoomArray = motionVideos;
-    const videoFile = videoSrc.split('/').pop();
-    currentVideoIndex = motionVideos.findIndex(v => {
-        const file = typeof v === 'string' ? v : v.file;
-        return file === videoFile;
-    });
+    currentVideoIndex = motionVideos.findIndex(v => getMotionVideoSrc(v) === videoSrc);
     
     if (currentVideoIndex === -1) {
         currentVideoIndex = 0;
