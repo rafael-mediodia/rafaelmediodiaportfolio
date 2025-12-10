@@ -9,7 +9,7 @@ function initSidebar() {
         </a>
         <div class="info-birth">(b.2004) ✧</div>
         <div class="info-about">
-            is pursuing his degree in Graphic Design at the Rhode Island School of Design with a focus on Computation. He enjoys play, systems, and motion (◕‿◕)
+            is pursuing his degree in Graphic Design at the Rhode&nbsp;Island School of&nbsp;Design with a focus on Computation. He enjoys play, systems, and motion (◕‿◕)
         </div>
         <div class="info-current">
             Currently Designing @ <a href="https://visions-mag.squarespace.com/" class="info-link" target="_blank">VISIONS</a>, <a href="https://bsrlive.com/" class="info-link" target="_blank">BSR</a> ˚ ༘
@@ -18,7 +18,7 @@ function initSidebar() {
             Previously @ <a href="https://mediocre.rodeo" class="info-link" target="_blank">Mediocre</a>
         </div>
         <div class="info-location">
-            Filipino-American raised in Louisville, Kentucky ⋆·˚ ༘*
+            Filipino-American raised in Louisville,&nbsp;Kentucky ⋆·˚ ༘*
         </div>
         <div class="info-links">
             <a href="${prefix}motion.html" class="info-link">MOTION</a>

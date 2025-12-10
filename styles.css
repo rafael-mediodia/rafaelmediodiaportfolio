@@ -114,16 +114,18 @@ body {
 }
 
 .info-birth {
-    font-size: 11px;
+    font-size: 12px;
     opacity: 0.7;
     margin-bottom: 0.75rem;
     line-height: 1;
 }
 
 .info-about {
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.6;
     margin-bottom: 0;
+    hyphens: none;
+    word-break: normal;
 }
 
 .info-current {
@@ -133,6 +135,8 @@ body {
     padding-top: 0.75rem;
     border-top: 1px dotted var(--dotted-color);
     margin-top: 0.75rem;
+    hyphens: none;
+    word-break: normal;
 }
 
 .info-previous {
@@ -140,16 +144,20 @@ body {
     margin-bottom: 0;
     line-height: 1.4;
     opacity: 0.7;
+    hyphens: none;
+    word-break: normal;
 }
 
 .info-location {
     font-size: 12px;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     line-height: 1.4;
     opacity: 0.7;
     padding-top: 0.75rem;
     border-top: 1px dotted var(--dotted-color);
     margin-top: 0.75rem;
+    hyphens: none;
+    word-break: normal;
 }
 
 .info-links {
