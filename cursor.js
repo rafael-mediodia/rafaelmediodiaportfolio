@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Use transform for GPU-accelerated positioning (better for Safari)
     // Track mouse position with passive listener for better performance
     let hasMoved = false;
-    let rafId = null;
     let isAnimating = false;
     let hoverScale = 1;
     
@@ -67,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Use transform for GPU-accelerated positioning (Safari optimized)
             updateCursorTransform();
             
-            rafId = requestAnimationFrame(animateCursor);
+            requestAnimationFrame(animateCursor);
         } else {
             // Snap to final position when close enough
             cursorX = mouseX;

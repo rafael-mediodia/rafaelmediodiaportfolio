@@ -59,6 +59,14 @@
         </div>
     </div>
     
+    <!-- Video Zoom Modal -->
+    <div class="video-zoom-modal" id="videoZoomModal">
+        <div class="video-zoom-close" id="videoZoomClose"></div>
+        <div class="video-zoom-container">
+            <video id="zoomedVideo" controls muted loop playsinline webkit-playsinline></video>
+        </div>
+    </div>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const videos = document.querySelectorAll('.project-images-panel video[data-src]');

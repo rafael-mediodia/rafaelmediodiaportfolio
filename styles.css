@@ -247,9 +247,19 @@ body {
     width: 100%;
     display: block;
     object-fit: cover;
-    pointer-events: none;
+    pointer-events: auto;
     user-select: none;
     -webkit-user-select: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.project-images-panel video:hover {
+    opacity: 0.9;
+}
+
+.project-images-panel video[controls] {
+    pointer-events: auto;
 }
 
 .project-images-panel video[controls] {
@@ -395,6 +405,9 @@ body {
     justify-content: center;
     padding: 2rem;
     box-sizing: border-box;
+    will-change: opacity;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .video-zoom-modal.active ~ .cursor,
@@ -451,7 +464,15 @@ body:has(.video-zoom-modal[style*="flex"]) .cursor {
 #zoomedVideo {
     width: 100%;
     height: auto;
-    max-height: 80vh;
+    max-height: 90vh;
+    display: block;
+    object-fit: contain;
+    background: transparent;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, opacity;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
     display: block;
     background: #000;
     cursor: pointer;
