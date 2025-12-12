@@ -48,14 +48,14 @@
     </div>
     
     <div class="project-images-panel">
-        <video data-src="../BounceMuseum/bouncemuseum.mp4" muted loop playsinline autoplay preload="none"></video>
-        <video data-src="../BounceMuseum/bounce-Signage.mp4" muted loop playsinline autoplay preload="none"></video>
-        <video data-src="../BounceMuseum/Stationery.mp4" muted loop playsinline autoplay preload="none"></video>
-        <video data-src="../BounceMuseum/Bounce-Merch.mp4" muted loop playsinline autoplay preload="none"></video>
+        <video data-src="../BounceMuseum/bouncemuseum.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
+        <video data-src="../BounceMuseum/bounce-Signage.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
+        <video data-src="../BounceMuseum/Stationery.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
+        <video data-src="../BounceMuseum/Bounce-Merch.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
     </div>
     
     <script>
-        // Lazy load project videos
+        // Lazy load project videos with Safari autoplay fix
         document.addEventListener('DOMContentLoaded', () => {
             const videos = document.querySelectorAll('.project-images-panel video[data-src]');
             const videoObserver = new IntersectionObserver((entries) => {
@@ -65,6 +65,12 @@
                         video.src = video.getAttribute('data-src');
                         video.removeAttribute('data-src');
                         video.load();
+                        // Safari autoplay fix - try to play after load
+                        video.addEventListener('loadeddata', () => {
+                            video.play().catch(() => {
+                                // Autoplay blocked, user will need to interact
+                            });
+                        }, { once: true });
                         videoObserver.unobserve(video);
                     }
                 });

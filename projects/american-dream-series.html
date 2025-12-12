@@ -46,9 +46,17 @@
     </div>
     
     <div class="project-images-panel">
-        <video data-src="../AmericanDream/American Dream Series Part 0.mp4" controls muted loop playsinline preload="none"></video>
+        <video data-src="../AmericanDream/American Dream Series Part 0.mp4" controls muted loop playsinline webkit-playsinline preload="metadata"></video>
         <img data-src="../AmericanDream/DS3UNIT17_05.jpg" alt="American Dream Series">
         <img data-src="../AmericanDream/DS3UNIT17_06.jpg" alt="American Dream Series">
+    </div>
+    
+    <!-- Image Zoom Modal -->
+    <div class="image-zoom-modal" id="imageZoomModal">
+        <div class="image-zoom-close" id="imageZoomClose"></div>
+        <div class="image-zoom-container">
+            <img id="zoomedImage" alt="Project Image">
+        </div>
     </div>
     
     <script>
@@ -61,6 +69,12 @@
                         video.src = video.getAttribute('data-src');
                         video.removeAttribute('data-src');
                         video.load();
+                        // Safari autoplay fix - try to play after load
+                        video.addEventListener('loadeddata', () => {
+                            video.play().catch(() => {
+                                // Autoplay blocked, user will need to interact
+                            });
+                        }, { once: true });
                         videoObserver.unobserve(video);
                     }
                 });
@@ -85,6 +99,7 @@
     </script>
     <script src="../cursor.js"></script>
     <script src="../sidebar.js"></script>
+    <script src="../project-zoom.js"></script>
 </body>
 </html>
 

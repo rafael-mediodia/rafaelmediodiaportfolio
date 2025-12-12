@@ -59,6 +59,7 @@ function initMotionFeatured() {
     featuredVideo.autoplay = true;
     featuredVideo.preload = 'metadata';
     featuredVideo.setAttribute('playsinline', '');
+    featuredVideo.setAttribute('webkit-playsinline', '');
     featuredVideo.setAttribute('loop', '');
     featuredVideo.setAttribute('muted', '');
     featuredVideo.className = 'motion-featured-video';
@@ -67,6 +68,12 @@ function initMotionFeatured() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 featuredVideo.load();
+                // Safari autoplay fix
+                featuredVideo.addEventListener('loadeddata', () => {
+                    featuredVideo.play().catch(() => {
+                        // Autoplay blocked
+                    });
+                }, { once: true });
             }
         });
     }, { rootMargin: '50px' });
@@ -110,8 +117,9 @@ function initMotionGallery() {
         video.loop = true;
         video.playsInline = true;
         video.autoplay = true;
-        video.preload = 'none';
+        video.preload = 'metadata';
         video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
         video.setAttribute('loop', '');
         video.setAttribute('muted', '');
         
@@ -133,6 +141,10 @@ function initMotionGallery() {
                                 const randomStart = Math.random() * maxStartTime;
                                 vid.currentTime = randomStart;
                             }
+                            // Safari autoplay fix
+                            vid.play().catch(() => {
+                                // Autoplay blocked
+                            });
                         }, { once: true });
                         
                         videoObserver.unobserve(vid);

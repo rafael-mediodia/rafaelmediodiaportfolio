@@ -100,6 +100,10 @@ function initImageZoom() {
     const closeModal = () => {
         modal.style.display = 'none';
         modal.classList.remove('active');
+        // Use requestAnimationFrame for smoother Safari transitions
+        requestAnimationFrame(() => {
+            document.body.style.overflow = '';
+        });
         document.removeEventListener('keydown', handleImageKeydown);
     };
     
@@ -119,9 +123,12 @@ function handleImageKeydown(e) {
         navigateImage(1);
     } else if (e.key === 'Escape') {
         const modal = document.getElementById('imageZoomModal');
-        modal.style.display = 'none';
-        modal.classList.remove('active');
-        document.removeEventListener('keydown', handleImageKeydown);
+        if (modal) {
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            document.removeEventListener('keydown', handleImageKeydown);
+        }
     }
 }
 
@@ -130,16 +137,31 @@ function navigateImage(direction) {
     
     currentImageIndex = (currentImageIndex + direction + imageZoomArray.length) % imageZoomArray.length;
     const img = document.getElementById('zoomedImage');
+    if (!img) return;
+    
     const imageFile = typeof imageZoomArray[currentImageIndex] === 'string' 
         ? imageZoomArray[currentImageIndex] 
         : imageZoomArray[currentImageIndex].file;
     
-    img.src = `Illustrations/${imageFile}`;
+    // Use requestAnimationFrame for smoother transitions in Safari
+    requestAnimationFrame(() => {
+        img.style.opacity = '0';
+        requestAnimationFrame(() => {
+            img.src = `Illustrations/${imageFile}`;
+            img.onload = () => {
+                requestAnimationFrame(() => {
+                    img.style.opacity = '1';
+                });
+            };
+        });
+    });
 }
 
 function openImageZoom(imageSrc) {
     const modal = document.getElementById('imageZoomModal');
     const img = document.getElementById('zoomedImage');
+    
+    if (!modal || !img) return;
     
     imageZoomArray = illustrations;
     const imageFile = imageSrc.split('/').pop();
@@ -152,9 +174,24 @@ function openImageZoom(imageSrc) {
         currentImageIndex = 0;
     }
     
+    // Optimize for Safari - use transform instead of opacity for better performance
+    img.style.transform = 'scale(0.95)';
+    img.style.opacity = '0';
     img.src = imageSrc;
+    
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+    
     modal.style.display = 'flex';
-    modal.classList.add('active');
+    
+    // Use requestAnimationFrame for smoother Safari animations
+    requestAnimationFrame(() => {
+        modal.classList.add('active');
+        requestAnimationFrame(() => {
+            img.style.transform = 'scale(1)';
+            img.style.opacity = '1';
+        });
+    });
     
     document.addEventListener('keydown', handleImageKeydown);
 }

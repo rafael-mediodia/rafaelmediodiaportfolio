@@ -164,6 +164,7 @@ function initGallery() {
                 video.autoplay = true;
                 video.preload = 'metadata';
                 video.setAttribute('playsinline', '');
+                video.setAttribute('webkit-playsinline', '');
                 video.setAttribute('loop', '');
                 video.setAttribute('muted', '');
                 
@@ -188,6 +189,12 @@ function initGallery() {
                         if (entry.isIntersecting) {
                             const vid = entry.target;
                             vid.load();
+                            // Safari autoplay fix
+                            vid.addEventListener('loadeddata', () => {
+                                vid.play().catch(() => {
+                                    // Autoplay blocked
+                                });
+                            }, { once: true });
                             thumbObserver.unobserve(vid);
                         }
                     });
