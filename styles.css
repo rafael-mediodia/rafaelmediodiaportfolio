@@ -55,13 +55,19 @@ body {
         display: block;
     }
     
-    body {
+    body:not(.safari-no-custom-cursor) {
         cursor: none;
     }
     
-    * {
+    body:not(.safari-no-custom-cursor) * {
         cursor: none !important;
     }
+}
+
+/* Restore default cursor for Safari */
+body.safari-no-custom-cursor,
+body.safari-no-custom-cursor * {
+    cursor: auto !important;
 }
 
 /* Hover scale is now handled in JavaScript for better performance */

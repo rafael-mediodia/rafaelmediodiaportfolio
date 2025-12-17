@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Only enable on devices with mouse/trackpad, but not on Safari
     if (isSafari || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
         cursor.style.display = 'none';
-        document.body.style.cursor = 'auto';
+        // Add class to body to restore default cursor in Safari
+        document.body.classList.add('safari-no-custom-cursor');
         return;
     }
     
