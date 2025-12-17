@@ -348,7 +348,8 @@ body.safari-no-custom-cursor * {
 .showcase-sample-text {
     color: var(--text);
     text-align: left;
-    word-break: break-all;
+    word-break: break-word;
+    overflow-wrap: break-word;
     line-height: 1.2;
 }
 
@@ -562,6 +563,80 @@ body.safari-no-custom-cursor * {
     
     .sample-text {
         font-size: 14px !important;
+    }
+    
+    /* Rough Pixel mobile fixes */
+    .showcase-large {
+        padding: var(--spacing);
+        min-height: 250px;
+    }
+    
+    .showcase-text {
+        font-size: clamp(32px, 12vw, 128px) !important;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        hyphens: none;
+    }
+    
+    .showcase-sample {
+        padding: var(--spacing);
+    }
+    
+    .showcase-sample-large {
+        padding: var(--spacing);
+    }
+    
+    .showcase-sample-text {
+        font-size: clamp(20px, 8vw, 64px) !important;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        hyphens: none;
+    }
+    
+    .showcase-sample-small .showcase-sample-text {
+        font-size: clamp(24px, 10vw, 72px) !important;
+    }
+    
+    .tester-sliders-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .tester-sliders-row .tester-control-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .tester-sliders-row .tester-control-group label {
+        min-width: auto;
+    }
+    
+    .tester-output {
+        font-size: clamp(20px, 6vw, 48px) !important;
+    }
+    
+    .charset-text {
+        font-size: clamp(12px, 3vw, 18px) !important;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    .sample-text {
+        font-size: clamp(14px, 4vw, 24px) !important;
+        word-break: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    .sample-block .sample-text[style*="font-size: 64px"] {
+        font-size: clamp(24px, 10vw, 64px) !important;
+    }
+    
+    .sample-block .sample-text[style*="font-size: 16px"] {
+        font-size: clamp(12px, 3vw, 16px) !important;
+    }
+    
+    .project-title[style*="font-size: 36px"] {
+        font-size: clamp(24px, 6vw, 36px) !important;
     }
 }
 
@@ -1338,6 +1413,38 @@ video:not([controls])::-webkit-media-controls-play-button {
     .project-blurb,
     .project-text {
         font-size: 12px;
+    }
+    
+    /* Rough Pixel mobile fixes - smaller screens */
+    .showcase-large {
+        padding: 1rem;
+        min-height: 200px;
+    }
+    
+    .showcase-text {
+        font-size: clamp(28px, 15vw, 64px) !important;
+    }
+    
+    .showcase-sample-text {
+        font-size: clamp(16px, 10vw, 48px) !important;
+    }
+    
+    .showcase-sample-small .showcase-sample-text {
+        font-size: clamp(20px, 12vw, 56px) !important;
+    }
+    
+    .tester-output {
+        font-size: clamp(16px, 8vw, 36px) !important;
+    }
+    
+    .typeface-tester-controls {
+        padding: 0.75rem;
+        gap: 1rem;
+    }
+    
+    .tester-input {
+        min-height: 80px;
+        font-size: 11px;
     }
     
 }
