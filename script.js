@@ -78,9 +78,71 @@ const projects = [
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    initSafariPlayOverlay();
     initGallery();
     initMotionThumbnail();
 });
+
+function initSafariPlayOverlay() {
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (!isSafari) return;
+    
+    const overlay = document.getElementById('safariPlayOverlay');
+    const playAllButton = document.getElementById('safariPlayAllThumbnails');
+    
+    // Check if user has visited before (not just clicked play)
+    const hasVisitedBefore = localStorage.getItem('safariHasVisited') === 'true';
+    const hasPlayedBefore = localStorage.getItem('safariVideosPlayed') === 'true';
+    
+    // Function to play all videos
+    const playAllVideos = () => {
+        const videos = document.querySelectorAll('video');
+        videos.forEach(video => {
+            if (video.paused) {
+                video.play().catch(() => {
+                    // If autoplay fails, that's okay
+                });
+            }
+        });
+        // Remember that user has played videos
+        localStorage.setItem('safariVideosPlayed', 'true');
+    };
+    
+    // Mark that user has visited
+    localStorage.setItem('safariHasVisited', 'true');
+    
+    // Only show big overlay on first visit
+    if (hasVisitedBefore) {
+        // Don't show overlay on subsequent visits
+        if (overlay) overlay.style.display = 'none';
+        // Auto-play videos if they've played before
+        if (hasPlayedBefore) {
+            setTimeout(() => {
+                playAllVideos();
+            }, 500);
+        }
+    } else {
+        // First visit - show the big overlay
+        if (overlay) {
+            overlay.style.display = 'flex';
+            const button = overlay.querySelector('.safari-play-button');
+            if (button) {
+                button.addEventListener('click', () => {
+                    playAllVideos();
+                    overlay.style.display = 'none';
+                });
+            }
+        }
+    }
+    
+    // Always show corner button for Safari users
+    if (playAllButton) {
+        playAllButton.style.display = 'block';
+        playAllButton.addEventListener('click', () => {
+            playAllVideos();
+        });
+    }
+}
 
 function initMotionThumbnail() {
     const motionThumb = document.querySelector('.motion-thumb');
@@ -109,7 +171,14 @@ function initMotionThumbnail() {
                 video.setAttribute('webkit-playsinline', '');
             video.setAttribute('loop', '');
             video.setAttribute('muted', '');
+            video.removeAttribute('controls');
+            video.setAttribute('disablePictureInPicture', '');
+            video.setAttribute('disableRemotePlayback', '');
+            video.setAttribute('x-webkit-airplay', 'deny');
+            video.setAttribute('webkit-playsinline', 'true');
             video.className = 'motion-thumb-video';
+            // Force Safari to not show controls
+            video.controls = false;
                 video.style.position = 'absolute';
                 video.style.top = '0';
                 video.style.left = '0';
@@ -158,14 +227,14 @@ function initMotionThumbnail() {
             
             function loadAndPlayVideo(video, videoSrc, onReady) {
                 video.src = videoSrc;
-                            video.load();
-                            
-                            const handleLoadedMetadata = () => {
-                                const duration = video.duration;
-                                if (duration > 3) {
-                                    const maxStartTime = Math.max(0, duration - 3);
-                                    const randomStart = Math.random() * maxStartTime;
-                                    video.currentTime = randomStart;
+                video.load();
+                
+                const handleLoadedMetadata = () => {
+                    const duration = video.duration;
+                    if (duration > 3) {
+                        const maxStartTime = Math.max(0, duration - 3);
+                        const randomStart = Math.random() * maxStartTime;
+                        video.currentTime = randomStart;
                     }
                     
                     if (onReady) {
@@ -175,13 +244,13 @@ function initMotionThumbnail() {
                 
                 const handleError = () => {
                     // If video fails to load, try next one
-                                            currentVideoIndex = (currentVideoIndex + 1) % shuffledVideos.length;
+                    currentVideoIndex = (currentVideoIndex + 1) % shuffledVideos.length;
                     if (onReady) {
                         setTimeout(() => switchToNextVideo(), 500);
-                                }
-                            };
-                            
-                            video.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true });
+                    }
+                };
+                
+                video.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true });
                 video.addEventListener('error', handleError, { once: true });
             }
             
@@ -239,7 +308,7 @@ function initMotionThumbnail() {
                 
                 loadAndPlayVideo(activeVideo, videoSrc, () => {
                     activeVideo.play().catch(() => {
-                        // Autoplay blocked, that's okay
+                        // Autoplay blocked - this is expected
                     });
                     // Preload next video immediately
                     preloadNextVideo();
@@ -301,6 +370,13 @@ function initGallery() {
                 video.setAttribute('playsinline', '');
                 video.setAttribute('webkit-playsinline', '');
                 video.setAttribute('muted', '');
+                video.removeAttribute('controls');
+                video.setAttribute('disablePictureInPicture', '');
+                video.setAttribute('disableRemotePlayback', '');
+                video.setAttribute('x-webkit-airplay', 'deny');
+                video.setAttribute('webkit-playsinline', 'true');
+                // Force Safari to not show controls
+                video.controls = false;
                 video.style.position = 'absolute';
                 video.style.top = '0';
                 video.style.left = '0';
@@ -395,6 +471,7 @@ function initGallery() {
                         preloadNextVideo();
                     };
                     
+                    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
                     if (isSafari) {
                         if (activeVideo.readyState >= 3) {
                             handleFirstVideoReady();
@@ -445,7 +522,7 @@ function initGallery() {
             
             if (isVideo) {
                 const video = document.createElement('video');
-                video.src = project.thumbnail;
+                // Set attributes BEFORE setting src for Safari
                 video.muted = true;
                 video.loop = true;
                 video.playsInline = true;
@@ -455,6 +532,15 @@ function initGallery() {
                 video.setAttribute('webkit-playsinline', '');
                 video.setAttribute('loop', '');
                 video.setAttribute('muted', '');
+                video.removeAttribute('controls');
+                video.setAttribute('disablePictureInPicture', '');
+                video.setAttribute('disableRemotePlayback', '');
+                video.setAttribute('x-webkit-airplay', 'deny');
+                video.setAttribute('webkit-playsinline', 'true');
+                // Force Safari to not show controls
+                video.controls = false;
+                // Now set src
+                video.src = project.thumbnail;
                 
                 if (project.id === 'project-2') {
                     video.addEventListener('loadedmetadata', () => {
@@ -483,10 +569,9 @@ function initGallery() {
                             }
                             vid.load();
                             
-                            // Safari needs canplaythrough for better compatibility
                             const playVideo = () => {
                                 vid.play().catch(() => {
-                                    // Autoplay blocked
+                                    // Autoplay blocked - this is expected
                                 });
                             };
                             

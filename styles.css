@@ -901,6 +901,55 @@ body:has(.image-zoom-modal[style*="flex"]) .cursor {
     max-height: 100%;
 }
 
+/* Hide Safari's native play button overlay - comprehensive approach */
+.project-thumb video {
+    -webkit-media-controls: none !important;
+    -webkit-media-controls-enclosure: none !important;
+}
+
+.project-thumb video::-webkit-media-controls,
+.project-thumb video::-webkit-media-controls-panel,
+.project-thumb video::-webkit-media-controls-play-button,
+.project-thumb video::-webkit-media-controls-start-playback-button,
+.project-thumb video::-webkit-media-controls-overlay-play-button,
+.project-thumb video::-webkit-media-controls-overlay-enclosure,
+.project-thumb video::-webkit-media-controls-enclosure {
+    display: none !important;
+    -webkit-appearance: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.motion-thumb-video::-webkit-media-controls,
+.motion-thumb-video::-webkit-media-controls-panel,
+.motion-thumb-video::-webkit-media-controls-play-button,
+.motion-thumb-video::-webkit-media-controls-start-playback-button,
+.motion-thumb-video::-webkit-media-controls-overlay-play-button,
+.motion-thumb-video::-webkit-media-controls-overlay-enclosure {
+    display: none !important;
+    -webkit-appearance: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.motion-thumb-video {
+    -webkit-media-controls: none !important;
+    -webkit-media-controls-enclosure: none !important;
+}
+
+/* Additional Safari-specific hiding */
+video:not([controls])::-webkit-media-controls,
+video:not([controls])::-webkit-media-controls-panel,
+video:not([controls])::-webkit-media-controls-play-button {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
 .project-thumb[data-project-id="project-1"] video {
     object-fit: cover;
     /* Pinoy Plus fills the container */
@@ -925,6 +974,94 @@ body:has(.image-zoom-modal[style*="flex"]) .cursor {
     object-fit: cover;
     /* Bounce Museum fills the container */
     background: var(--bg);
+}
+
+/* Safari play overlay */
+.safari-play-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+    cursor: pointer;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.safari-play-button {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px dotted var(--dotted-color);
+    padding: 0.6rem 1.2rem;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    text-align: center;
+    max-width: 90%;
+    word-wrap: break-word;
+}
+
+.safari-play-button:hover {
+    background: var(--text);
+    color: var(--bg);
+}
+
+/* Safari play all button for project pages and homepage - bottom right, smaller */
+.safari-play-all-button {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px dotted var(--dotted-color);
+    padding: 0.5rem 1rem;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: normal;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    z-index: 9999;
+    display: none;
+    letter-spacing: 0.05em;
+}
+
+.safari-play-all-button:hover {
+    background: var(--text);
+    color: var(--bg);
+}
+
+@media (max-width: 768px) {
+    .safari-play-button {
+        font-size: 11px;
+        padding: 0.5rem 1rem;
+    }
+    
+    .safari-play-all-button {
+        bottom: 1rem;
+        right: 1rem;
+        font-size: 10px;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .safari-play-button {
+        font-size: 10px;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .safari-play-all-button {
+        bottom: 0.75rem;
+        right: 0.75rem;
+        font-size: 9px;
+        padding: 0.35rem 0.7rem;
+    }
 }
 
 /* Placeholder styling */
@@ -1154,8 +1291,8 @@ body:has(.image-zoom-modal[style*="flex"]) .cursor {
     }
     
     .gallery {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
     }
     
     body {

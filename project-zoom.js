@@ -362,6 +362,7 @@ function openVideoZoom(videoSrc, hasControls = false) {
 document.addEventListener('DOMContentLoaded', () => {
     initProjectImageZoom();
     initProjectVideoZoom();
+    initSafariPlayAllButton();
     
     // Add click handlers to project images
     const projectImages = document.querySelectorAll('.project-images-panel img');
@@ -432,4 +433,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { passive: false });
     });
 });
+
+function initSafariPlayAllButton() {
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (!isSafari) return;
+    
+    // Check if we're on a project page (has project-images-panel)
+    const projectPanel = document.querySelector('.project-images-panel');
+    if (!projectPanel) return;
+    
+    // Check if there are any videos on the page
+    const videos = document.querySelectorAll('.project-images-panel video');
+    if (videos.length === 0) return;
+    
+    // Create button if it doesn't exist
+    let button = document.getElementById('safariPlayAllButton');
+    if (!button) {
+        button = document.createElement('button');
+        button.id = 'safariPlayAllButton';
+        button.className = 'safari-play-all-button';
+        button.textContent = 'PLAY ALL';
+        document.body.appendChild(button);
+    }
+    
+    // Show button
+    button.style.display = 'block';
+    
+    // When clicked, play all videos
+    button.addEventListener('click', () => {
+        videos.forEach(video => {
+            if (video.paused) {
+                video.play().catch(() => {
+                    // If autoplay fails, that's okay
+                });
+            }
+        });
+    });
+}
 

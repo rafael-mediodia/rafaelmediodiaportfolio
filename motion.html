@@ -38,9 +38,77 @@
         </div>
     </div>
 
+    <!-- Safari video play overlay -->
+    <div class="safari-play-overlay" id="safariPlayOverlay">
+        <button class="safari-play-button">click to play videos for safari users!</button>
+    </div>
+
+    <!-- Safari play all button for motion page -->
+    <button class="safari-play-all-button" id="safariPlayAllThumbnails" style="display: none;">PLAY ALL</button>
+
     <script src="cursor.js"></script>
     <script src="sidebar.js"></script>
     <script src="motion.js"></script>
+    <script>
+        // Initialize Safari play overlay for motion page
+        document.addEventListener('DOMContentLoaded', () => {
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            if (!isSafari) return;
+            
+            const overlay = document.getElementById('safariPlayOverlay');
+            const playAllButton = document.getElementById('safariPlayAllThumbnails');
+            
+            // Check if user has visited before (not just clicked play)
+            const hasVisitedBefore = localStorage.getItem('safariHasVisited') === 'true';
+            const hasPlayedBefore = localStorage.getItem('safariVideosPlayed') === 'true';
+            
+            // Function to play all videos
+            const playAllVideos = () => {
+                const videos = document.querySelectorAll('video');
+                videos.forEach(video => {
+                    if (video.paused) {
+                        video.play().catch(() => {});
+                    }
+                });
+                localStorage.setItem('safariVideosPlayed', 'true');
+            };
+            
+            // Mark that user has visited
+            localStorage.setItem('safariHasVisited', 'true');
+            
+            // Only show big overlay on first visit
+            if (hasVisitedBefore) {
+                // Don't show overlay on subsequent visits
+                if (overlay) overlay.style.display = 'none';
+                // Auto-play videos if they've played before
+                if (hasPlayedBefore) {
+                    setTimeout(() => {
+                        playAllVideos();
+                    }, 500);
+                }
+            } else {
+                // First visit - show the big overlay
+                if (overlay) {
+                    overlay.style.display = 'flex';
+                    const button = overlay.querySelector('.safari-play-button');
+                    if (button) {
+                        button.addEventListener('click', () => {
+                            playAllVideos();
+                            overlay.style.display = 'none';
+                        });
+                    }
+                }
+            }
+            
+            // Always show corner button
+            if (playAllButton) {
+                playAllButton.style.display = 'block';
+                playAllButton.addEventListener('click', () => {
+                    playAllVideos();
+                });
+            }
+        });
+    </script>
 </body>
 </html>
 
