@@ -759,6 +759,7 @@ function initGallery() {
             previewText.style.position = 'relative'; // Ensure positioning context
             previewText.style.overflow = 'hidden'; // Prevent text from being cut off
             previewText.style.wordBreak = 'break-word'; // Break long words if needed
+            previewText.style.transform = 'translateY(4%)'; // Optically lower the content for better visual centering
             thumb.style.transition = 'background 0.5s ease';
             previewText.style.transition = 'color 0.5s ease';
             

@@ -314,6 +314,7 @@ body.safari-no-custom-cursor * {
     color: #fff;
     text-align: center;
     word-break: break-word;
+    transform: translateY(4%); /* Optically lower the content for better visual centering */
 }
 
 .showcase-samples {
