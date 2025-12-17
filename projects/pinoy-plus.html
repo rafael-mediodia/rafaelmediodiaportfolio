@@ -59,22 +59,48 @@
     </div>
     
     <script>
-        // Lazy load project videos with Safari autoplay fix
+        // Lazy load project videos with improved Safari support
         document.addEventListener('DOMContentLoaded', () => {
             const videos = document.querySelectorAll('.project-images-panel video[data-src]');
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            
             const videoObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const video = entry.target;
-                        video.src = video.getAttribute('data-src');
+                        const videoSrc = video.getAttribute('data-src');
+                        if (!videoSrc) return;
+                        
+                        video.src = videoSrc;
                         video.removeAttribute('data-src');
-                        video.load();
-                        // Safari autoplay fix - try to play after load
-                        video.addEventListener('loadeddata', () => {
-                            video.play().catch(() => {
-                                // Autoplay blocked, user will need to interact
-                            });
-                        }, { once: true });
+                        
+                        // Safari needs more explicit loading
+                        if (isSafari) {
+                            video.preload = 'auto';
+                            video.load();
+                            
+                            // Wait for canplaythrough for better Safari compatibility
+                            const playVideo = () => {
+                                video.play().catch(() => {
+                                    // Autoplay blocked - this is expected
+                                });
+                            };
+                            
+                            if (video.readyState >= 3) {
+                                playVideo();
+                            } else {
+                                video.addEventListener('canplaythrough', playVideo, { once: true });
+                                video.addEventListener('loadeddata', playVideo, { once: true });
+                            }
+                        } else {
+                            video.load();
+                            video.addEventListener('loadeddata', () => {
+                                video.play().catch(() => {
+                                    // Autoplay blocked
+                                });
+                            }, { once: true });
+                        }
+                        
                         videoObserver.unobserve(video);
                     }
                 });

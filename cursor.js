@@ -1,10 +1,14 @@
 // Custom cursor (only on devices with precise pointing)
+// Disabled on Safari due to performance issues
 document.addEventListener('DOMContentLoaded', () => {
     const cursor = document.querySelector('.cursor');
     if (!cursor) return;
     
-    // Only enable on devices with mouse/trackpad
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    // Detect Safari and disable custom cursor
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    
+    // Only enable on devices with mouse/trackpad, but not on Safari
+    if (isSafari || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
         cursor.style.display = 'none';
         document.body.style.cursor = 'auto';
         return;

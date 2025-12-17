@@ -67,13 +67,30 @@ function initMotionFeatured() {
     const featuredObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
+                const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                
+                if (isSafari) {
+                    featuredVideo.preload = 'auto';
+                }
                 featuredVideo.load();
-                // Safari autoplay fix
-                featuredVideo.addEventListener('loadeddata', () => {
+                
+                // Safari needs canplaythrough for better compatibility
+                const playVideo = () => {
                     featuredVideo.play().catch(() => {
                         // Autoplay blocked
                     });
-                }, { once: true });
+                };
+                
+                if (isSafari) {
+                    if (featuredVideo.readyState >= 3) {
+                        playVideo();
+                    } else {
+                        featuredVideo.addEventListener('canplaythrough', playVideo, { once: true });
+                        featuredVideo.addEventListener('loadeddata', playVideo, { once: true });
+                    }
+                } else {
+                    featuredVideo.addEventListener('loadeddata', playVideo, { once: true });
+                }
             }
         });
     }, { rootMargin: '50px' });
@@ -82,11 +99,23 @@ function initMotionFeatured() {
     
     featuredContainer.appendChild(featuredVideo);
     
+    let featuredCycleInterval = null;
     if (shuffledVideos.length > 1) {
-        setInterval(() => {
+        featuredCycleInterval = setInterval(() => {
             currentFeaturedIndex = (currentFeaturedIndex + 1) % shuffledVideos.length;
             featuredVideo.src = shuffledVideos[currentFeaturedIndex];
+            featuredVideo.load();
+            featuredVideo.play().catch(() => {
+                // Autoplay blocked
+            });
         }, 5000);
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (featuredCycleInterval) {
+                clearInterval(featuredCycleInterval);
+            }
+        });
     }
 }
 
@@ -130,22 +159,45 @@ function initMotionGallery() {
                 if (entry.isIntersecting) {
                     const vid = entry.target;
                     if (vid.getAttribute('data-src')) {
-                        vid.src = vid.getAttribute('data-src');
+                        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                        const videoSrc = vid.getAttribute('data-src');
+                        
+                        vid.src = videoSrc;
                         vid.removeAttribute('data-src');
+                        
+                        if (isSafari) {
+                            vid.preload = 'auto';
+                        }
                         vid.load();
                         
-                        vid.addEventListener('loadedmetadata', () => {
+                        const handleVideoReady = () => {
                             const duration = vid.duration;
                             if (duration > 3) {
                                 const maxStartTime = Math.max(0, duration - 3);
                                 const randomStart = Math.random() * maxStartTime;
                                 vid.currentTime = randomStart;
                             }
-                            // Safari autoplay fix
-                            vid.play().catch(() => {
-                                // Autoplay blocked
-                            });
-                        }, { once: true });
+                            
+                            const playVideo = () => {
+                                vid.play().catch(() => {
+                                    // Autoplay blocked
+                                });
+                            };
+                            
+                            if (isSafari && vid.readyState >= 3) {
+                                playVideo();
+                            } else if (isSafari) {
+                                vid.addEventListener('canplaythrough', playVideo, { once: true });
+                                vid.addEventListener('loadeddata', playVideo, { once: true });
+                            } else {
+                                playVideo();
+                            }
+                        };
+                        
+                        if (isSafari) {
+                            vid.addEventListener('canplaythrough', handleVideoReady, { once: true });
+                        }
+                        vid.addEventListener('loadedmetadata', handleVideoReady, { once: true });
                         
                         videoObserver.unobserve(vid);
                     }
