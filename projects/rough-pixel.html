@@ -111,25 +111,6 @@
                 </div>
             </div>
             
-            <!-- Character Set Display -->
-            <div class="typeface-charset">
-                <h3 class="charset-title">Character Set</h3>
-                <div class="charset-grid">
-                    <div class="charset-section">
-                        <div class="charset-label">Uppercase</div>
-                        <div class="charset-text" style="font-family: 'Rough Pixel', monospace;">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
-                    </div>
-                    <div class="charset-section">
-                        <div class="charset-label">Lowercase</div>
-                        <div class="charset-text" style="font-family: 'Rough Pixel', monospace;">abcdefghijklmnopqrstuvwxyz</div>
-                    </div>
-                    <div class="charset-section">
-                        <div class="charset-label">Punctuation</div>
-                        <div class="charset-text" style="font-family: 'Rough Pixel', monospace;">. , ; : ? !</div>
-                    </div>
-                </div>
-            </div>
-            
             <!-- Sample Text Blocks -->
             <div class="typeface-samples">
                 <div class="sample-block">
@@ -157,10 +138,12 @@
     </div>
     
     <script>
-        // Cycling phrases for showcase
+        // Cycling phrases for showcase with random colors
         document.addEventListener('DOMContentLoaded', () => {
             const showcaseText = document.getElementById('showcaseCyclingText');
-            if (showcaseText) {
+            const showcaseLarge = showcaseText ? showcaseText.closest('.showcase-large') : null;
+            
+            if (showcaseText && showcaseLarge) {
                 const phrases = [
                     'ROUGH<br>PIXEL',
                     'GAME<br>ON',
@@ -171,12 +154,39 @@
                     'READY<br>PLAYER'
                 ];
                 
+                // Color schemes: [color1, color2] - will swap which is background/text
+                const colorSchemes = [
+                    ['#000', '#fff'], // Black and white
+                    ['#8B0000', '#FFF8DC'], // Dark red and off white
+                    ['#00008B', '#F0F8FF'] // Dark medium blue and off white
+                ];
+                
                 let currentPhraseIndex = 0;
                 
+                function getRandomColorScheme() {
+                    const scheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)];
+                    // Randomly decide which color is background and which is text
+                    const swap = Math.random() < 0.5;
+                    return swap ? [scheme[1], scheme[0]] : [scheme[0], scheme[1]];
+                }
+                
                 function cyclePhrase() {
-                    showcaseText.innerHTML = phrases[currentPhraseIndex];
+                    const [bgColor, textColor] = getRandomColorScheme();
+                    // Change both phrase and color simultaneously
+                    requestAnimationFrame(() => {
+                        showcaseText.innerHTML = phrases[currentPhraseIndex];
+                        showcaseLarge.style.background = bgColor;
+                        showcaseText.style.color = textColor;
+                    });
                     currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
                 }
+                
+                // Set initial color scheme
+                const [initialBg, initialText] = getRandomColorScheme();
+                showcaseLarge.style.background = initialBg;
+                showcaseText.style.color = initialText;
+                showcaseLarge.style.transition = 'background 0.3s ease';
+                showcaseText.style.transition = 'color 0.3s ease';
                 
                 // Start cycling after 3 seconds, then every 2 seconds
                 setTimeout(() => {
