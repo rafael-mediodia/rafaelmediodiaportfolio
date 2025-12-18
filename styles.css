@@ -1052,12 +1052,22 @@ video:not([controls])::-webkit-media-controls-play-button {
 }
 
 .project-thumb[data-project-id="project-6"] {
-    background: #000 !important;
+    background: #1e4178 !important;
     border: 1px dotted var(--dotted-color) !important;
 }
 
 .project-thumb[data-project-id="project-6"] video {
-    background: #000 !important;
+    background: #1e4178 !important;
+    transition: opacity 0.2s ease;
+}
+
+.project-thumb[data-project-id="project-8"] {
+    background: #d3d2dd !important;
+    border: 1px dotted var(--dotted-color) !important;
+}
+
+.project-thumb[data-project-id="project-8"] video {
+    background: #d3d2dd !important;
     transition: opacity 0.2s ease;
 }
 
