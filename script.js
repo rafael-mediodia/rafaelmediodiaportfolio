@@ -2,14 +2,14 @@ const projects = [
     {
         id: 'project-1',
         title: 'Pinoy Plus',
-        subtitle: 'Identity Design',
+        subtitle: 'A campaign for mga Pinoy creatives.',
         thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
         page: 'projects/pinoy-plus.html'
     },
     {
         id: 'project-5',
         title: 'Self Declaration',
-        subtitle: 'Print Design',
+        subtitle: 'A reflection for immigrants in the United States.',
         thumbnail: null,
         thumbnailImages: [
             'SelfDeclaration/DS3UNIT17_23.jpg',
@@ -20,7 +20,7 @@ const projects = [
     {
         id: 'project-7',
         title: 'Rough Pixel',
-        subtitle: 'Type Design',
+        subtitle: 'A typeface mixing digital and analog worlds.',
         thumbnail: null,
         thumbnailImages: null,
         page: 'projects/rough-pixel.html'
@@ -28,14 +28,26 @@ const projects = [
     {
         id: 'project-3',
         title: 'Breakout Games',
-        subtitle: 'Motion Design',
+        subtitle: 'Discovery and exploration motion identity work.',
         thumbnail: 'Breakout/Breakout-Transition.mp4',
         page: 'projects/breakout-games.html'
     },
     {
+        id: 'project-8',
+        title: 'superstition superstition superstition',
+        subtitle: 'Film about systems and growing up.',
+        thumbnail: null,
+        thumbnailVideos: [
+            'superstitionsuperstitionsuperstition/Mini Clips.mp4',
+            'superstitionsuperstitionsuperstition/MiniClip2.mp4',
+            'superstitionsuperstitionsuperstition/preview3.mp4'
+        ],
+        page: 'projects/superstition-superstition-superstition.html'
+    },
+    {
         id: 'project-4',
         title: 'bounce museum of rubber',
-        subtitle: 'Identity Design',
+        subtitle: 'An identity for a museum full of elasticity.',
         thumbnail: null,
         thumbnailVideos: [
             'BounceMuseum/BounceThumbnail.mp4',
@@ -46,7 +58,7 @@ const projects = [
     {
         id: 'project-6',
         title: 'American Dream Series: Part 0',
-        subtitle: 'Motion Design, Video',
+        subtitle: 'A pilot episode exploring what the American Dream is.',
         thumbnail: 'AmericanDream/American Dream Series Part 0.mp4',
         thumbnailStartTime: 2,
         thumbnailEndTime: 4,

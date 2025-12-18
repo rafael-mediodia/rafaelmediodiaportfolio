@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Use transform for GPU-accelerated positioning (Safari optimized)
             updateCursorTransform();
             
-            requestAnimationFrame(animateCursor);
+        requestAnimationFrame(animateCursor);
         } else {
             // Snap to final position when close enough
             cursorX = mouseX;

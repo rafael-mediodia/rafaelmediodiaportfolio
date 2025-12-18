@@ -83,7 +83,7 @@
                                 video.addEventListener('loadeddata', playVideo, { once: true });
                             }
                         } else {
-                            video.load();
+                        video.load();
                             video.addEventListener('loadeddata', () => {
                                 video.play().catch(() => {
                                     // Autoplay blocked

@@ -124,10 +124,10 @@ function handleImageKeydown(e) {
     } else if (e.key === 'Escape') {
         const modal = document.getElementById('imageZoomModal');
         if (modal) {
-            modal.style.display = 'none';
-            modal.classList.remove('active');
+        modal.style.display = 'none';
+        modal.classList.remove('active');
             document.body.style.overflow = '';
-            document.removeEventListener('keydown', handleImageKeydown);
+        document.removeEventListener('keydown', handleImageKeydown);
         }
     }
 }
@@ -147,7 +147,7 @@ function navigateImage(direction) {
     requestAnimationFrame(() => {
         img.style.opacity = '0';
         requestAnimationFrame(() => {
-            img.src = `Illustrations/${imageFile}`;
+    img.src = `Illustrations/${imageFile}`;
             img.onload = () => {
                 requestAnimationFrame(() => {
                     img.style.opacity = '1';
@@ -186,7 +186,7 @@ function openImageZoom(imageSrc) {
     
     // Use requestAnimationFrame for smoother Safari animations
     requestAnimationFrame(() => {
-        modal.classList.add('active');
+    modal.classList.add('active');
         requestAnimationFrame(() => {
             img.style.transform = 'scale(1)';
             img.style.opacity = '1';

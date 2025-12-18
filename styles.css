@@ -280,6 +280,22 @@ body.safari-no-custom-cursor * {
     pointer-events: auto;
 }
 
+.vimeo-embed-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+}
+
+.vimeo-embed-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 .project-video-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -314,7 +330,6 @@ body.safari-no-custom-cursor * {
     color: #fff;
     text-align: center;
     word-break: break-word;
-    transform: translateY(4%); /* Optically lower the content for better visual centering */
 }
 
 .showcase-samples {
@@ -1263,9 +1278,6 @@ video:not([controls])::-webkit-media-controls-play-button {
     font-size: 14px;
     margin-bottom: 2rem;
     line-height: 1.8;
-    word-break: normal;
-    overflow-wrap: break-word;
-    hyphens: none;
 }
 
 
@@ -1299,9 +1311,6 @@ video:not([controls])::-webkit-media-controls-play-button {
     padding: var(--spacing);
     border: 1px dotted var(--dotted-color);
     background: var(--bg);
-    word-break: normal;
-    overflow-wrap: break-word;
-    hyphens: none;
 }
 
 /* Bento-like grid layout for text sections */
@@ -1337,54 +1346,6 @@ video:not([controls])::-webkit-media-controls-play-button {
     .project-images-panel {
         margin-left: 710px;
         width: calc(100% - 710px);
-    }
-}
-
-/* iPad and tablet fixes */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .project-blurb,
-    .project-text,
-    .project-text p {
-        word-break: normal;
-        overflow-wrap: break-word;
-        hyphens: none;
-    }
-    
-    .showcase-sample-text,
-    .charset-text,
-    .sample-text {
-        word-break: normal;
-        overflow-wrap: break-word;
-        hyphens: none;
-    }
-    
-    .tester-output {
-        word-break: normal;
-        overflow-wrap: break-word;
-        hyphens: none;
-    }
-    
-    .showcase-text {
-        word-break: normal;
-        overflow-wrap: break-word;
-        hyphens: none;
-        white-space: normal;
-    }
-    
-    .showcase-large {
-        word-break: normal;
-        overflow-wrap: break-word;
-    }
-    
-    .project-title {
-        word-break: normal;
-        overflow-wrap: break-word;
-        hyphens: none;
-    }
-    
-    /* Ensure showcase text doesn't break awkwardly on iPad */
-    .showcase-text br {
-        display: block;
     }
 }
 
