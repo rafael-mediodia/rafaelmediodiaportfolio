@@ -1,3 +1,6 @@
+// Use cached Safari detection from script.js if available, otherwise detect
+const isSafariMotion = typeof isSafari !== 'undefined' ? isSafari : /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 const motionVideos = [
     { file: 'LOGO1-FULL.mp4', tooltip: 'Cortis Fan Motion' },
     { file: 'LOGO2-FULL.mp4', tooltip: 'Cortis Fan Motion' },
@@ -67,9 +70,7 @@ function initMotionFeatured() {
     const featuredObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-                
-                if (isSafari) {
+                if (isSafariMotion) {
                     featuredVideo.preload = 'auto';
                 }
                 featuredVideo.load();
@@ -81,7 +82,7 @@ function initMotionFeatured() {
                     });
                 };
                 
-                if (isSafari) {
+                if (isSafariMotion) {
                     if (featuredVideo.readyState >= 3) {
                         playVideo();
                     } else {
@@ -159,14 +160,15 @@ function initMotionGallery() {
                 if (entry.isIntersecting) {
                     const vid = entry.target;
                     if (vid.getAttribute('data-src')) {
-                        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
                         const videoSrc = vid.getAttribute('data-src');
                         
                         vid.src = videoSrc;
                         vid.removeAttribute('data-src');
                         
-                        if (isSafari) {
+                        if (isSafariMotion) {
                             vid.preload = 'auto';
+                        } else {
+                            vid.preload = 'metadata'; // Use metadata for non-Safari browsers
                         }
                         vid.load();
                         
@@ -184,9 +186,9 @@ function initMotionGallery() {
                                 });
                             };
                             
-                            if (isSafari && vid.readyState >= 3) {
+                            if (isSafariMotion && vid.readyState >= 3) {
                                 playVideo();
-                            } else if (isSafari) {
+                            } else if (isSafariMotion) {
                                 vid.addEventListener('canplaythrough', playVideo, { once: true });
                                 vid.addEventListener('loadeddata', playVideo, { once: true });
                             } else {
@@ -194,7 +196,7 @@ function initMotionGallery() {
                             }
                         };
                         
-                        if (isSafari) {
+                        if (isSafariMotion) {
                             vid.addEventListener('canplaythrough', handleVideoReady, { once: true });
                         }
                         vid.addEventListener('loadedmetadata', handleVideoReady, { once: true });
@@ -204,7 +206,7 @@ function initMotionGallery() {
                 }
             });
         }, {
-            rootMargin: '100px'
+            rootMargin: '50px' // Reduced from 100px to prevent premature loading
         });
         
         videoObserver.observe(video);

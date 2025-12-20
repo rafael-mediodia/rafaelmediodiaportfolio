@@ -1,3 +1,19 @@
+// Cache browser detection to avoid repeated regex calls
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+// Throttle function for performance optimization
+function throttle(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 const projects = [
     {
         id: 'project-1',
@@ -96,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initSafariPlayOverlay() {
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     if (!isSafari) return;
     
     const overlay = document.getElementById('safariPlayOverlay');
@@ -178,7 +193,7 @@ function initMotionThumbnail() {
             video.loop = true;
             video.playsInline = true;
             video.autoplay = true;
-                video.preload = 'auto';
+                video.preload = 'metadata'; // Changed from 'auto' to 'metadata' for better performance
             video.setAttribute('playsinline', '');
                 video.setAttribute('webkit-playsinline', '');
             video.setAttribute('loop', '');
@@ -344,7 +359,7 @@ function initMotionThumbnail() {
                     }
                 });
             }, {
-                rootMargin: '200px'
+                rootMargin: '50px' // Reduced from 200px to prevent premature loading
             });
             
             // Cleanup on page unload
@@ -378,7 +393,7 @@ function initGallery() {
                 video.loop = false;
                 video.playsInline = true;
                 video.autoplay = true;
-                video.preload = 'auto';
+                video.preload = 'metadata'; // Changed from 'auto' to 'metadata' for better performance
                 video.setAttribute('playsinline', '');
                 video.setAttribute('webkit-playsinline', '');
                 video.setAttribute('muted', '');
@@ -408,7 +423,6 @@ function initGallery() {
             let activeVideo = video1;
             let nextVideo = video2;
             let isInitialized = false;
-            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             
             function playVideo(video) {
                 video.play().catch(() => {
@@ -483,7 +497,6 @@ function initGallery() {
                         preloadNextVideo();
                     };
                     
-                    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
                     if (isSafari) {
                         if (activeVideo.readyState >= 3) {
                             handleFirstVideoReady();
@@ -513,7 +526,7 @@ function initGallery() {
                     }
                 });
             }, {
-                rootMargin: '200px'
+                rootMargin: '50px' // Reduced from 200px to prevent premature loading
             });
             
             thumb.style.position = 'relative';
@@ -535,11 +548,11 @@ function initGallery() {
             if (isVideo) {
                 const video = document.createElement('video');
                 // Set attributes BEFORE setting src for Safari
-                video.muted = true;
-                video.loop = true;
-                video.playsInline = true;
-                video.autoplay = true;
-                video.preload = 'metadata';
+            video.muted = true;
+            video.loop = true;
+            video.playsInline = true;
+            video.autoplay = true;
+            video.preload = 'metadata'; // Keep metadata for single video thumbnails
                 video.setAttribute('playsinline', '');
                 video.setAttribute('webkit-playsinline', '');
                 video.setAttribute('loop', '');
@@ -574,10 +587,12 @@ function initGallery() {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             const vid = entry.target;
-                            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
                             
+                            // Only use 'auto' preload for Safari when video is actually visible
                             if (isSafari) {
                                 vid.preload = 'auto';
+                            } else {
+                                vid.preload = 'metadata'; // Use metadata for non-Safari browsers
                             }
                             vid.load();
                             
@@ -602,7 +617,7 @@ function initGallery() {
                         }
                     });
                 }, {
-                    rootMargin: '200px'
+                    rootMargin: '50px' // Reduced from 200px to prevent premature loading
                 });
                 
                 thumbObserver.observe(video);
@@ -718,7 +733,7 @@ function initGallery() {
                     }
                 });
             }, {
-                rootMargin: '200px'
+                rootMargin: '50px' // Reduced from 200px to prevent premature loading
             });
             
             thumb.style.position = 'relative';
@@ -959,7 +974,7 @@ function initGallery() {
                         hasAnimated = false;
                     }
                 });
-            }, { rootMargin: '200px' });
+            }, { rootMargin: '50px' }); // Reduced from 200px to prevent premature loading
             
             thumbObserver.observe(thumb);
             
@@ -977,10 +992,11 @@ function initGallery() {
             tooltip.style.top = e.clientY + 5 + 'px';
         });
         
-        thumb.addEventListener('mousemove', (e) => {
+        // Throttle tooltip mousemove for better performance
+        thumb.addEventListener('mousemove', throttle((e) => {
             tooltip.style.left = e.clientX + 5 + 'px';
             tooltip.style.top = e.clientY + 5 + 'px';
-        });
+        }, 16)); // ~60fps throttling
         
         thumb.addEventListener('mouseleave', () => {
             tooltip.style.opacity = '0';
