@@ -1086,7 +1086,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 
 .project-thumb[data-project-id="project-7"] {
     border: 1px dotted var(--dotted-color) !important;
-    background: #000 !important;
+    background: #b4a899 !important;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -1105,7 +1105,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 }
 
 .project-thumb[data-project-id="project-7"]:hover {
-    background: #0f0f0f !important;
+    background: #a09587 !important;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }

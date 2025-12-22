@@ -766,228 +766,29 @@ function initGallery() {
             thumb.classList.add('motion-thumb');
             thumb.setAttribute('data-project-index', 'motion');
         } else if (project.id === 'project-7') {
-            // Rough Pixel - Grid-based full-coverage animation with large glyphs
+            // Rough Pixel - Simplified static display for fast loading
             thumb.classList.add('placeholder');
             thumb.classList.add('font-preview');
-            thumb.style.background = '#000';
+            thumb.style.background = '#b4a899';
             thumb.style.overflow = 'hidden';
             thumb.style.position = 'relative';
             thumb.style.aspectRatio = '5/4';
+            thumb.style.display = 'flex';
+            thumb.style.alignItems = 'center';
+            thumb.style.justifyContent = 'center';
             
-            const canvas = document.createElement('canvas');
-            canvas.style.position = 'absolute';
-            canvas.style.top = '0';
-            canvas.style.left = '0';
-            canvas.style.width = '100%';
-            canvas.style.height = '100%';
-            canvas.style.imageRendering = 'pixelated';
-            canvas.style.imageRendering = 'crisp-edges';
+            // Simple text display - no canvas, no animation, no glyph detection
+            const textDisplay = document.createElement('div');
+            textDisplay.textContent = 'ROUGH PIXEL';
+            textDisplay.style.fontFamily = '"Rough Pixel", monospace';
+            textDisplay.style.fontSize = 'clamp(24px, 5vw, 48px)';
+            textDisplay.style.color = '#fff';
+            textDisplay.style.letterSpacing = '0.1em';
+            textDisplay.style.textAlign = 'center';
+            textDisplay.style.imageRendering = 'pixelated';
+            textDisplay.style.imageRendering = 'crisp-edges';
             
-            let ctx = null;
-            let supportedGlyphs = [];
-            let animationFrameId = null;
-            let startTime = null;
-            let lastUpdateTime = 0;
-            let glyphCells = []; // Pre-computed grid cells with glyphs
-            const ANIMATION_DURATION = 8000;
-            const UPDATE_INTERVAL = 140; // Stepped updates every 140ms (~7fps)
-            const GLYPH_SIZE = 30; // Large glyph size (48-110px range)
-            const CELL_PADDING = 8;
-            const CELL_SIZE = GLYPH_SIZE + CELL_PADDING;
-            const CELL_SPACING = CELL_SIZE * 0.9; // Slight overlap for density
-            
-            // Glyph detection - pixel-perfect comparison
-            function detectSupportedGlyphs() {
-                const testCanvas = document.createElement('canvas');
-                const testCtx = testCanvas.getContext('2d', { willReadFrequently: true });
-                testCanvas.width = 64;
-                testCanvas.height = 64;
-                
-                // Disable antialiasing
-                testCtx.imageSmoothingEnabled = false;
-                testCtx.textAlign = 'center';
-                testCtx.textBaseline = 'middle';
-                testCtx.fillStyle = '#fff';
-                
-                const candidates = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:?!';
-                const supported = [];
-                const fallbackFont = 'monospace';
-                
-                candidates.split('').forEach(char => {
-                    // Render with Rough Pixel
-                    testCtx.clearRect(0, 0, 64, 64);
-                    testCtx.font = '32px "Rough Pixel", monospace';
-                    testCtx.fillText(char, 32, 32);
-                    const roughPixelData = testCtx.getImageData(0, 0, 64, 64);
-                    
-                    // Render with fallback
-                    testCtx.clearRect(0, 0, 64, 64);
-                    testCtx.font = `32px ${fallbackFont}`;
-                    testCtx.fillText(char, 32, 32);
-                    const fallbackData = testCtx.getImageData(0, 0, 64, 64);
-                    
-                    // Compare pixel data
-                    let diffPixels = 0;
-                    for (let i = 0; i < roughPixelData.data.length; i += 4) {
-                        const r1 = roughPixelData.data[i];
-                        const r2 = fallbackData.data[i];
-                        if (Math.abs(r1 - r2) > 50) {
-                            diffPixels++;
-                        }
-                    }
-                    
-                    // If more than 5% of pixels differ, glyph is supported
-                    if (diffPixels > (64 * 64 * 0.05)) {
-                        supported.push(char);
-                    }
-                });
-                
-                return supported.length > 0 ? supported : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:?!'.split('');
-            }
-            
-            // Seeded random for consistent, pre-computed randomness
-            function createSeededRandom(seed) {
-                let value = seed;
-                return function() {
-                    value = (value * 9301 + 49297) % 233280;
-                    return value / 233280;
-                };
-            }
-            
-            // Initialize canvas and animation
-            function initAnimation() {
-                const rect = thumb.getBoundingClientRect();
-                const dpr = window.devicePixelRatio || 1;
-                const width = Math.floor(rect.width);
-                const height = Math.floor(rect.height);
-                
-                canvas.width = width * dpr;
-                canvas.height = height * dpr;
-                canvas.style.width = width + 'px';
-                canvas.style.height = height + 'px';
-                
-                ctx = canvas.getContext('2d', { willReadFrequently: false });
-                ctx.scale(dpr, dpr);
-                
-                // Disable all smoothing
-                ctx.imageSmoothingEnabled = false;
-                ctx.textAlign = 'left';
-                ctx.textBaseline = 'top';
-                ctx.fillStyle = '#fff';
-                
-                // Detect supported glyphs (only once)
-                supportedGlyphs = detectSupportedGlyphs();
-                
-                // Grid-based layout for full coverage
-                const cols = Math.ceil(width / CELL_SPACING);
-                const rows = Math.ceil(height / CELL_SPACING);
-                glyphCells = [];
-                const seededRand = createSeededRandom(12345);
-                
-                // Pre-compute grid: one glyph per cell for full coverage
-                // Include "ROUGH PIXEL" letters in the mix
-                const roughPixelLetters = 'ROUGH PIXEL'.split('').filter(c => c !== ' ');
-                let letterIndex = 0;
-                
-                for (let row = 0; row < rows; row++) {
-                    for (let col = 0; col < cols; col++) {
-                        const cellX = Math.floor(col * CELL_SPACING);
-                        const cellY = Math.floor(row * CELL_SPACING);
-                        const seed = row * cols + col;
-                        
-                        // Mix "ROUGH PIXEL" letters with random glyphs
-                        let char;
-                        if (seededRand() < 0.3 && letterIndex < roughPixelLetters.length) {
-                            // Use "ROUGH PIXEL" letter
-                            char = roughPixelLetters[letterIndex];
-                            letterIndex = (letterIndex + 1) % roughPixelLetters.length;
-                        } else {
-                            // Use random supported glyph
-                            char = supportedGlyphs[Math.floor(seededRand() * supportedGlyphs.length)];
-                        }
-                        
-                        glyphCells.push({
-                            cellX,
-                            cellY,
-                            char,
-                            seed
-                        });
-                    }
-                }
-                
-                startTime = performance.now();
-                lastUpdateTime = startTime;
-                animate();
-            }
-            
-            // Linear interpolation (no easing)
-            function lerp(a, b, t) {
-                return a + (b - a) * t;
-            }
-            
-            // Animation loop - minimal: just change glyphs
-            function animate() {
-                const currentTime = performance.now();
-                const elapsed = (currentTime - startTime) % ANIMATION_DURATION;
-                const progress = elapsed / ANIMATION_DURATION;
-                
-                // Update characters on stepped intervals
-                if (currentTime - lastUpdateTime >= UPDATE_INTERVAL) {
-                    const charFrame = Math.floor(progress * 20);
-                    glyphCells.forEach(cell => {
-                        const charIndex = (charFrame + cell.seed) % supportedGlyphs.length;
-                        cell.char = supportedGlyphs[charIndex];
-                    });
-                    lastUpdateTime = currentTime;
-                }
-                
-                // Draw
-                const width = canvas.width / (window.devicePixelRatio || 1);
-                const height = canvas.height / (window.devicePixelRatio || 1);
-                
-                ctx.fillStyle = '#000';
-                ctx.fillRect(0, 0, width, height);
-                
-                ctx.fillStyle = '#fff';
-                ctx.font = `${GLYPH_SIZE}px "Rough Pixel", monospace`;
-                
-                glyphCells.forEach(cell => {
-                    ctx.fillText(cell.char, cell.cellX, cell.cellY);
-                });
-                
-                animationFrameId = requestAnimationFrame(animate);
-            }
-            
-            thumb.appendChild(canvas);
-            
-            // Start animation when thumbnail comes into view
-            const thumbObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        if (!ctx) {
-                            initAnimation();
-                        } else if (!animationFrameId) {
-                            startTime = performance.now();
-                            lastFrameTime = 0;
-                            animate();
-                        }
-                    } else {
-                        if (animationFrameId) {
-                            cancelAnimationFrame(animationFrameId);
-                            animationFrameId = null;
-                        }
-                    }
-                });
-            }, { rootMargin: '50px' });
-            
-            thumbObserver.observe(thumb);
-            
-            // Cleanup
-            window.addEventListener('beforeunload', () => {
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                }
-            });
+            thumb.appendChild(textDisplay);
         }
         
         thumb.addEventListener('mouseenter', (e) => {
