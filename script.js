@@ -16,13 +16,6 @@ function throttle(func, wait) {
 
 const projects = [
     {
-        id: 'project-1',
-        title: 'Pinoy Plus',
-        subtitle: 'A campaign for mga Pinoy creatives.',
-        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
-        page: 'projects/pinoy-plus.html'
-    },
-    {
         id: 'project-5',
         title: 'Self Declaration',
         subtitle: 'A reflection for immigrants in the United States.',
@@ -42,12 +35,11 @@ const projects = [
         inProgress: true // Flag to prevent navigation
     },
     {
-        id: 'project-7',
-        title: 'Rough Pixel',
-        subtitle: 'A typeface mixing digital and analog worlds.',
-        thumbnail: null,
-        thumbnailImages: null,
-        page: 'projects/rough-pixel.html'
+        id: 'project-1',
+        title: 'Pinoy Plus',
+        subtitle: 'A campaign for mga Pinoy creatives.',
+        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
+        page: 'projects/pinoy-plus.html'
     },
     {
         id: 'project-3',
@@ -55,6 +47,14 @@ const projects = [
         subtitle: 'Discovery and exploration motion identity work.',
         thumbnail: 'Breakout/Breakout-Transition.mp4',
         page: 'projects/breakout-games.html'
+    },
+    {
+        id: 'project-7',
+        title: 'Rough Pixel',
+        subtitle: 'A typeface mixing digital and analog worlds.',
+        thumbnail: null,
+        thumbnailImages: null,
+        page: 'projects/rough-pixel.html'
     },
     {
         id: 'project-8',
