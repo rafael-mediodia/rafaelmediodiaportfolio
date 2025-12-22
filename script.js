@@ -115,8 +115,11 @@ const projects = [
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     initSafariPlayOverlay();
-    initGallery();
-    initMotionThumbnail();
+    // Defer gallery initialization to allow initial render
+    requestAnimationFrame(() => {
+        initGallery();
+        initMotionThumbnail();
+    });
 });
 
 function initSafariPlayOverlay() {
@@ -367,7 +370,7 @@ function initMotionThumbnail() {
                     }
                 });
             }, {
-                rootMargin: '50px' // Reduced from 200px to prevent premature loading
+                rootMargin: '25px' // Further reduced to prevent premature loading
             });
             
             // Cleanup on page unload
@@ -380,9 +383,14 @@ function initMotionThumbnail() {
 
 function initGallery() {
     const gallery = document.getElementById('gallery');
+    if (!gallery) return;
+    
     const tooltip = document.createElement('div');
     tooltip.className = 'project-tooltip';
     document.body.appendChild(tooltip);
+    
+    // Use document fragment for batch DOM insertion
+    const fragment = document.createDocumentFragment();
     
     projects.forEach((project, index) => {
         const thumb = document.createElement('div');
@@ -498,6 +506,12 @@ function initGallery() {
             
             function startPlaying() {
                 if (project.thumbnailVideos && project.thumbnailVideos.length > 0) {
+                    // Append videos to DOM only when visible
+                    if (!thumb.contains(video1)) {
+                        thumb.appendChild(video1);
+                        thumb.appendChild(video2);
+                    }
+                    
                     const firstVideoSrc = project.thumbnailVideos[currentVideoIndex];
                     activeVideo.src = firstVideoSrc;
                     activeVideo.load();
@@ -535,18 +549,17 @@ function initGallery() {
                         thumbObserver.unobserve(thumb);
                     } else {
                         // Pause videos when out of view
-                        video1.pause();
-                        video2.pause();
+                        if (video1.parentElement) video1.pause();
+                        if (video2.parentElement) video2.pause();
                     }
                 });
             }, {
-                rootMargin: '50px' // Reduced from 200px to prevent premature loading
+                rootMargin: '25px' // Further reduced to prevent premature loading
             });
             
             thumb.style.position = 'relative';
             thumb.classList.add('has-video');
-            thumb.appendChild(video1);
-            thumb.appendChild(video2);
+            // Don't append videos until they're needed (when intersecting)
             thumbObserver.observe(thumb);
             
             // Cleanup on page unload
@@ -631,7 +644,7 @@ function initGallery() {
                         }
                     });
                 }, {
-                    rootMargin: '50px' // Reduced from 200px to prevent premature loading
+                    rootMargin: '25px' // Further reduced to prevent premature loading
                 });
                 
                 thumbObserver.observe(video);
@@ -640,6 +653,7 @@ function initGallery() {
                 thumb.appendChild(video);
             } else {
                 const img = document.createElement('img');
+                img.loading = 'lazy'; // Lazy load images
                 img.src = project.thumbnail;
                 img.alt = project.title;
                 thumb.appendChild(img);
@@ -655,6 +669,7 @@ function initGallery() {
             [img1, img2].forEach(img => {
             img.alt = project.title;
             img.className = 'cycling-thumbnail';
+            img.loading = 'lazy'; // Lazy load images
                 img.style.position = 'absolute';
                 img.style.top = '0';
                 img.style.left = '0';
@@ -721,7 +736,8 @@ function initGallery() {
             
             function startCycling() {
                 if (project.thumbnailImages && project.thumbnailImages.length > 0) {
-                    // Load first image
+                    // Load first image only when visible
+                    activeImage.loading = 'lazy';
                     activeImage.src = project.thumbnailImages[currentImageIndex];
                     // Preload next image immediately
                     preloadNextImage();
@@ -747,7 +763,7 @@ function initGallery() {
                     }
                 });
             }, {
-                rootMargin: '50px' // Reduced from 200px to prevent premature loading
+                rootMargin: '25px' // Further reduced to prevent premature loading
             });
             
             thumb.style.position = 'relative';
@@ -811,7 +827,11 @@ function initGallery() {
             tooltip.style.opacity = '0';
         });
         
-        gallery.appendChild(thumb);
+        // Add to fragment instead of directly to gallery
+        fragment.appendChild(thumb);
     });
+    
+    // Batch append all thumbnails at once
+    gallery.appendChild(fragment);
 }
 
