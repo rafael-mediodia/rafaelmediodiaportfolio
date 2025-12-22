@@ -262,14 +262,14 @@ function initMotionThumbnail() {
             
             function loadAndPlayVideo(video, videoSrc, onReady) {
                 video.src = videoSrc;
-                video.load();
-                
-                const handleLoadedMetadata = () => {
-                    const duration = video.duration;
-                    if (duration > 3) {
-                        const maxStartTime = Math.max(0, duration - 3);
-                        const randomStart = Math.random() * maxStartTime;
-                        video.currentTime = randomStart;
+                            video.load();
+                            
+                            const handleLoadedMetadata = () => {
+                                const duration = video.duration;
+                                if (duration > 3) {
+                                    const maxStartTime = Math.max(0, duration - 3);
+                                    const randomStart = Math.random() * maxStartTime;
+                                    video.currentTime = randomStart;
                     }
                     
                     if (onReady) {
@@ -279,13 +279,13 @@ function initMotionThumbnail() {
                 
                 const handleError = () => {
                     // If video fails to load, try next one
-                    currentVideoIndex = (currentVideoIndex + 1) % shuffledVideos.length;
+                                            currentVideoIndex = (currentVideoIndex + 1) % shuffledVideos.length;
                     if (onReady) {
                         setTimeout(() => switchToNextVideo(), 500);
-                    }
-                };
-                
-                video.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true });
+                                }
+                            };
+                            
+                            video.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true });
                 video.addEventListener('error', handleError, { once: true });
             }
             
@@ -562,10 +562,10 @@ function initGallery() {
             if (isVideo) {
                 const video = document.createElement('video');
                 // Set attributes BEFORE setting src for Safari
-            video.muted = true;
-            video.loop = true;
-            video.playsInline = true;
-            video.autoplay = true;
+                video.muted = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.autoplay = true;
             video.preload = 'metadata'; // Keep metadata for single video thumbnails
                 video.setAttribute('playsinline', '');
                 video.setAttribute('webkit-playsinline', '');
@@ -653,8 +653,8 @@ function initGallery() {
             const objectFit = project.id === 'project-5' ? 'cover' : 'contain';
             
             [img1, img2].forEach(img => {
-                img.alt = project.title;
-                img.className = 'cycling-thumbnail';
+            img.alt = project.title;
+            img.className = 'cycling-thumbnail';
                 img.style.position = 'absolute';
                 img.style.top = '0';
                 img.style.left = '0';
@@ -766,234 +766,464 @@ function initGallery() {
             thumb.classList.add('motion-thumb');
             thumb.setAttribute('data-project-index', 'motion');
         } else if (project.id === 'project-7') {
-            // Rough Pixel - create animated text-based preview
+            // Rough Pixel - Lo-fi pixel-perfect bitmap animation
             thumb.classList.add('placeholder');
             thumb.classList.add('font-preview');
             thumb.style.background = '#000';
             thumb.style.overflow = 'hidden';
             thumb.style.position = 'relative';
-            thumb.style.display = 'flex';
-            thumb.style.alignItems = 'center';
-            thumb.style.justifyContent = 'center';
-            thumb.style.aspectRatio = '5/4'; // Match video thumbnail aspect ratio
+            thumb.style.aspectRatio = '5/4';
             
-            const previewText = document.createElement('div');
-            previewText.className = 'font-preview-text';
-            previewText.style.fontFamily = "'Rough Pixel', monospace";
-            // Use clamp for responsive font sizing that scales with container
-            // Adjusted for 5:4 aspect ratio (wider container)
-            previewText.style.fontSize = 'clamp(3.5rem, 10cqw, 8.5rem)'; // Use container query units, adjusted for wider ratio
-            previewText.style.padding = '0';
-            previewText.style.display = 'flex';
-            previewText.style.flexDirection = 'column';
-            previewText.style.alignItems = 'center';
-            previewText.style.justifyContent = 'center';
-            previewText.style.height = '100%';
-            previewText.style.width = '100%';
-            previewText.style.color = '#fff';
-            previewText.style.letterSpacing = '0.05em';
-            previewText.style.lineHeight = '1.0';
-            previewText.style.textAlign = 'center';
-            previewText.style.margin = '0';
-            previewText.style.boxSizing = 'border-box';
-            previewText.style.whiteSpace = 'pre-line'; // Allow newlines to render
-            previewText.style.position = 'relative'; // Ensure positioning context
-            previewText.style.overflow = 'hidden'; // Prevent text from being cut off
-            previewText.style.wordBreak = 'break-word'; // Break long words if needed
-            previewText.style.transform = 'translateY(4%)'; // Optically lower the content for better visual centering
-            thumb.style.transition = 'background 0.5s ease';
-            previewText.style.transition = 'color 0.5s ease';
+            const canvas = document.createElement('canvas');
+            canvas.style.position = 'absolute';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            canvas.style.imageRendering = 'pixelated';
+            canvas.style.imageRendering = 'crisp-edges';
             
-            const line1 = 'ROUGH';
-            const line2 = 'PIXEL';
-            const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:?!';
-            let hasAnimated = false;
-            let colorInterval = null;
-            let glyphCycleInterval = null;
-            let typeTimeout = null;
+            let ctx = null;
+            let supportedGlyphs = [];
+            let animationFrameId = null;
+            let startTime = null;
+            let lastFrameTime = 0;
+            let glyphData = []; // Pre-calculated glyph positions and properties
+            let seededRandom = null; // Seeded random for consistent jitter
+            const ANIMATION_DURATION = 8000; // 8 seconds
+            const TARGET_FPS = 8; // Low frame rate
+            const FRAME_INTERVAL = 1000 / TARGET_FPS;
+            const GRID_SIZE = 12; // Increased from 8 to reduce glyph count
             
-            // Cleanup function to prevent memory leaks
-            function cleanup() {
-                if (colorInterval) {
-                    clearInterval(colorInterval);
-                    colorInterval = null;
-                }
-                if (glyphCycleInterval) {
-                    clearInterval(glyphCycleInterval);
-                    glyphCycleInterval = null;
-                }
-                if (typeTimeout) {
-                    clearTimeout(typeTimeout);
-                    typeTimeout = null;
-                }
-            }
-            
-            // Animate text appearing - type out "ROUGH" then "PIXEL" on separate lines
-            function animateText() {
-                if (hasAnimated) return;
-                hasAnimated = true;
+            // Glyph detection - pixel-perfect comparison
+            function detectSupportedGlyphs() {
+                const testCanvas = document.createElement('canvas');
+                const testCtx = testCanvas.getContext('2d', { willReadFrequently: true });
+                testCanvas.width = 64;
+                testCanvas.height = 64;
                 
-                let currentIndex = 0;
-                let displayedLine1 = '';
-                let displayedLine2 = '';
+                // Disable antialiasing
+                testCtx.imageSmoothingEnabled = false;
+                testCtx.textAlign = 'center';
+                testCtx.textBaseline = 'middle';
+                testCtx.fillStyle = '#fff';
                 
-                // Create line break element for better performance
-                const br = document.createElement('br');
+                const candidates = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:?!';
+                const supported = [];
+                const fallbackFont = 'monospace';
                 
-                // First, type out "ROUGH" (typewriter effect)
-                function typeLine1() {
-                    if (currentIndex < line1.length) {
-                        displayedLine1 += line1[currentIndex];
-                        // Use textContent for better performance and security
-                        previewText.textContent = displayedLine1 + (displayedLine2 ? '\n' + displayedLine2 : '');
-                        currentIndex++;
-                        typeTimeout = setTimeout(typeLine1, 150);
-                    } else {
-                        // After "ROUGH" is complete, start typing "PIXEL"
-                        currentIndex = 0;
-                        typeTimeout = setTimeout(typeLine2, 300);
-                    }
-                }
-                
-                // Then type out "PIXEL" (typewriter effect)
-                function typeLine2() {
-                    if (currentIndex < line2.length) {
-                        displayedLine2 += line2[currentIndex];
-                        previewText.textContent = displayedLine1 + '\n' + displayedLine2;
-                        currentIndex++;
-                        typeTimeout = setTimeout(typeLine2, 150);
-                    } else {
-                        // After both lines are complete, wait a moment then cycle through glyphs
-                        typeTimeout = setTimeout(cycleGlyphs, 500);
-                    }
-                }
-                
-                previewText.textContent = ''; // Start with empty text
-                typeLine1();
-            }
-            
-            // Cycle through glyphs really fast
-            function cycleGlyphs() {
-                let glyphIndex = 0;
-                let cycleCount = 0;
-                const totalCycles = 2; // Cycle through all glyphs twice
-                const glyphsPerCycle = glyphs.length * totalCycles;
-                
-                // Clear any existing interval
-                if (glyphCycleInterval) {
-                    clearInterval(glyphCycleInterval);
-                }
-                
-                // Store original font size (clamp value) - using container-relative units, adjusted for 5:4 ratio
-                const originalFontSize = 'clamp(3.5rem, 10cqw, 8.5rem)';
-                
-                // Clear content first to avoid glitch
-                previewText.textContent = '';
-                
-                // Use requestAnimationFrame to smooth the transition
-                requestAnimationFrame(() => {
-                    // Increase font size for glyph animation - adjusted for 5:4 aspect ratio
-                    previewText.style.fontSize = 'clamp(7rem, 20cqw, 17rem)';
-                    // Ensure glyphs are centered during animation - maintain all centering properties
-                    previewText.style.display = 'flex';
-                    previewText.style.flexDirection = 'column';
-                    previewText.style.alignItems = 'center';
-                    previewText.style.justifyContent = 'center';
-                    previewText.style.textAlign = 'center';
-                    previewText.style.width = '100%';
-                    previewText.style.height = '100%';
-                    previewText.style.margin = '0';
-                    previewText.style.padding = '0';
+                candidates.split('').forEach(char => {
+                    // Render with Rough Pixel
+                    testCtx.clearRect(0, 0, 64, 64);
+                    testCtx.font = '32px "Rough Pixel", monospace';
+                    testCtx.fillText(char, 32, 32);
+                    const roughPixelData = testCtx.getImageData(0, 0, 64, 64);
                     
-                    // Start the glyph cycling after a brief delay to ensure smooth transition
-                    requestAnimationFrame(() => {
-                        glyphCycleInterval = setInterval(() => {
-                            const currentGlyph = glyphs[glyphIndex];
-                            // Show just one glyph on one line, centered - use textContent for better performance
-                            previewText.textContent = currentGlyph;
+                    // Render with fallback
+                    testCtx.clearRect(0, 0, 64, 64);
+                    testCtx.font = `32px ${fallbackFont}`;
+                    testCtx.fillText(char, 32, 32);
+                    const fallbackData = testCtx.getImageData(0, 0, 64, 64);
                     
-                            glyphIndex = (glyphIndex + 1) % glyphs.length;
-                            cycleCount++;
-                            
-                            if (cycleCount >= glyphsPerCycle) {
-                                clearInterval(glyphCycleInterval);
-                                glyphCycleInterval = null;
-                                // Use requestAnimationFrame for smooth transition back
-                                requestAnimationFrame(() => {
-                                    // Reset font size back to original
-                                    previewText.style.fontSize = originalFontSize;
-                                    // Clear content first, then rebuild with proper structure for flexbox
-                                    previewText.textContent = '';
-                                    const line1Div = document.createElement('div');
-                                    line1Div.textContent = line1;
-                                    line1Div.style.textAlign = 'center';
-                                    line1Div.style.width = '100%';
-                                    const line2Div = document.createElement('div');
-                                    line2Div.textContent = line2;
-                                    line2Div.style.textAlign = 'center';
-                                    line2Div.style.width = '100%';
-                                    previewText.appendChild(line1Div);
-                                    previewText.appendChild(line2Div);
-                                    // Ensure flexbox centering is maintained - reapply all properties
-                                    previewText.style.display = 'flex';
-                                    previewText.style.flexDirection = 'column';
-                                    previewText.style.alignItems = 'center';
-                                    previewText.style.justifyContent = 'center';
-                                    previewText.style.textAlign = 'center';
-                                    previewText.style.width = '100%';
-                                    previewText.style.height = '100%';
-                                    previewText.style.margin = '0';
-                                    previewText.style.padding = '0';
-                                    previewText.style.whiteSpace = 'normal'; // Reset white-space for flexbox
-                                    // Wait 3 seconds then start color animation
-                                    typeTimeout = setTimeout(startColorAnimation, 3000);
-                                });
-                            }
-                        }, 50); // Very fast - 50ms per glyph
-                    });
+                    // Compare pixel data
+                    let diffPixels = 0;
+                    for (let i = 0; i < roughPixelData.data.length; i += 4) {
+                        const r1 = roughPixelData.data[i];
+                        const r2 = fallbackData.data[i];
+                        if (Math.abs(r1 - r2) > 50) {
+                            diffPixels++;
+                        }
+                    }
+                    
+                    // If more than 5% of pixels differ, glyph is supported
+                    if (diffPixels > (64 * 64 * 0.05)) {
+                        supported.push(char);
+                    }
                 });
+                
+                return supported.length > 0 ? supported : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:?!'.split('');
             }
             
-            let isBlackBackground = true;
-            function startColorAnimation() {
-                // Clear any existing interval
-                if (colorInterval) {
-                    clearInterval(colorInterval);
+            // Seeded random for consistent jitter
+            function createSeededRandom(seed) {
+                let value = seed;
+                return function() {
+                    value = (value * 9301 + 49297) % 233280;
+                    return value / 233280;
+                };
+            }
+            
+            // Initialize canvas and animation
+            function initAnimation() {
+                const rect = thumb.getBoundingClientRect();
+                const dpr = window.devicePixelRatio || 1;
+                const width = Math.floor(rect.width);
+                const height = Math.floor(rect.height);
+                
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
+                
+                ctx = canvas.getContext('2d', { willReadFrequently: false }); // Changed to false for better performance
+                ctx.scale(dpr, dpr);
+                
+                // Disable all smoothing
+                ctx.imageSmoothingEnabled = false;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'top';
+                ctx.fillStyle = '#fff';
+                
+                // Detect supported glyphs (only once)
+                supportedGlyphs = detectSupportedGlyphs();
+                
+                // Pre-calculate glyph data for performance
+                const cols = Math.ceil(width / GRID_SIZE);
+                const rows = Math.ceil(height / GRID_SIZE);
+                glyphData = [];
+                seededRandom = createSeededRandom(12345); // Fixed seed for consistency
+                
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < cols; col++) {
+                        const baseX = Math.floor(col * GRID_SIZE);
+                        const baseY = Math.floor(row * GRID_SIZE);
+                        const char = supportedGlyphs[Math.floor(seededRandom() * supportedGlyphs.length)];
+                        const jitterSeed = row * cols + col;
+                        
+                        glyphData.push({
+                            baseX,
+                            baseY,
+                            char,
+                            jitterSeed,
+                            row,
+                            col
+                        });
+                    }
                 }
                 
-                colorInterval = setInterval(() => {
-                    if (isBlackBackground) {
-                        thumb.style.background = '#fff'; // White background
-                        previewText.style.color = '#000'; // Black text
-                    } else {
-                        thumb.style.background = '#000'; // Black background
-                        previewText.style.color = '#fff'; // White text
-                    }
-                    isBlackBackground = !isBlackBackground;
-                }, 5000); // Change every 5 seconds
+                startTime = performance.now();
+                lastFrameTime = 0;
+                animate();
             }
             
-            thumb.appendChild(previewText);
+            // Step function for low frame rate
+            function step(t) {
+                return Math.floor(t);
+            }
+            
+            // Linear interpolation (no easing)
+            function lerp(a, b, t) {
+                return a + (b - a) * t;
+            }
+            
+            // Animation loop
+            function animate() {
+                const currentTime = performance.now();
+                
+                // Low frame rate simulation
+                if (currentTime - lastFrameTime < FRAME_INTERVAL) {
+                    animationFrameId = requestAnimationFrame(animate);
+                    return;
+                }
+                lastFrameTime = currentTime;
+                
+                const elapsed = (currentTime - startTime) % ANIMATION_DURATION;
+                const progress = elapsed / ANIMATION_DURATION;
+                
+                // Clear canvas
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1));
+                
+                const width = canvas.width / (window.devicePixelRatio || 1);
+                const height = canvas.height / (window.devicePixelRatio || 1);
+                
+                // Pre-calculate phase info
+                // Extended timing: more time to see the word clearly
+                // 0.0-0.25: Noisy field (scattered) - small glyphs
+                // 0.25-0.55: Coalesce into readable cluster (longer for word visibility) - grow to medium
+                // 0.55-0.80: Break apart - shrink back to small
+                // 0.80-1.0: Return to noise - small scattered glyphs
+                let phase = 'noise';
+                let phaseProgress = 0;
+                const clusterX = width * 0.5;
+                const clusterY = height * 0.5;
+                
+                if (progress < 0.25) {
+                    phase = 'noise';
+                    phaseProgress = progress / 0.25;
+                } else if (progress < 0.55) {
+                    phase = 'coalesce';
+                    phaseProgress = (progress - 0.25) / 0.3;
+                } else if (progress < 0.80) {
+                    phase = 'break';
+                    phaseProgress = (progress - 0.55) / 0.25;
+                } else {
+                    phase = 'noise';
+                    phaseProgress = (progress - 0.80) / 0.2;
+                }
+                
+                // Pre-calculate misalignment (deterministic)
+                const misalignFrame = Math.floor(progress * 20) % 4;
+                const rowShift = misalignFrame === 0 ? ((Math.floor(progress * 100) % 3 === 0) ? 1 : -1) : 0;
+                
+                // Batch render by size/opacity to reduce state changes
+                const renderBatches = {
+                    small: [],
+                    medium: [],
+                    large: []
+                };
+                
+                // Pre-calculate all positions
+                glyphData.forEach((glyph, index) => {
+                    let x = glyph.baseX;
+                    let y = glyph.baseY;
+                    let size = 8;
+                    let opacity = 1;
+                    
+                    // Use seeded random for consistent jitter (based on frame)
+                    const frameSeed = glyph.jitterSeed + Math.floor(progress * 100);
+                    const localRand = createSeededRandom(frameSeed);
+                    
+                    if (phase === 'noise') {
+                        const jitterX = Math.floor((localRand() - 0.5) * 4);
+                        const jitterY = Math.floor((localRand() - 0.5) * 4);
+                        x = Math.floor(glyph.baseX + jitterX);
+                        y = Math.floor(glyph.baseY + jitterY);
+                        opacity = 0.3 + localRand() * 0.4;
+                        
+                        // Occasional jitter
+                        const jitterCheck = localRand();
+                        if (jitterCheck > 0.7) {
+                            x += localRand() > 0.5 ? 1 : -1;
+                            y += localRand() > 0.5 ? 1 : -1;
+                        }
+                    } else if (phase === 'coalesce') {
+                        x = Math.floor(lerp(glyph.baseX, clusterX, phaseProgress));
+                        y = Math.floor(lerp(glyph.baseY, clusterY, phaseProgress));
+                        size = Math.floor(lerp(8, 14, phaseProgress)); // Smaller max size
+                        opacity = lerp(0.4, 1, phaseProgress);
+                        
+                        // Reduce opacity of glyphs near the word area to make word more visible
+                        if (phaseProgress > 0.5) {
+                            const distToCenter = Math.sqrt(Math.pow(x - clusterX, 2) + Math.pow(y - clusterY, 2));
+                            if (distToCenter < 100) {
+                                opacity *= 0.2; // Make background glyphs more transparent near word
+                            }
+                        }
+                    } else if (phase === 'break') {
+                        const angle = Math.atan2(glyph.baseY - clusterY, glyph.baseX - clusterX);
+                        const distance = Math.sqrt(Math.pow(glyph.baseX - clusterX, 2) + Math.pow(glyph.baseY - clusterY, 2));
+                        const targetDistance = distance * (1 + phaseProgress * 2);
+                        x = Math.floor(clusterX + Math.cos(angle) * targetDistance);
+                        y = Math.floor(clusterY + Math.sin(angle) * targetDistance);
+                        // Shrink more aggressively back to small size
+                        size = Math.floor(lerp(14, 8, phaseProgress));
+                        opacity = lerp(1, 0.3, phaseProgress);
+                    } else if (phase === 'noise' && progress > 0.8) {
+                        // Final noise phase - ensure all glyphs are small
+                        const jitterX = Math.floor((localRand() - 0.5) * 4);
+                        const jitterY = Math.floor((localRand() - 0.5) * 4);
+                        x = Math.floor(glyph.baseX + jitterX);
+                        y = Math.floor(glyph.baseY + jitterY);
+                        size = 8; // Force small size
+                        opacity = 0.3 + localRand() * 0.4;
+                        
+                        // Occasional jitter
+                        const jitterCheck = localRand();
+                        if (jitterCheck > 0.7) {
+                            x += localRand() > 0.5 ? 1 : -1;
+                            y += localRand() > 0.5 ? 1 : -1;
+                        }
+                    }
+                    
+                    // Apply row misalignment
+                    if (rowShift !== 0 && glyph.row % 3 === 0) {
+                        x = Math.floor(x + rowShift);
+                    }
+                    
+                    // Skip if off-screen or very low opacity
+                    if (x < -20 || x > width + 20 || y < -20 || y > height + 20 || opacity < 0.1) {
+                        return;
+                    }
+                    
+                    // Batch by size
+                    const batch = size <= 8 ? 'small' : size <= 12 ? 'medium' : 'large';
+                    renderBatches[batch].push({ x, y, size, opacity, char: glyph.char });
+                });
+                
+                // Render batches (reduces font/alpha state changes)
+                ctx.fillStyle = '#fff';
+                
+                // Small glyphs
+                if (renderBatches.small.length > 0) {
+                    ctx.font = '8px "Rough Pixel", monospace';
+                    renderBatches.small.forEach(g => {
+                        if (g.opacity < 0.99) ctx.globalAlpha = g.opacity;
+                        ctx.fillText(g.char, g.x, g.y);
+                        if (g.opacity < 0.99) ctx.globalAlpha = 1;
+                    });
+                }
+                
+                // Medium glyphs
+                if (renderBatches.medium.length > 0) {
+                    ctx.font = '12px "Rough Pixel", monospace';
+                    renderBatches.medium.forEach(g => {
+                        if (g.opacity < 0.99) ctx.globalAlpha = g.opacity;
+                        ctx.fillText(g.char, g.x, g.y);
+                        if (g.opacity < 0.99) ctx.globalAlpha = 1;
+                    });
+                }
+                
+                // Large glyphs
+                if (renderBatches.large.length > 0) {
+                    renderBatches.large.forEach(g => {
+                        ctx.font = `${g.size}px "Rough Pixel", monospace`;
+                        if (g.opacity < 0.99) ctx.globalAlpha = g.opacity;
+                        ctx.fillText(g.char, g.x, g.y);
+                        if (g.opacity < 0.99) ctx.globalAlpha = 1;
+                    });
+                }
+                
+                // Render "ROUGH PIXEL" word during coalesce phase only - don't show during break
+                // Show word earlier (at 0.5 of coalesce) and keep it visible until end of coalesce
+                const showWord = phase === 'coalesce' && phaseProgress > 0.5;
+                
+                if (showWord) {
+                    const word = 'ROUGH PIXEL';
+                    // Calculate word progress: 0.5-1.0 during coalesce, then fade during break
+                    let wordProgress = 1;
+                    if (phase === 'coalesce') {
+                        wordProgress = (phaseProgress - 0.5) / 0.5; // 0 to 1 as coalesce progresses
+                    } else if (phase === 'break') {
+                        wordProgress = 1 - (phaseProgress / 0.3); // Fade from 1 to 0 during early break
+                    }
+                    const wordSize = Math.floor(lerp(14, 22, Math.min(1, wordProgress))); // Larger size for clarity
+                    ctx.font = `${wordSize}px "Rough Pixel", monospace`;
+                    
+                    // Calculate total width using measureText - ensure all characters are included
+                    let totalWidth = 0;
+                    const wordChars = [];
+                    
+                    // Build character array with proper spacing
+                    for (let i = 0; i < word.length; i++) {
+                        const char = word[i];
+                        if (char === ' ') {
+                            // Space character - use a fixed width
+                            const spaceWidth = wordSize * 0.5;
+                            wordChars.push({ char: ' ', width: spaceWidth, render: false });
+                            totalWidth += spaceWidth;
+                        } else {
+                            // Check if character is supported, if not use a placeholder width
+                            if (supportedGlyphs.includes(char)) {
+                                ctx.font = `${wordSize}px "Rough Pixel", monospace`;
+                                const width = ctx.measureText(char).width;
+                                wordChars.push({ char, width, render: true });
+                                totalWidth += width;
+                            } else {
+                                // Character not supported - use estimated width and render placeholder
+                                const estimatedWidth = wordSize * 0.6;
+                                wordChars.push({ char, width: estimatedWidth, render: false });
+                                totalWidth += estimatedWidth;
+                            }
+                        }
+                    }
+                    
+                    // Ensure word fits on canvas, adjust size if needed
+                    const maxWidth = width * 0.9;
+                    let adjustedWordSize = wordSize;
+                    if (totalWidth > maxWidth) {
+                        adjustedWordSize = Math.floor(wordSize * (maxWidth / totalWidth));
+                        // Recalculate widths with adjusted size
+                        ctx.font = `${adjustedWordSize}px "Rough Pixel", monospace`;
+                        totalWidth = 0;
+                        wordChars.forEach(wc => {
+                            if (wc.char === ' ') {
+                                wc.width = adjustedWordSize * 0.5;
+                            } else if (wc.render) {
+                                wc.width = ctx.measureText(wc.char).width;
+                            } else {
+                                wc.width = adjustedWordSize * 0.6;
+                            }
+                            totalWidth += wc.width;
+                        });
+                    }
+                    
+                    const wordX = Math.floor(clusterX - totalWidth / 2);
+                    const wordY = Math.floor(clusterY - adjustedWordSize / 2);
+                    
+                    // Ensure word stays within canvas bounds
+                    const clampedWordX = Math.max(5, Math.min(wordX, width - totalWidth - 5));
+                    
+                    // Render with full opacity during coalesce, fade during break
+                    ctx.globalAlpha = wordProgress > 0.8 ? 1 : wordProgress;
+                    ctx.fillStyle = '#fff';
+                    ctx.font = `${adjustedWordSize}px "Rough Pixel", monospace`;
+                    
+                    let currentX = clampedWordX;
+                    
+                    // Render each character - ensure ALL characters are rendered
+                    for (let i = 0; i < wordChars.length; i++) {
+                        const { char, width, render } = wordChars[i];
+                        if (char === ' ') {
+                            // Skip space visually but advance position
+                            currentX += width;
+                        } else if (render) {
+                            // Render character at integer pixel position
+                            const charX = Math.floor(currentX);
+                            const charY = Math.floor(wordY);
+                            
+                            // Render if within reasonable bounds (allow slight overflow for edge cases)
+                            if (charX >= -10 && charX < width + 10 && charY >= -10 && charY < height + 10) {
+                                ctx.fillText(char, charX, charY);
+                            }
+                            currentX += width;
+                        } else {
+                            // Character not supported, just advance
+                            currentX += width;
+                        }
+                    }
+                    
+                    
+                    ctx.globalAlpha = 1;
+                }
+                
+                // Hero glyph moments (1-2 oversized glyphs) - only show during word display
+                // Remove hero glyphs - they're causing confusion at the end
+                // The word "ROUGH PIXEL" is enough to showcase the typeface
+                
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            
+            thumb.appendChild(canvas);
             
             // Start animation when thumbnail comes into view
             const thumbObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting && !hasAnimated) {
-                        // Wait a moment for thumbnail to be sized
-                        typeTimeout = setTimeout(animateText, 100);
-                        thumbObserver.unobserve(thumb);
-                    } else if (!entry.isIntersecting && hasAnimated) {
-                        // Cleanup when out of view to save resources
-                        cleanup();
-                        hasAnimated = false;
+                    if (entry.isIntersecting) {
+                        if (!ctx) {
+                            initAnimation();
+                        } else if (!animationFrameId) {
+                            startTime = performance.now();
+                            lastFrameTime = 0;
+                            animate();
+                        }
+                    } else {
+                        if (animationFrameId) {
+                            cancelAnimationFrame(animationFrameId);
+                            animationFrameId = null;
+                        }
                     }
                 });
-            }, { rootMargin: '50px' }); // Reduced from 200px to prevent premature loading
+            }, { rootMargin: '50px' });
             
             thumbObserver.observe(thumb);
             
-            // Cleanup on page unload
-            window.addEventListener('beforeunload', cleanup);
+            // Cleanup
+            window.addEventListener('beforeunload', () => {
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                }
+            });
         }
         
         thumb.addEventListener('mouseenter', (e) => {
@@ -1019,3 +1249,4 @@ function initGallery() {
         gallery.appendChild(thumb);
     });
 }
+
