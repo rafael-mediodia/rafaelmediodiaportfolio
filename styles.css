@@ -136,10 +136,12 @@ body.safari-no-custom-cursor * {
 
 .info-about {
     font-size: 12px;
-    line-height: 1.6;
+    line-height: 1.7;
     margin-bottom: 0;
     hyphens: none;
     word-break: normal;
+    text-align: left;
+    overflow-wrap: break-word;
 }
 
 .info-current {
@@ -155,7 +157,7 @@ body.safari-no-custom-cursor * {
 
 .info-previous {
     font-size: 12px;
-    margin-bottom: 0;
+    margin-bottom: 0.5rem;
     line-height: 1.4;
     opacity: 0.7;
     hyphens: none;
@@ -169,7 +171,7 @@ body.safari-no-custom-cursor * {
     opacity: 0.7;
     padding-top: 0.75rem;
     border-top: 1px dotted var(--dotted-color);
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
     hyphens: none;
     word-break: normal;
 }

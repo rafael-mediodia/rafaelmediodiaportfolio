@@ -9,7 +9,7 @@ function initSidebar() {
         </a>
         <div class="info-birth">(b.2004) ✧</div>
         <div class="info-about">
-            is pursuing his degree in Graphic Design at the Rhode&nbsp;Island School of&nbsp;Design with a focus on Computation. He enjoys play, systems, and motion (◕‿◕)
+            is pursuing his BFA in Graphic Design at the Rhode&nbsp;Island School of&nbsp;Design with a focus on Computation, Culture, and Technology. He is driven by connection with others and the power of feeling.<br><br>Rafael enjoys the act of play in serious and unserious ways, systems that connect people together, and putting the motion in emotion and is willing to help out and connect by any means if that catches your fancy!&nbsp;(◕‿◕)
         </div>
         <div class="info-current">
             Currently Designing @ <a href="https://visions-mag.squarespace.com/" class="info-link" target="_blank">VISIONS</a>, <a href="https://bsrlive.com/" class="info-link" target="_blank">BSR</a> ˚ ༘
