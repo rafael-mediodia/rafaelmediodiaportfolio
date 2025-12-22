@@ -1287,7 +1287,11 @@ video:not([controls])::-webkit-media-controls-play-button {
     pointer-events: none;
     white-space: nowrap;
     z-index: 10;
-    transform: translate(5px, 5px);
+    top: 0;
+    left: 0;
+    will-change: transform, opacity;
+    transform: translate(0, 0);
+    transition: opacity 0.15s ease;
 }
 
 .project-thumb:hover .project-tooltip {

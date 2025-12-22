@@ -1,19 +1,6 @@
 // Cache browser detection to avoid repeated regex calls
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-// Throttle function for performance optimization
-function throttle(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
 const projects = [
     {
         id: 'project-5',
@@ -89,13 +76,6 @@ const projects = [
         page: 'projects/american-dream-series.html'
     },
     {
-        id: 'motion',
-        title: 'More Motion',
-        subtitle: 'Motion Collection',
-        thumbnail: '',
-        page: 'motion.html'
-    },
-    {
         id: 'illustrations',
         title: 'Illustrations',
         subtitle: 'Illustration Collection',
@@ -114,17 +94,19 @@ const projects = [
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    initSafariPlayOverlay();
+    // Defer Safari overlay to not block initial render
+    if (isSafari) {
+        setTimeout(() => {
+            initSafariPlayOverlay();
+        }, 100);
+    }
     // Defer gallery initialization to allow initial render
     requestAnimationFrame(() => {
         initGallery();
-        initMotionThumbnail();
     });
 });
 
 function initSafariPlayOverlay() {
-    if (!isSafari) return;
-    
     const overlay = document.getElementById('safariPlayOverlay');
     const playAllButton = document.getElementById('safariPlayAllThumbnails');
     
@@ -182,217 +164,35 @@ function initSafariPlayOverlay() {
     }
 }
 
-function initMotionThumbnail() {
-    const motionThumb = document.querySelector('.motion-thumb');
-    if (!motionThumb) return;
-    
-    // Clear any existing content first
-    motionThumb.innerHTML = '';
-    
-    // Use requestAnimationFrame to ensure DOM is ready
-    requestAnimationFrame(() => {
-        if (typeof motionVideos !== 'undefined' && motionVideos.length > 0) {
-            const shuffledVideos = [...motionVideos].sort(() => Math.random() - 0.5);
-            let currentVideoIndex = 0;
-            
-            // Use two video elements for seamless crossfade transitions
-            const video1 = document.createElement('video');
-            const video2 = document.createElement('video');
-            
-            [video1, video2].forEach(video => {
-            video.muted = true;
-            video.loop = true;
-            video.playsInline = true;
-            video.autoplay = true;
-                video.preload = 'metadata'; // Changed from 'auto' to 'metadata' for better performance
-            video.setAttribute('playsinline', '');
-                video.setAttribute('webkit-playsinline', '');
-            video.setAttribute('loop', '');
-            video.setAttribute('muted', '');
-            video.removeAttribute('controls');
-            video.setAttribute('disablePictureInPicture', '');
-            video.setAttribute('disableRemotePlayback', '');
-            video.setAttribute('x-webkit-airplay', 'deny');
-            video.setAttribute('webkit-playsinline', 'true');
-            video.className = 'motion-thumb-video';
-            // Force Safari to not show controls
-            video.controls = false;
-                video.style.position = 'absolute';
-                video.style.top = '0';
-                video.style.left = '0';
-                video.style.width = '100%';
-                video.style.height = '100%';
-                video.style.objectFit = 'contain';
-                video.style.transition = 'opacity 0.3s ease';
-                video.style.willChange = 'opacity';
-                video.style.backfaceVisibility = 'hidden';
-            });
-            
-            video1.style.opacity = '1';
-            video2.style.opacity = '0';
-            video2.style.pointerEvents = 'none';
-            
-            motionThumb.classList.remove('placeholder');
-            motionThumb.classList.add('has-video');
-            motionThumb.style.position = 'relative';
-            motionThumb.appendChild(video1);
-            motionThumb.appendChild(video2);
-            
-            let activeVideo = video1;
-            let nextVideo = video2;
-            let videoChangeTimeout = null;
-            let isInitialized = false;
-            
-            function cleanup() {
-                if (videoChangeTimeout) {
-                    clearTimeout(videoChangeTimeout);
-                    videoChangeTimeout = null;
-                }
-                video1.pause();
-                video2.pause();
-            }
-            
-            function preloadNextVideo() {
-                if (shuffledVideos.length > 0) {
-                    const nextIndex = (currentVideoIndex + 1) % shuffledVideos.length;
-                    const videoData = shuffledVideos[nextIndex];
-                            const videoFile = typeof videoData === 'string' ? videoData : videoData.file;
-                    const videoSrc = `Motion/${videoFile}`;
-                    nextVideo.src = videoSrc;
-                    nextVideo.load();
-                }
-            }
-            
-            function loadAndPlayVideo(video, videoSrc, onReady) {
-                video.src = videoSrc;
-                            video.load();
-                            
-                            const handleLoadedMetadata = () => {
-                                const duration = video.duration;
-                                if (duration > 3) {
-                                    const maxStartTime = Math.max(0, duration - 3);
-                                    const randomStart = Math.random() * maxStartTime;
-                                    video.currentTime = randomStart;
-                    }
-                    
-                    if (onReady) {
-                        onReady();
-                    }
-                };
-                
-                const handleError = () => {
-                    // If video fails to load, try next one
-                                            currentVideoIndex = (currentVideoIndex + 1) % shuffledVideos.length;
-                    if (onReady) {
-                        setTimeout(() => switchToNextVideo(), 500);
-                                }
-                            };
-                            
-                            video.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true });
-                video.addEventListener('error', handleError, { once: true });
-            }
-            
-            function switchToNextVideo() {
-                if (shuffledVideos.length === 0) return;
-                
-                // Preload the next video in the sequence
-                preloadNextVideo();
-                
-                // Wait for next video to be ready, then crossfade
-                const handleNextVideoReady = () => {
-                    nextVideo.removeEventListener('canplay', handleNextVideoReady);
-                    nextVideo.removeEventListener('loadedmetadata', handleNextVideoReady);
-                    
-                    // Start playing next video
-                    nextVideo.play().catch(() => {
-                        // Autoplay blocked, that's okay
-                    });
-                    
-                    // Crossfade: fade out active, fade in next
-                    requestAnimationFrame(() => {
-                        activeVideo.style.opacity = '0';
-                        nextVideo.style.opacity = '1';
-                    });
-                    
-                    // Swap references
-                    const temp = activeVideo;
-                    activeVideo = nextVideo;
-                    nextVideo = temp;
-                    
-                    // Update index
-                    currentVideoIndex = (currentVideoIndex + 1) % shuffledVideos.length;
-                    
-                    // Schedule next switch
-                    if (videoChangeTimeout) {
-                        clearTimeout(videoChangeTimeout);
-                    }
-                    videoChangeTimeout = setTimeout(switchToNextVideo, 3000);
-                };
-                
-                if (nextVideo.readyState >= 2) {
-                    handleNextVideoReady();
-                } else {
-                    nextVideo.addEventListener('canplay', handleNextVideoReady, { once: true });
-                    nextVideo.addEventListener('loadedmetadata', handleNextVideoReady, { once: true });
-                }
-            }
-            
-            function startPlaying() {
-                if (shuffledVideos.length === 0) return;
-                
-                const videoData = shuffledVideos[currentVideoIndex];
-                const videoFile = typeof videoData === 'string' ? videoData : videoData.file;
-                const videoSrc = `Motion/${videoFile}`;
-                
-                loadAndPlayVideo(activeVideo, videoSrc, () => {
-                    activeVideo.play().catch(() => {
-                        // Autoplay blocked - this is expected
-                    });
-                    // Preload next video immediately
-                    preloadNextVideo();
-                    // Schedule first switch
-                    videoChangeTimeout = setTimeout(switchToNextVideo, 3000);
-                });
-            }
-            
-            const thumbObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        if (!isInitialized) {
-                            isInitialized = true;
-                            startPlaying();
-                        }
-                        thumbObserver.unobserve(motionThumb);
-                    } else {
-                        // Cleanup when out of view
-                        cleanup();
-                        isInitialized = false;
-                    }
-                });
-            }, {
-                rootMargin: '25px' // Further reduced to prevent premature loading
-            });
-            
-            // Cleanup on page unload
-            window.addEventListener('beforeunload', cleanup);
-            
-            thumbObserver.observe(motionThumb);
-        }
-    });
-}
-
 function initGallery() {
     const gallery = document.getElementById('gallery');
     if (!gallery) return;
     
-    const tooltip = document.createElement('div');
-    tooltip.className = 'project-tooltip';
-    document.body.appendChild(tooltip);
+    // Lazy tooltip creation - only create on first hover
+    let tooltip = null;
+    let tooltipTitle = null;
+    let tooltipSubtitle = null;
+    const getTooltip = () => {
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.className = 'project-tooltip';
+            tooltipTitle = document.createElement('div');
+            tooltipTitle.className = 'project-tooltip-title';
+            tooltipSubtitle = document.createElement('div');
+            tooltipSubtitle.className = 'project-tooltip-subtitle';
+            tooltip.appendChild(tooltipTitle);
+            tooltip.appendChild(tooltipSubtitle);
+            document.body.appendChild(tooltip);
+            // Use transform for better performance
+            tooltip.style.willChange = 'transform, opacity';
+        }
+        return tooltip;
+    };
     
     // Use document fragment for batch DOM insertion
     const fragment = document.createDocumentFragment();
     
-    projects.forEach((project, index) => {
+    projects.forEach((project) => {
         const thumb = document.createElement('div');
         thumb.className = 'project-thumb';
         thumb.setAttribute('data-project-id', project.id);
@@ -423,7 +223,6 @@ function initGallery() {
                 video.setAttribute('disablePictureInPicture', '');
                 video.setAttribute('disableRemotePlayback', '');
                 video.setAttribute('x-webkit-airplay', 'deny');
-                video.setAttribute('webkit-playsinline', 'true');
                 // Force Safari to not show controls
                 video.controls = false;
                 video.style.position = 'absolute';
@@ -453,49 +252,45 @@ function initGallery() {
             }
             
             function preloadNextVideo() {
-                if (project.thumbnailVideos && project.thumbnailVideos.length > 0) {
-                    const nextIndex = (currentVideoIndex + 1) % project.thumbnailVideos.length;
-                    const nextVideoSrc = project.thumbnailVideos[nextIndex];
-                    nextVideo.src = nextVideoSrc;
-                    nextVideo.load();
-                }
+                const nextIndex = (currentVideoIndex + 1) % project.thumbnailVideos.length;
+                const nextVideoSrc = project.thumbnailVideos[nextIndex];
+                nextVideo.src = nextVideoSrc;
+                nextVideo.load();
             }
             
             function switchToNextVideo() {
-                if (project.thumbnailVideos && project.thumbnailVideos.length > 0) {
-                    // Preload the next video in the sequence
-                    preloadNextVideo();
+                // Preload the next video in the sequence
+                preloadNextVideo();
+                
+                // Wait for next video to be ready, then crossfade
+                const handleNextVideoReady = () => {
+                    nextVideo.removeEventListener('canplay', handleNextVideoReady);
+                    nextVideo.removeEventListener('loadeddata', handleNextVideoReady);
                     
-                    // Wait for next video to be ready, then crossfade
-                    const handleNextVideoReady = () => {
-                        nextVideo.removeEventListener('canplay', handleNextVideoReady);
-                        nextVideo.removeEventListener('loadeddata', handleNextVideoReady);
-                        
-                        // Start playing next video
-                        playVideo(nextVideo);
-                        
-                        // Crossfade: fade out active, fade in next
-                        activeVideo.style.opacity = '0';
-                        nextVideo.style.opacity = '1';
-                        
-                        // Swap references
-                        const temp = activeVideo;
-                        activeVideo = nextVideo;
-                        nextVideo = temp;
-                        
-                        // Update index
-                        currentVideoIndex = (currentVideoIndex + 1) % project.thumbnailVideos.length;
-                        
-                        // Set up end handler for new active video
-                        activeVideo.addEventListener('ended', handleVideoEnd, { once: true });
-                    };
+                    // Start playing next video
+                    playVideo(nextVideo);
                     
-                    if (nextVideo.readyState >= 3) {
-                        handleNextVideoReady();
-                    } else {
-                        nextVideo.addEventListener('canplay', handleNextVideoReady, { once: true });
-                        nextVideo.addEventListener('loadeddata', handleNextVideoReady, { once: true });
-                    }
+                    // Crossfade: fade out active, fade in next
+                    activeVideo.style.opacity = '0';
+                    nextVideo.style.opacity = '1';
+                    
+                    // Swap references
+                    const temp = activeVideo;
+                    activeVideo = nextVideo;
+                    nextVideo = temp;
+                    
+                    // Update index
+                    currentVideoIndex = (currentVideoIndex + 1) % project.thumbnailVideos.length;
+                    
+                    // Set up end handler for new active video
+                    activeVideo.addEventListener('ended', handleVideoEnd, { once: true });
+                };
+                
+                if (nextVideo.readyState >= 3) {
+                    handleNextVideoReady();
+                } else {
+                    nextVideo.addEventListener('canplay', handleNextVideoReady, { once: true });
+                    nextVideo.addEventListener('loadeddata', handleNextVideoReady, { once: true });
                 }
             }
             
@@ -505,37 +300,35 @@ function initGallery() {
             }
             
             function startPlaying() {
-                if (project.thumbnailVideos && project.thumbnailVideos.length > 0) {
-                    // Append videos to DOM only when visible
-                    if (!thumb.contains(video1)) {
-                        thumb.appendChild(video1);
-                        thumb.appendChild(video2);
-                    }
-                    
-                    const firstVideoSrc = project.thumbnailVideos[currentVideoIndex];
-                    activeVideo.src = firstVideoSrc;
-                    activeVideo.load();
-                    
-                    const handleFirstVideoReady = () => {
-                        activeVideo.removeEventListener('canplay', handleFirstVideoReady);
-                        activeVideo.removeEventListener('loadeddata', handleFirstVideoReady);
-                        playVideo(activeVideo);
-                        activeVideo.addEventListener('ended', handleVideoEnd, { once: true });
-                        // Preload next video immediately
-                        preloadNextVideo();
-                    };
-                    
-                    if (isSafari) {
-                        if (activeVideo.readyState >= 3) {
-                            handleFirstVideoReady();
-                        } else {
-                            activeVideo.addEventListener('canplaythrough', handleFirstVideoReady, { once: true });
-                            activeVideo.addEventListener('canplay', handleFirstVideoReady, { once: true });
-                            activeVideo.addEventListener('loadeddata', handleFirstVideoReady, { once: true });
-                        }
+                // Append videos to DOM only when visible
+                if (!thumb.contains(video1)) {
+                    thumb.appendChild(video1);
+                    thumb.appendChild(video2);
+                }
+                
+                const firstVideoSrc = project.thumbnailVideos[currentVideoIndex];
+                activeVideo.src = firstVideoSrc;
+                activeVideo.load();
+                
+                const handleFirstVideoReady = () => {
+                    activeVideo.removeEventListener('canplay', handleFirstVideoReady);
+                    activeVideo.removeEventListener('loadeddata', handleFirstVideoReady);
+                    playVideo(activeVideo);
+                    activeVideo.addEventListener('ended', handleVideoEnd, { once: true });
+                    // Preload next video immediately
+                    preloadNextVideo();
+                };
+                
+                if (isSafari) {
+                    if (activeVideo.readyState >= 3) {
+                        handleFirstVideoReady();
                     } else {
+                        activeVideo.addEventListener('canplaythrough', handleFirstVideoReady, { once: true });
+                        activeVideo.addEventListener('canplay', handleFirstVideoReady, { once: true });
                         activeVideo.addEventListener('loadeddata', handleFirstVideoReady, { once: true });
                     }
+                } else {
+                    activeVideo.addEventListener('loadeddata', handleFirstVideoReady, { once: true });
                 }
             }
             
@@ -579,7 +372,7 @@ function initGallery() {
                 video.loop = true;
                 video.playsInline = true;
                 video.autoplay = true;
-            video.preload = 'metadata'; // Keep metadata for single video thumbnails
+                video.preload = 'metadata'; // Keep metadata for single video thumbnails
                 video.setAttribute('playsinline', '');
                 video.setAttribute('webkit-playsinline', '');
                 video.setAttribute('loop', '');
@@ -588,17 +381,12 @@ function initGallery() {
                 video.setAttribute('disablePictureInPicture', '');
                 video.setAttribute('disableRemotePlayback', '');
                 video.setAttribute('x-webkit-airplay', 'deny');
-                video.setAttribute('webkit-playsinline', 'true');
                 // Force Safari to not show controls
                 video.controls = false;
                 // Now set src
                 video.src = project.thumbnail;
                 
-                if (project.id === 'project-2') {
-                    video.addEventListener('loadedmetadata', () => {
-                        video.currentTime = Math.max(0, video.duration - 3);
-                    });
-                } else if (project.id === 'project-6' && project.thumbnailStartTime !== undefined) {
+                if (project.id === 'project-6' && project.thumbnailStartTime !== undefined) {
                     video.addEventListener('loadedmetadata', () => {
                         video.currentTime = project.thumbnailStartTime;
                         const loopClip = () => {
@@ -667,9 +455,9 @@ function initGallery() {
             const objectFit = project.id === 'project-5' ? 'cover' : 'contain';
             
             [img1, img2].forEach(img => {
-            img.alt = project.title;
-            img.className = 'cycling-thumbnail';
-            img.loading = 'lazy'; // Lazy load images
+                img.alt = project.title;
+                img.className = 'cycling-thumbnail';
+                img.loading = 'lazy'; // Lazy load images
                 img.style.position = 'absolute';
                 img.style.top = '0';
                 img.style.left = '0';
@@ -692,58 +480,52 @@ function initGallery() {
             let isInitialized = false;
             
             function preloadNextImage() {
-                if (project.thumbnailImages && project.thumbnailImages.length > 0) {
-                    const nextIndex = (currentImageIndex + 1) % project.thumbnailImages.length;
-                    const nextImageSrc = project.thumbnailImages[nextIndex];
-                    // Preload the image
-                    const preloadImg = new Image();
-                    preloadImg.src = nextImageSrc;
-                    nextImage.src = nextImageSrc;
-                }
+                const nextIndex = (currentImageIndex + 1) % project.thumbnailImages.length;
+                const nextImageSrc = project.thumbnailImages[nextIndex];
+                // Preload the image
+                const preloadImg = new Image();
+                preloadImg.src = nextImageSrc;
+                nextImage.src = nextImageSrc;
             }
             
             function switchToNextImage() {
-                if (project.thumbnailImages && project.thumbnailImages.length > 0) {
-                    // Preload the next image
-                    preloadNextImage();
+                // Preload the next image
+                preloadNextImage();
+                
+                // Wait for next image to load, then crossfade
+                const handleNextImageLoad = () => {
+                    nextImage.removeEventListener('load', handleNextImageLoad);
                     
-                    // Wait for next image to load, then crossfade
-                    const handleNextImageLoad = () => {
-                        nextImage.removeEventListener('load', handleNextImageLoad);
-                        
-                        // Crossfade: fade out active, fade in next
-                        requestAnimationFrame(() => {
-                            activeImage.style.opacity = '0';
-                            nextImage.style.opacity = '1';
-                        });
-                        
-                        // Swap references
-                        const temp = activeImage;
-                        activeImage = nextImage;
-                        nextImage = temp;
-                        
-                        // Update index
+                    // Crossfade: fade out active, fade in next
+                    requestAnimationFrame(() => {
+                        activeImage.style.opacity = '0';
+                        nextImage.style.opacity = '1';
+                    });
+                    
+                    // Swap references
+                    const temp = activeImage;
+                    activeImage = nextImage;
+                    nextImage = temp;
+                    
+                    // Update index
                     currentImageIndex = (currentImageIndex + 1) % project.thumbnailImages.length;
-                    };
-                    
-                    if (nextImage.complete && nextImage.naturalHeight !== 0) {
-                        handleNextImageLoad();
-                    } else {
-                        nextImage.addEventListener('load', handleNextImageLoad, { once: true });
-                    }
+                };
+                
+                if (nextImage.complete && nextImage.naturalHeight !== 0) {
+                    handleNextImageLoad();
+                } else {
+                    nextImage.addEventListener('load', handleNextImageLoad, { once: true });
                 }
             }
             
             function startCycling() {
-                if (project.thumbnailImages && project.thumbnailImages.length > 0) {
-                    // Load first image only when visible
-                    activeImage.loading = 'lazy';
-                    activeImage.src = project.thumbnailImages[currentImageIndex];
-                    // Preload next image immediately
-                    preloadNextImage();
-                    // Start cycling interval
-                    cycleInterval = setInterval(switchToNextImage, 4000);
-                }
+                // Load first image only when visible
+                activeImage.loading = 'lazy';
+                activeImage.src = project.thumbnailImages[currentImageIndex];
+                // Preload next image immediately
+                preloadNextImage();
+                // Start cycling interval
+                cycleInterval = setInterval(switchToNextImage, 4000);
             }
             
             const thumbObserver = new IntersectionObserver((entries) => {
@@ -777,10 +559,6 @@ function initGallery() {
                     clearInterval(cycleInterval);
                 }
             });
-        } else if (project.id === 'motion') {
-            thumb.classList.add('placeholder');
-            thumb.classList.add('motion-thumb');
-            thumb.setAttribute('data-project-index', 'motion');
         } else if (project.id === 'project-7') {
             // Rough Pixel - Simplified static display for fast loading
             thumb.classList.add('placeholder');
@@ -801,30 +579,48 @@ function initGallery() {
             textDisplay.style.color = '#fff';
             textDisplay.style.letterSpacing = '0.1em';
             textDisplay.style.textAlign = 'center';
-            textDisplay.style.imageRendering = 'pixelated';
             textDisplay.style.imageRendering = 'crisp-edges';
             
             thumb.appendChild(textDisplay);
         }
         
+        // Lazy tooltip event listeners - only attach on first hover
+        let tooltipAttached = false;
+        let rafId = null;
+        let lastTitle = '';
+        let lastSubtitle = '';
         thumb.addEventListener('mouseenter', (e) => {
-            tooltip.innerHTML = `
-                <div class="project-tooltip-title">${project.title}</div>
-                <div class="project-tooltip-subtitle">${project.subtitle}</div>
-            `;
-            tooltip.style.opacity = '1';
-            tooltip.style.left = e.clientX + 5 + 'px';
-            tooltip.style.top = e.clientY + 5 + 'px';
-        });
-        
-        // Throttle tooltip mousemove for better performance
-        thumb.addEventListener('mousemove', throttle((e) => {
-            tooltip.style.left = e.clientX + 5 + 'px';
-            tooltip.style.top = e.clientY + 5 + 'px';
-        }, 16)); // ~60fps throttling
-        
-        thumb.addEventListener('mouseleave', () => {
-            tooltip.style.opacity = '0';
+            if (!tooltipAttached) {
+                tooltipAttached = true;
+                const tip = getTooltip();
+                thumb.addEventListener('mousemove', (e) => {
+                    // Cancel any pending animation frame
+                    if (rafId) cancelAnimationFrame(rafId);
+                    // Use requestAnimationFrame for smooth updates
+                    rafId = requestAnimationFrame(() => {
+                        // Use transform instead of left/top for better performance
+                        tip.style.transform = `translate(${e.clientX + 5}px, ${e.clientY + 5}px)`;
+                        rafId = null;
+                    });
+                });
+                thumb.addEventListener('mouseleave', () => {
+                    if (rafId) cancelAnimationFrame(rafId);
+                    tip.style.opacity = '0';
+                });
+            }
+            const tip = getTooltip();
+            // Only update text content if it changed (avoid unnecessary DOM updates)
+            if (lastTitle !== project.title) {
+                tooltipTitle.textContent = project.title;
+                lastTitle = project.title;
+            }
+            if (lastSubtitle !== project.subtitle) {
+                tooltipSubtitle.textContent = project.subtitle;
+                lastSubtitle = project.subtitle;
+            }
+            tip.style.opacity = '1';
+            // Use transform instead of left/top for better performance
+            tip.style.transform = `translate(${e.clientX + 5}px, ${e.clientY + 5}px)`;
         });
         
         // Add to fragment instead of directly to gallery
@@ -834,4 +630,3 @@ function initGallery() {
     // Batch append all thumbnails at once
     gallery.appendChild(fragment);
 }
-
