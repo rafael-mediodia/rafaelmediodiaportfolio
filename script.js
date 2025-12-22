@@ -766,7 +766,7 @@ function initGallery() {
             thumb.classList.add('motion-thumb');
             thumb.setAttribute('data-project-index', 'motion');
         } else if (project.id === 'project-7') {
-            // Rough Pixel - Lo-fi pixel-perfect bitmap animation
+            // Rough Pixel - Grid-based full-coverage animation with large glyphs
             thumb.classList.add('placeholder');
             thumb.classList.add('font-preview');
             thumb.style.background = '#000';
@@ -787,13 +787,14 @@ function initGallery() {
             let supportedGlyphs = [];
             let animationFrameId = null;
             let startTime = null;
-            let lastFrameTime = 0;
-            let glyphData = []; // Pre-calculated glyph positions and properties
-            let seededRandom = null; // Seeded random for consistent jitter
-            const ANIMATION_DURATION = 8000; // 8 seconds
-            const TARGET_FPS = 8; // Low frame rate
-            const FRAME_INTERVAL = 1000 / TARGET_FPS;
-            const GRID_SIZE = 12; // Increased from 8 to reduce glyph count
+            let lastUpdateTime = 0;
+            let glyphCells = []; // Pre-computed grid cells with glyphs
+            const ANIMATION_DURATION = 8000;
+            const UPDATE_INTERVAL = 140; // Stepped updates every 140ms (~7fps)
+            const GLYPH_SIZE = 30; // Large glyph size (48-110px range)
+            const CELL_PADDING = 8;
+            const CELL_SIZE = GLYPH_SIZE + CELL_PADDING;
+            const CELL_SPACING = CELL_SIZE * 0.9; // Slight overlap for density
             
             // Glyph detection - pixel-perfect comparison
             function detectSupportedGlyphs() {
@@ -844,7 +845,7 @@ function initGallery() {
                 return supported.length > 0 ? supported : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:?!'.split('');
             }
             
-            // Seeded random for consistent jitter
+            // Seeded random for consistent, pre-computed randomness
             function createSeededRandom(seed) {
                 let value = seed;
                 return function() {
@@ -865,7 +866,7 @@ function initGallery() {
                 canvas.style.width = width + 'px';
                 canvas.style.height = height + 'px';
                 
-                ctx = canvas.getContext('2d', { willReadFrequently: false }); // Changed to false for better performance
+                ctx = canvas.getContext('2d', { willReadFrequently: false });
                 ctx.scale(dpr, dpr);
                 
                 // Disable all smoothing
@@ -877,38 +878,46 @@ function initGallery() {
                 // Detect supported glyphs (only once)
                 supportedGlyphs = detectSupportedGlyphs();
                 
-                // Pre-calculate glyph data for performance
-                const cols = Math.ceil(width / GRID_SIZE);
-                const rows = Math.ceil(height / GRID_SIZE);
-                glyphData = [];
-                seededRandom = createSeededRandom(12345); // Fixed seed for consistency
+                // Grid-based layout for full coverage
+                const cols = Math.ceil(width / CELL_SPACING);
+                const rows = Math.ceil(height / CELL_SPACING);
+                glyphCells = [];
+                const seededRand = createSeededRandom(12345);
+                
+                // Pre-compute grid: one glyph per cell for full coverage
+                // Include "ROUGH PIXEL" letters in the mix
+                const roughPixelLetters = 'ROUGH PIXEL'.split('').filter(c => c !== ' ');
+                let letterIndex = 0;
                 
                 for (let row = 0; row < rows; row++) {
                     for (let col = 0; col < cols; col++) {
-                        const baseX = Math.floor(col * GRID_SIZE);
-                        const baseY = Math.floor(row * GRID_SIZE);
-                        const char = supportedGlyphs[Math.floor(seededRandom() * supportedGlyphs.length)];
-                        const jitterSeed = row * cols + col;
+                        const cellX = Math.floor(col * CELL_SPACING);
+                        const cellY = Math.floor(row * CELL_SPACING);
+                        const seed = row * cols + col;
                         
-                        glyphData.push({
-                            baseX,
-                            baseY,
+                        // Mix "ROUGH PIXEL" letters with random glyphs
+                        let char;
+                        if (seededRand() < 0.3 && letterIndex < roughPixelLetters.length) {
+                            // Use "ROUGH PIXEL" letter
+                            char = roughPixelLetters[letterIndex];
+                            letterIndex = (letterIndex + 1) % roughPixelLetters.length;
+                        } else {
+                            // Use random supported glyph
+                            char = supportedGlyphs[Math.floor(seededRand() * supportedGlyphs.length)];
+                        }
+                        
+                        glyphCells.push({
+                            cellX,
+                            cellY,
                             char,
-                            jitterSeed,
-                            row,
-                            col
+                            seed
                         });
                     }
                 }
                 
                 startTime = performance.now();
-                lastFrameTime = 0;
+                lastUpdateTime = startTime;
                 animate();
-            }
-            
-            // Step function for low frame rate
-            function step(t) {
-                return Math.floor(t);
             }
             
             // Linear interpolation (no easing)
@@ -916,280 +925,35 @@ function initGallery() {
                 return a + (b - a) * t;
             }
             
-            // Animation loop
+            // Animation loop - minimal: just change glyphs
             function animate() {
                 const currentTime = performance.now();
-                
-                // Low frame rate simulation
-                if (currentTime - lastFrameTime < FRAME_INTERVAL) {
-                    animationFrameId = requestAnimationFrame(animate);
-                    return;
-                }
-                lastFrameTime = currentTime;
-                
                 const elapsed = (currentTime - startTime) % ANIMATION_DURATION;
                 const progress = elapsed / ANIMATION_DURATION;
                 
-                // Clear canvas
-                ctx.fillStyle = '#000';
-                ctx.fillRect(0, 0, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1));
+                // Update characters on stepped intervals
+                if (currentTime - lastUpdateTime >= UPDATE_INTERVAL) {
+                    const charFrame = Math.floor(progress * 20);
+                    glyphCells.forEach(cell => {
+                        const charIndex = (charFrame + cell.seed) % supportedGlyphs.length;
+                        cell.char = supportedGlyphs[charIndex];
+                    });
+                    lastUpdateTime = currentTime;
+                }
                 
+                // Draw
                 const width = canvas.width / (window.devicePixelRatio || 1);
                 const height = canvas.height / (window.devicePixelRatio || 1);
                 
-                // Pre-calculate phase info
-                // Extended timing: more time to see the word clearly
-                // 0.0-0.25: Noisy field (scattered) - small glyphs
-                // 0.25-0.55: Coalesce into readable cluster (longer for word visibility) - grow to medium
-                // 0.55-0.80: Break apart - shrink back to small
-                // 0.80-1.0: Return to noise - small scattered glyphs
-                let phase = 'noise';
-                let phaseProgress = 0;
-                const clusterX = width * 0.5;
-                const clusterY = height * 0.5;
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, width, height);
                 
-                if (progress < 0.25) {
-                    phase = 'noise';
-                    phaseProgress = progress / 0.25;
-                } else if (progress < 0.55) {
-                    phase = 'coalesce';
-                    phaseProgress = (progress - 0.25) / 0.3;
-                } else if (progress < 0.80) {
-                    phase = 'break';
-                    phaseProgress = (progress - 0.55) / 0.25;
-                } else {
-                    phase = 'noise';
-                    phaseProgress = (progress - 0.80) / 0.2;
-                }
-                
-                // Pre-calculate misalignment (deterministic)
-                const misalignFrame = Math.floor(progress * 20) % 4;
-                const rowShift = misalignFrame === 0 ? ((Math.floor(progress * 100) % 3 === 0) ? 1 : -1) : 0;
-                
-                // Batch render by size/opacity to reduce state changes
-                const renderBatches = {
-                    small: [],
-                    medium: [],
-                    large: []
-                };
-                
-                // Pre-calculate all positions
-                glyphData.forEach((glyph, index) => {
-                    let x = glyph.baseX;
-                    let y = glyph.baseY;
-                    let size = 8;
-                    let opacity = 1;
-                    
-                    // Use seeded random for consistent jitter (based on frame)
-                    const frameSeed = glyph.jitterSeed + Math.floor(progress * 100);
-                    const localRand = createSeededRandom(frameSeed);
-                    
-                    if (phase === 'noise') {
-                        const jitterX = Math.floor((localRand() - 0.5) * 4);
-                        const jitterY = Math.floor((localRand() - 0.5) * 4);
-                        x = Math.floor(glyph.baseX + jitterX);
-                        y = Math.floor(glyph.baseY + jitterY);
-                        opacity = 0.3 + localRand() * 0.4;
-                        
-                        // Occasional jitter
-                        const jitterCheck = localRand();
-                        if (jitterCheck > 0.7) {
-                            x += localRand() > 0.5 ? 1 : -1;
-                            y += localRand() > 0.5 ? 1 : -1;
-                        }
-                    } else if (phase === 'coalesce') {
-                        x = Math.floor(lerp(glyph.baseX, clusterX, phaseProgress));
-                        y = Math.floor(lerp(glyph.baseY, clusterY, phaseProgress));
-                        size = Math.floor(lerp(8, 14, phaseProgress)); // Smaller max size
-                        opacity = lerp(0.4, 1, phaseProgress);
-                        
-                        // Reduce opacity of glyphs near the word area to make word more visible
-                        if (phaseProgress > 0.5) {
-                            const distToCenter = Math.sqrt(Math.pow(x - clusterX, 2) + Math.pow(y - clusterY, 2));
-                            if (distToCenter < 100) {
-                                opacity *= 0.2; // Make background glyphs more transparent near word
-                            }
-                        }
-                    } else if (phase === 'break') {
-                        const angle = Math.atan2(glyph.baseY - clusterY, glyph.baseX - clusterX);
-                        const distance = Math.sqrt(Math.pow(glyph.baseX - clusterX, 2) + Math.pow(glyph.baseY - clusterY, 2));
-                        const targetDistance = distance * (1 + phaseProgress * 2);
-                        x = Math.floor(clusterX + Math.cos(angle) * targetDistance);
-                        y = Math.floor(clusterY + Math.sin(angle) * targetDistance);
-                        // Shrink more aggressively back to small size
-                        size = Math.floor(lerp(14, 8, phaseProgress));
-                        opacity = lerp(1, 0.3, phaseProgress);
-                    } else if (phase === 'noise' && progress > 0.8) {
-                        // Final noise phase - ensure all glyphs are small
-                        const jitterX = Math.floor((localRand() - 0.5) * 4);
-                        const jitterY = Math.floor((localRand() - 0.5) * 4);
-                        x = Math.floor(glyph.baseX + jitterX);
-                        y = Math.floor(glyph.baseY + jitterY);
-                        size = 8; // Force small size
-                        opacity = 0.3 + localRand() * 0.4;
-                        
-                        // Occasional jitter
-                        const jitterCheck = localRand();
-                        if (jitterCheck > 0.7) {
-                            x += localRand() > 0.5 ? 1 : -1;
-                            y += localRand() > 0.5 ? 1 : -1;
-                        }
-                    }
-                    
-                    // Apply row misalignment
-                    if (rowShift !== 0 && glyph.row % 3 === 0) {
-                        x = Math.floor(x + rowShift);
-                    }
-                    
-                    // Skip if off-screen or very low opacity
-                    if (x < -20 || x > width + 20 || y < -20 || y > height + 20 || opacity < 0.1) {
-                        return;
-                    }
-                    
-                    // Batch by size
-                    const batch = size <= 8 ? 'small' : size <= 12 ? 'medium' : 'large';
-                    renderBatches[batch].push({ x, y, size, opacity, char: glyph.char });
-                });
-                
-                // Render batches (reduces font/alpha state changes)
                 ctx.fillStyle = '#fff';
+                ctx.font = `${GLYPH_SIZE}px "Rough Pixel", monospace`;
                 
-                // Small glyphs
-                if (renderBatches.small.length > 0) {
-                    ctx.font = '8px "Rough Pixel", monospace';
-                    renderBatches.small.forEach(g => {
-                        if (g.opacity < 0.99) ctx.globalAlpha = g.opacity;
-                        ctx.fillText(g.char, g.x, g.y);
-                        if (g.opacity < 0.99) ctx.globalAlpha = 1;
-                    });
-                }
-                
-                // Medium glyphs
-                if (renderBatches.medium.length > 0) {
-                    ctx.font = '12px "Rough Pixel", monospace';
-                    renderBatches.medium.forEach(g => {
-                        if (g.opacity < 0.99) ctx.globalAlpha = g.opacity;
-                        ctx.fillText(g.char, g.x, g.y);
-                        if (g.opacity < 0.99) ctx.globalAlpha = 1;
-                    });
-                }
-                
-                // Large glyphs
-                if (renderBatches.large.length > 0) {
-                    renderBatches.large.forEach(g => {
-                        ctx.font = `${g.size}px "Rough Pixel", monospace`;
-                        if (g.opacity < 0.99) ctx.globalAlpha = g.opacity;
-                        ctx.fillText(g.char, g.x, g.y);
-                        if (g.opacity < 0.99) ctx.globalAlpha = 1;
-                    });
-                }
-                
-                // Render "ROUGH PIXEL" word during coalesce phase only - don't show during break
-                // Show word earlier (at 0.5 of coalesce) and keep it visible until end of coalesce
-                const showWord = phase === 'coalesce' && phaseProgress > 0.5;
-                
-                if (showWord) {
-                    const word = 'ROUGH PIXEL';
-                    // Calculate word progress: 0.5-1.0 during coalesce, then fade during break
-                    let wordProgress = 1;
-                    if (phase === 'coalesce') {
-                        wordProgress = (phaseProgress - 0.5) / 0.5; // 0 to 1 as coalesce progresses
-                    } else if (phase === 'break') {
-                        wordProgress = 1 - (phaseProgress / 0.3); // Fade from 1 to 0 during early break
-                    }
-                    const wordSize = Math.floor(lerp(14, 22, Math.min(1, wordProgress))); // Larger size for clarity
-                    ctx.font = `${wordSize}px "Rough Pixel", monospace`;
-                    
-                    // Calculate total width using measureText - ensure all characters are included
-                    let totalWidth = 0;
-                    const wordChars = [];
-                    
-                    // Build character array with proper spacing
-                    for (let i = 0; i < word.length; i++) {
-                        const char = word[i];
-                        if (char === ' ') {
-                            // Space character - use a fixed width
-                            const spaceWidth = wordSize * 0.5;
-                            wordChars.push({ char: ' ', width: spaceWidth, render: false });
-                            totalWidth += spaceWidth;
-                        } else {
-                            // Check if character is supported, if not use a placeholder width
-                            if (supportedGlyphs.includes(char)) {
-                                ctx.font = `${wordSize}px "Rough Pixel", monospace`;
-                                const width = ctx.measureText(char).width;
-                                wordChars.push({ char, width, render: true });
-                                totalWidth += width;
-                            } else {
-                                // Character not supported - use estimated width and render placeholder
-                                const estimatedWidth = wordSize * 0.6;
-                                wordChars.push({ char, width: estimatedWidth, render: false });
-                                totalWidth += estimatedWidth;
-                            }
-                        }
-                    }
-                    
-                    // Ensure word fits on canvas, adjust size if needed
-                    const maxWidth = width * 0.9;
-                    let adjustedWordSize = wordSize;
-                    if (totalWidth > maxWidth) {
-                        adjustedWordSize = Math.floor(wordSize * (maxWidth / totalWidth));
-                        // Recalculate widths with adjusted size
-                        ctx.font = `${adjustedWordSize}px "Rough Pixel", monospace`;
-                        totalWidth = 0;
-                        wordChars.forEach(wc => {
-                            if (wc.char === ' ') {
-                                wc.width = adjustedWordSize * 0.5;
-                            } else if (wc.render) {
-                                wc.width = ctx.measureText(wc.char).width;
-                            } else {
-                                wc.width = adjustedWordSize * 0.6;
-                            }
-                            totalWidth += wc.width;
-                        });
-                    }
-                    
-                    const wordX = Math.floor(clusterX - totalWidth / 2);
-                    const wordY = Math.floor(clusterY - adjustedWordSize / 2);
-                    
-                    // Ensure word stays within canvas bounds
-                    const clampedWordX = Math.max(5, Math.min(wordX, width - totalWidth - 5));
-                    
-                    // Render with full opacity during coalesce, fade during break
-                    ctx.globalAlpha = wordProgress > 0.8 ? 1 : wordProgress;
-                    ctx.fillStyle = '#fff';
-                    ctx.font = `${adjustedWordSize}px "Rough Pixel", monospace`;
-                    
-                    let currentX = clampedWordX;
-                    
-                    // Render each character - ensure ALL characters are rendered
-                    for (let i = 0; i < wordChars.length; i++) {
-                        const { char, width, render } = wordChars[i];
-                        if (char === ' ') {
-                            // Skip space visually but advance position
-                            currentX += width;
-                        } else if (render) {
-                            // Render character at integer pixel position
-                            const charX = Math.floor(currentX);
-                            const charY = Math.floor(wordY);
-                            
-                            // Render if within reasonable bounds (allow slight overflow for edge cases)
-                            if (charX >= -10 && charX < width + 10 && charY >= -10 && charY < height + 10) {
-                                ctx.fillText(char, charX, charY);
-                            }
-                            currentX += width;
-                        } else {
-                            // Character not supported, just advance
-                            currentX += width;
-                        }
-                    }
-                    
-                    
-                    ctx.globalAlpha = 1;
-                }
-                
-                // Hero glyph moments (1-2 oversized glyphs) - only show during word display
-                // Remove hero glyphs - they're causing confusion at the end
-                // The word "ROUGH PIXEL" is enough to showcase the typeface
+                glyphCells.forEach(cell => {
+                    ctx.fillText(cell.char, cell.cellX, cell.cellY);
+                });
                 
                 animationFrameId = requestAnimationFrame(animate);
             }
