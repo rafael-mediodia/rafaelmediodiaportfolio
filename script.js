@@ -34,6 +34,14 @@ const projects = [
         page: 'projects/self-declaration.html'
     },
     {
+        id: 'project-field',
+        title: 'field (in progress)',
+        subtitle: 'A site for interviews, discussions, and making.',
+        thumbnail: 'Field/Field-Thumbnail.mp4',
+        page: 'projects/field.html',
+        inProgress: true // Flag to prevent navigation
+    },
+    {
         id: 'project-7',
         title: 'Rough Pixel',
         subtitle: 'A typeface mixing digital and analog worlds.',
@@ -380,7 +388,13 @@ function initGallery() {
         const thumb = document.createElement('div');
         thumb.className = 'project-thumb';
         thumb.setAttribute('data-project-id', project.id);
-        thumb.onclick = () => window.location.href = project.page;
+        thumb.onclick = () => {
+            // Don't navigate if project is in progress
+            if (project.inProgress) {
+                return;
+            }
+            window.location.href = project.page;
+        };
         
         if (project.thumbnailVideos && project.thumbnailVideos.length > 0) {
             // Handle cycling video thumbnails - each video loops fully once

@@ -1079,6 +1079,11 @@ video:not([controls])::-webkit-media-controls-play-button {
     background: var(--bg);
 }
 
+.project-thumb[data-project-id="project-field"] video {
+    object-fit: cover;
+    /* Field fills the container */
+}
+
 /* Safari play overlay */
 .safari-play-overlay {
     position: fixed;
