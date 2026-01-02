@@ -259,6 +259,41 @@ body.safari-no-custom-cursor * {
     opacity: 0.9;
 }
 
+/* Field Homepage Slideshow */
+.field-slideshow-container {
+    position: relative;
+    width: 100%;
+}
+
+.field-slideshow-img {
+    width: 100%;
+    display: block;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    pointer-events: none;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.field-slideshow-img:first-child {
+    position: relative;
+    opacity: 1;
+}
+
+.field-slideshow-img.field-slideshow-active {
+    position: absolute;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+.field-slideshow-img.field-slideshow-active:first-child {
+    position: relative;
+    z-index: 1;
+}
+
 .project-images-panel video {
     width: 100%;
     display: block;

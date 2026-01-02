@@ -17,31 +17,31 @@
     <div class="project-text-panel">
         <a href="../index.html" class="project-back-link">← back</a>
         <div class="project-header">
-            <h1 class="project-title">field</h1>
+            <h1 class="project-title">field (in progress)</h1>
             <p class="project-blurb">
-                A site for interviews, discussions, and making.
+                A site for interviews, discussions, and music. field is a way for people to connect and to be heard.
             </p>
         </div>
         
         <div class="project-meta">
             <div class="project-meta-item">
                 <div class="project-meta-label">Year</div>
-                <div class="project-meta-value">2025</div>
+                <div class="project-meta-value">2026</div>
             </div>
             <div class="project-meta-item">
                 <div class="project-meta-label">Role</div>
-                <div class="project-meta-value">Designer, Developer</div>
+                <div class="project-meta-value">Brand and Motion Designer</div>
             </div>
             <div class="project-meta-item">
                 <div class="project-meta-label">Type</div>
-                <div class="project-meta-value">Web Design</div>
+                <div class="project-meta-value">Brand Design</div>
             </div>
         </div>
         
         <div class="project-text-content">
             <div class="project-section">
                 <div class="project-text">
-                    <p>In progress.</p>
+                    <p>Set with JAF Herb, Schoolbook, and FieldFleurons (Custom Typeface).</p>
                 </div>
             </div>
         </div>
@@ -49,6 +49,16 @@
     
     <div class="project-images-panel">
         <video data-src="../Field/Field-Thumbnail.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
+        
+        <!-- Homepage Slideshow -->
+        <div class="field-slideshow-container">
+            <img class="field-slideshow-img field-slideshow-active" data-src="../Field/field-homepage-1.png" alt="Field Homepage 1">
+            <img class="field-slideshow-img" data-src="../Field/field-homepage-2.png" alt="Field Homepage 2">
+            <img class="field-slideshow-img" data-src="../Field/field-homepage-3.png" alt="Field Homepage 3">
+        </div>
+        
+        <img data-src="../Field/fieldnotes-1.png" alt="Field Notes">
+        <img data-src="../Field/field-article-1.png" alt="Field Article">
     </div>
     
     <script>
@@ -100,8 +110,66 @@
             }, { rootMargin: '100px' });
             
             videos.forEach(video => videoObserver.observe(video));
+            
+            // Initialize homepage slideshow
+            const slideshowContainer = document.querySelector('.field-slideshow-container');
+            if (slideshowContainer) {
+                const slideshowImages = slideshowContainer.querySelectorAll('.field-slideshow-img');
+                let currentSlideIndex = 0;
+                
+                // Load all slideshow images immediately
+                slideshowImages.forEach((img) => {
+                    if (img.hasAttribute('data-src')) {
+                        img.src = img.getAttribute('data-src');
+                        img.removeAttribute('data-src');
+                    }
+                });
+                
+                // Cycle through slides
+                function showNextSlide() {
+                    slideshowImages[currentSlideIndex].classList.remove('field-slideshow-active');
+                    currentSlideIndex = (currentSlideIndex + 1) % slideshowImages.length;
+                    slideshowImages[currentSlideIndex].classList.add('field-slideshow-active');
+                }
+                
+                // Start slideshow after a delay (3 seconds per slide)
+                setTimeout(() => {
+                    setInterval(showNextSlide, 3000);
+                }, 3000);
+            }
+            
+            // Lazy load project images
+            const images = document.querySelectorAll('.project-images-panel img[data-src]');
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        // Skip if already loaded by slideshow
+                        if (!img.hasAttribute('data-src')) return;
+                        img.src = img.getAttribute('data-src');
+                        img.removeAttribute('data-src');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, { rootMargin: '100px' });
+            
+            images.forEach(img => {
+                // Only observe non-slideshow images
+                if (!img.classList.contains('field-slideshow-img')) {
+                    imageObserver.observe(img);
+                }
+            });
         });
     </script>
+    
+    <!-- Image Zoom Modal -->
+    <div class="image-zoom-modal" id="imageZoomModal">
+        <div class="image-zoom-close" id="imageZoomClose"></div>
+        <div class="image-zoom-container">
+            <img id="zoomedImage" alt="Project Image">
+        </div>
+    </div>
+    
     <!-- Video Zoom Modal -->
     <div class="video-zoom-modal" id="videoZoomModal">
         <div class="video-zoom-close" id="videoZoomClose"></div>

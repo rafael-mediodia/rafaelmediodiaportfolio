@@ -16,10 +16,9 @@ const projects = [
     {
         id: 'project-field',
         title: 'field (in progress)',
-        subtitle: 'A site for interviews, discussions, and making.',
+        subtitle: 'A site for interviews, discussions, and music.',
         thumbnail: 'Field/Field-Thumbnail.mp4',
-        page: 'projects/field.html',
-        inProgress: true // Flag to prevent navigation
+        page: 'projects/field.html'
     },
     {
         id: 'project-1',
