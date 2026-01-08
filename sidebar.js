@@ -9,7 +9,7 @@ function initSidebar() {
         </a>
         <div class="info-birth">(b.2004) ✧</div>
         <div class="info-about">
-            is pursuing his BFA in Graphic Design at the Rhode&nbsp;Island School of&nbsp;Design with a focus on Computation, Culture, and Technology. He is driven by connection with others and the power of feeling.<br><br>Rafael enjoys the act of play in serious and unserious ways, systems that connect people together, and putting the motion in emotion and is willing to help out and connect by any means if that catches your fancy!&nbsp;(◕‿◕)
+            is pursuing his BFA in Graphic Design at the Rhode&nbsp;Island School of&nbsp;Design with a focus on Computation, Culture, and Technology. He is driven by connection with others and the power of feeling.<br><br>Rafael enjoys the act of play in serious and unserious ways, systems that connect people together, and putting the motion in emotion and is willing to help out and connect by any means if that catches your fancy. Email me for any freelance inquiries/questions! &nbsp;(◕‿◕) 
         </div>
         <div class="info-current">
             Currently Designing @ <a href="https://visions-mag.squarespace.com/" class="info-link" target="_blank">VISIONS</a>, <a href="https://bsrlive.com/" class="info-link" target="_blank">BSR</a> ˚ ༘
@@ -26,7 +26,7 @@ function initSidebar() {
         </div>
         <div class="info-links">
             <a href="mailto:rmediodi@risd.edu" class="info-link">EMAIL</a>
-            <a href="${prefix}Rafael Mediodia Resume 2025.pdf" class="info-link">RESUME</a>
+            <a href="${prefix}RafaelMediodia-RESUME.pdf" class="info-link">RESUME</a>
             <a href="https://www.linkedin.com/in/rafael-mediodia-067b9418b/" class="info-link" target="_blank">LINKEDIN</a>
             <a href="https://www.instagram.com/middledays/" class="info-link" target="_blank">INSTAGRAM</a>
         </div>
