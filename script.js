@@ -3,6 +3,13 @@ const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 const projects = [
     {
+        id: 'project-field',
+        title: 'field (in progress)',
+        subtitle: 'A site for interviews, discussions, and music.',
+        thumbnail: 'Field/Field-Thumbnail.mp4',
+        page: 'projects/field.html'
+    },
+    {
         id: 'project-5',
         title: 'Self Declaration',
         subtitle: 'A reflection for immigrants in the United States.',
@@ -12,13 +19,6 @@ const projects = [
             'SelfDeclaration/DS3UNIT17_19.jpg'
         ],
         page: 'projects/self-declaration.html'
-    },
-    {
-        id: 'project-field',
-        title: 'field (in progress)',
-        subtitle: 'A site for interviews, discussions, and music.',
-        thumbnail: 'Field/Field-Thumbnail.mp4',
-        page: 'projects/field.html'
     },
     {
         id: 'project-3',
