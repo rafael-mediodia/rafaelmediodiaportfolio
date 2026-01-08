@@ -21,13 +21,6 @@ const projects = [
         page: 'projects/field.html'
     },
     {
-        id: 'project-1',
-        title: 'Pinoy Plus',
-        subtitle: 'A campaign for mga Pinoy creatives.',
-        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
-        page: 'projects/pinoy-plus.html'
-    },
-    {
         id: 'project-3',
         title: 'Breakout Games',
         subtitle: 'Discovery and exploration motion identity work.',
@@ -35,12 +28,11 @@ const projects = [
         page: 'projects/breakout-games.html'
     },
     {
-        id: 'project-7',
-        title: 'Rough Pixel',
-        subtitle: 'A typeface mixing digital and analog worlds.',
-        thumbnail: null,
-        thumbnailImages: null,
-        page: 'projects/rough-pixel.html'
+        id: 'project-1',
+        title: 'Pinoy Plus',
+        subtitle: 'A campaign for mga Pinoy creatives.',
+        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
+        page: 'projects/pinoy-plus.html'
     },
     {
         id: 'project-8',
@@ -53,6 +45,14 @@ const projects = [
             'superstitionsuperstitionsuperstition/preview3.mp4'
         ],
         page: 'projects/superstition-superstition-superstition.html'
+    },
+    {
+        id: 'project-7',
+        title: 'Rough Pixel',
+        subtitle: 'A typeface mixing digital and analog worlds.',
+        thumbnail: null,
+        thumbnailImages: null,
+        page: 'projects/rough-pixel.html'
     },
     {
         id: 'project-4',
@@ -562,7 +562,7 @@ function initGallery() {
             // Rough Pixel - Simplified static display for fast loading
             thumb.classList.add('placeholder');
             thumb.classList.add('font-preview');
-            thumb.style.background = '#b4a899';
+            thumb.style.background = '#4a9b4a';
             thumb.style.overflow = 'hidden';
             thumb.style.position = 'relative';
             thumb.style.aspectRatio = '5/4';
