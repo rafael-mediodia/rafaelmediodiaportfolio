@@ -1282,6 +1282,15 @@ video:not([controls])::-webkit-media-controls-play-button {
     backface-visibility: hidden;
 }
 
+.project-thumb[data-project-id="motion"] {
+    background: #000 !important;
+    border: 1px dotted var(--dotted-color) !important;
+}
+
+.project-thumb[data-project-id="motion"] video {
+    background: #000;
+}
+
 .project-thumb[data-project-id="illustrations"] {
     background: #000;
 }

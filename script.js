@@ -1,6 +1,28 @@
 // Cache browser detection to avoid repeated regex calls
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
+// Motion videos for random thumbnail selection
+const motionVideos = [
+    'Motion/LOGO1-FULL.mp4',
+    'Motion/LOGO2-FULL.mp4',
+    'Motion/Whats at the core.mp4',
+    'Motion/Comp 2.mp4',
+    'Motion/Comp 3.mp4',
+    'Motion/RAFAELMEDIODIA_FORMINMOTION.mp4',
+    'Motion/2nd Ad.mp4',
+    'Motion/Bubbles (2).mp4',
+    'Motion/RAFAELMEDIODIA_ASSIGNMENT4_COLORLIGHTSHADOW.mp4',
+    'Motion/girldinneranimation2-gs-color-addedtext.mp4',
+    'WoodlandArtFair/WoodlandArtFairMain.mp4',
+    'Motion/Chemistry.mp4',
+    'Motion/EXPIRATIONDATE-POST-GREEN.mp4'
+];
+
+// Get random motion video for thumbnail (changes on each page load)
+function getRandomMotionVideo() {
+    return motionVideos[Math.floor(Math.random() * motionVideos.length)];
+}
+
 const projects = [
     {
         id: 'project-field',
@@ -96,6 +118,13 @@ const projects = [
             'Illustrations/IMG_7604.PNG'
         ],
         page: 'illustrations.html'
+    },
+    {
+        id: 'motion',
+        title: 'Motion',
+        subtitle: 'Take a peek at what I\'ve made move!',
+        thumbnail: getRandomMotionVideo(),
+        page: 'motion.html'
     },
 ];
 
