@@ -28,6 +28,14 @@ const projects = [
         page: 'projects/breakout-games.html'
     },
     {
+        id: 'project-upstream',
+        title: 'upstream (WIP)',
+        subtitle: 'Speculative service to watch bodies of water.',
+        thumbnail: 'upstream/Upstream-Motion.mp4',
+        page: 'projects/upstream.html',
+        inProgress: true // Flag to prevent navigation
+    },
+    {
         id: 'project-1',
         title: 'Pinoy Plus',
         subtitle: 'A campaign for mga Pinoy creatives.',
@@ -47,14 +55,6 @@ const projects = [
         page: 'projects/superstition-superstition-superstition.html'
     },
     {
-        id: 'project-7',
-        title: 'Rough Pixel',
-        subtitle: 'A typeface mixing digital and analog worlds.',
-        thumbnail: null,
-        thumbnailImages: null,
-        page: 'projects/rough-pixel.html'
-    },
-    {
         id: 'project-4',
         title: 'bounce museum of rubber',
         subtitle: 'An identity for a museum full of elasticity.',
@@ -64,6 +64,14 @@ const projects = [
             'BounceMuseum/bouncethumbnail2.mp4'
         ],
         page: 'projects/bounce-museum.html'
+    },
+    {
+        id: 'project-7',
+        title: 'Rough Pixel',
+        subtitle: 'A typeface mixing digital and analog worlds.',
+        thumbnail: null,
+        thumbnailImages: null,
+        page: 'projects/rough-pixel.html'
     },
     {
         id: 'project-6',
@@ -182,8 +190,8 @@ function initGallery() {
             tooltip.appendChild(tooltipTitle);
             tooltip.appendChild(tooltipSubtitle);
             document.body.appendChild(tooltip);
-            // Use transform for better performance
-            tooltip.style.willChange = 'transform, opacity';
+            // Initialize positioning
+            tooltip.style.willChange = 'left, top, opacity';
         }
         return tooltip;
     };
@@ -586,8 +594,6 @@ function initGallery() {
         // Lazy tooltip event listeners - only attach on first hover
         let tooltipAttached = false;
         let rafId = null;
-        let lastTitle = '';
-        let lastSubtitle = '';
         thumb.addEventListener('mouseenter', (e) => {
             if (!tooltipAttached) {
                 tooltipAttached = true;
@@ -597,8 +603,10 @@ function initGallery() {
                     if (rafId) cancelAnimationFrame(rafId);
                     // Use requestAnimationFrame for smooth updates
                     rafId = requestAnimationFrame(() => {
-                        // Use transform instead of left/top for better performance
-                        tip.style.transform = `translate(${e.clientX + 5}px, ${e.clientY + 5}px)`;
+                        // Use left/top for fixed positioning
+                        tip.style.left = (e.clientX + 5) + 'px';
+                        tip.style.top = (e.clientY + 5) + 'px';
+                        tip.style.transform = 'none';
                         rafId = null;
                     });
                 });
@@ -608,18 +616,14 @@ function initGallery() {
                 });
             }
             const tip = getTooltip();
-            // Only update text content if it changed (avoid unnecessary DOM updates)
-            if (lastTitle !== project.title) {
-                tooltipTitle.textContent = project.title;
-                lastTitle = project.title;
-            }
-            if (lastSubtitle !== project.subtitle) {
-                tooltipSubtitle.textContent = project.subtitle;
-                lastSubtitle = project.subtitle;
-            }
+            // Always update tooltip content when hovering over a thumbnail
+            tooltipTitle.textContent = project.title;
+            tooltipSubtitle.textContent = project.subtitle;
             tip.style.opacity = '1';
-            // Use transform instead of left/top for better performance
-            tip.style.transform = `translate(${e.clientX + 5}px, ${e.clientY + 5}px)`;
+            // Use left/top for fixed positioning
+            tip.style.left = (e.clientX + 5) + 'px';
+            tip.style.top = (e.clientY + 5) + 'px';
+            tip.style.transform = 'none';
         });
         
         // Add to fragment instead of directly to gallery

@@ -1119,6 +1119,11 @@ video:not([controls])::-webkit-media-controls-play-button {
     /* Field fills the container */
 }
 
+.project-thumb[data-project-id="project-upstream"] video {
+    object-fit: cover;
+    /* Upstream fills the container */
+}
+
 .project-thumb[data-project-id="project-7"] {
     border: 1px dotted var(--dotted-color) !important;
     background: #4a9b4a !important;
@@ -1142,6 +1147,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 .project-thumb[data-project-id="project-7"]:hover {
     background: #3d7d3d !important;
     transform: translateY(-2px);
+    opacity: 0.9;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -1324,8 +1330,7 @@ video:not([controls])::-webkit-media-controls-play-button {
     z-index: 10;
     top: 0;
     left: 0;
-    will-change: transform, opacity;
-    transform: translate(0, 0);
+    will-change: left, top, opacity;
     transition: opacity 0.15s ease;
 }
 

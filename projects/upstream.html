@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>upstream (WIP) - Rafael Mediodia</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="cursor"></div>
+    
+    <div class="info-container">
+        <!-- Sidebar content will be injected here -->
+    </div>
+    
+    <div class="project-text-panel">
+        <a href="../index.html" class="project-back-link">← back</a>
+        <div class="project-header">
+            <h1 class="project-title">upstream (WIP)</h1>
+            <p class="project-blurb">
+                Speculative service to watch bodies of water.
+            </p>
+        </div>
+        
+        <div class="project-meta">
+            <div class="project-meta-item">
+                <div class="project-meta-label">Year</div>
+                <div class="project-meta-value">2025</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Role</div>
+                <div class="project-meta-value">Designer, Developer</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Type</div>
+                <div class="project-meta-value">Service Design</div>
+            </div>
+        </div>
+        
+        <div class="project-text-content">
+            <div class="project-section">
+                <div class="project-text">
+                    <p>In progress.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="project-images-panel">
+        <video data-src="../upstream/Upstream-Motion.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
+    </div>
+    
+    <script>
+        // Lazy load project videos with improved Safari support
+        document.addEventListener('DOMContentLoaded', () => {
+            const videos = document.querySelectorAll('.project-images-panel video[data-src]');
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const video = entry.target;
+                        const videoSrc = video.getAttribute('data-src');
+                        if (!videoSrc) return;
+                        
+                        video.src = videoSrc;
+                        video.removeAttribute('data-src');
+                        
+                        // Safari needs more explicit loading
+                        if (isSafari) {
+                            video.preload = 'auto';
+                            video.load();
+                            
+                            // Wait for canplaythrough for better Safari compatibility
+                            const playVideo = () => {
+                                video.play().catch(() => {
+                                    // Autoplay blocked - this is expected
+                                });
+                            };
+                            
+                            if (video.readyState >= 3) {
+                                playVideo();
+                            } else {
+                                video.addEventListener('canplaythrough', playVideo, { once: true });
+                                video.addEventListener('loadeddata', playVideo, { once: true });
+                            }
+                        } else {
+                        video.load();
+                            video.addEventListener('loadeddata', () => {
+                                video.play().catch(() => {
+                                    // Autoplay blocked
+                                });
+                            }, { once: true });
+                        }
+                        
+                        videoObserver.unobserve(video);
+                    }
+                });
+            }, { rootMargin: '100px' });
+            
+            videos.forEach(video => videoObserver.observe(video));
+            
+            // Lazy load project images
+            const images = document.querySelectorAll('.project-images-panel img[data-src]');
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (!img.hasAttribute('data-src')) return;
+                        img.src = img.getAttribute('data-src');
+                        img.removeAttribute('data-src');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, { rootMargin: '100px' });
+            
+            images.forEach(img => imageObserver.observe(img));
+        });
+    </script>
+    
+    <!-- Image Zoom Modal -->
+    <div class="image-zoom-modal" id="imageZoomModal">
+        <div class="image-zoom-close" id="imageZoomClose"></div>
+        <div class="image-zoom-container">
+            <img id="zoomedImage" alt="Project Image">
+        </div>
+    </div>
+    
+    <!-- Video Zoom Modal -->
+    <div class="video-zoom-modal" id="videoZoomModal">
+        <div class="video-zoom-close" id="videoZoomClose"></div>
+        <div class="video-zoom-container">
+            <video id="zoomedVideo" muted loop playsinline webkit-playsinline></video>
+        </div>
+    </div>
+    
+    <script src="../cursor.js"></script>
+    <script src="../sidebar.js"></script>
+    <script src="../project-zoom.js"></script>
+</body>
+</html>
