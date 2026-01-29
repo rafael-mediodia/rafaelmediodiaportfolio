@@ -594,29 +594,6 @@ function initGallery() {
                     clearInterval(cycleInterval);
                 }
             });
-        } else if (project.id === 'project-7') {
-            // Rough Pixel - Simplified static display for fast loading
-            thumb.classList.add('placeholder');
-            thumb.classList.add('font-preview');
-            thumb.style.background = '#4a9b4a';
-            thumb.style.overflow = 'hidden';
-            thumb.style.position = 'relative';
-            thumb.style.aspectRatio = '5/4';
-            thumb.style.display = 'flex';
-            thumb.style.alignItems = 'center';
-            thumb.style.justifyContent = 'center';
-            
-            // Simple text display - no canvas, no animation, no glyph detection
-            const textDisplay = document.createElement('div');
-            textDisplay.textContent = 'ROUGH PIXEL';
-            textDisplay.style.fontFamily = '"Rough Pixel", monospace';
-            textDisplay.style.fontSize = 'clamp(24px, 5vw, 48px)';
-            textDisplay.style.color = '#fff';
-            textDisplay.style.letterSpacing = '0.1em';
-            textDisplay.style.textAlign = 'center';
-            textDisplay.style.imageRendering = 'crisp-edges';
-            
-            thumb.appendChild(textDisplay);
         }
         
         // Lazy tooltip event listeners - only attach on first hover
