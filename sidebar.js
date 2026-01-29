@@ -12,7 +12,7 @@ function initSidebar() {
             is pursuing his BFA in Graphic Design at the Rhode&nbsp;Island School of&nbsp;Design with a focus on Computation, Culture, and Technology. He is driven by connection with others and the power of feeling.<br><br>Rafael enjoys the act of play in serious and unserious ways, systems that connect people together, and putting the motion in emotion and is willing to help out and connect by any means if that catches your fancy. Email me for any freelance inquiries/questions! &nbsp;(◕‿◕) 
         </div>
         <div class="info-current">
-            Currently Designing @ <a href="https://visions-mag.squarespace.com/" class="info-link" target="_blank">VISIONS</a>, <a href="https://bsrlive.com/" class="info-link" target="_blank">BSR</a> ˚ ༘
+            Designing @ <a href="https://bsrlive.com/" class="info-link" target="_blank">Brown Student Radio</a> ˚ ༘
         </div>
         <div class="info-previous">
             Previously @ <a href="https://mediocre.rodeo" class="info-link" target="_blank">Mediocre</a>

@@ -1125,30 +1125,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 }
 
 .project-thumb[data-project-id="project-7"] {
-    border: 1px dotted var(--dotted-color) !important;
-    background: #4a9b4a !important;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.project-thumb[data-project-id="project-7"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 1;
-}
-
-.project-thumb[data-project-id="project-7"]:hover {
-    background: #3d7d3d !important;
-    transform: translateY(-2px);
-    opacity: 0.9;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    /* Rough Pixel now uses image thumbnail */
 }
 
 .project-thumb[data-project-id="project-7"] .font-preview-text {

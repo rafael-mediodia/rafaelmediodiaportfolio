@@ -8,7 +8,12 @@ const illustrations = [
     { file: 'bearlookingdown.png', tooltip: 'Cookie The Bear' },
     { file: 'bearlookingforward.png', tooltip: 'Cookie The Bear' },
     { file: 'bearzoomin.png', tooltip: 'Cookie The Bear' },
-    { file: 'Car3.png', tooltip: 'Bumpy Road' }
+    { file: 'Car3.png', tooltip: 'Bumpy Road' },
+    { file: 'Haronian_RafaelMediodia1.png', tooltip: 'Brown Political Review Illustration' },
+    { file: 'Haronian_RafaelMediodia2.png', tooltip: 'Brown Political Review Spot Illustration' },
+    { file: 'Self-Portrait.png', tooltip: 'Self Portrait' },
+    { file: 'ThePitt_NoahWyle.png', tooltip: 'Noah Wyle in The Pitt' },
+    { file: 'WaitingROom.png', tooltip: 'Waiting Room' }
 ];
 
 function getIllustrationFile(illustrationData) {

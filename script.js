@@ -26,7 +26,7 @@ function getRandomMotionVideo() {
 const projects = [
     {
         id: 'project-field',
-        title: 'field (in progress)',
+        title: 'field',
         subtitle: 'A site for interviews, discussions, and music.',
         thumbnail: 'Field/Field-Thumbnail.mp4',
         page: 'projects/field.html'
@@ -51,7 +51,7 @@ const projects = [
     },
     {
         id: 'project-upstream',
-        title: 'upstream (WIP)',
+        title: 'upstream (COMING SOON)',
         subtitle: 'Speculative service to watch bodies of water.',
         thumbnail: 'upstream/Upstream-Motion.mp4',
         page: 'projects/upstream.html',
@@ -91,8 +91,7 @@ const projects = [
         id: 'project-7',
         title: 'Rough Pixel',
         subtitle: 'A typeface mixing digital and analog worlds.',
-        thumbnail: null,
-        thumbnailImages: null,
+        thumbnail: 'RoughPixel/ROUGHPIXEL_THUMBNAIL.png',
         page: 'projects/rough-pixel.html'
     },
     {
