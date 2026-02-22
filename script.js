@@ -43,6 +43,13 @@ const projects = [
         page: 'projects/self-declaration.html'
     },
     {
+        id: 'project-1',
+        title: 'Pinoy Plus',
+        subtitle: 'A campaign for mga Pinoy creatives.',
+        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
+        page: 'projects/pinoy-plus.html'
+    },
+    {
         id: 'project-3',
         title: 'Breakout Games',
         subtitle: 'Discovery and exploration motion identity work.',
@@ -56,13 +63,6 @@ const projects = [
         thumbnail: 'upstream/Upstream-Motion.mp4',
         page: 'projects/upstream.html',
         inProgress: true // Flag to prevent navigation
-    },
-    {
-        id: 'project-1',
-        title: 'Pinoy Plus',
-        subtitle: 'A campaign for mga Pinoy creatives.',
-        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
-        page: 'projects/pinoy-plus.html'
     },
     {
         id: 'project-8',

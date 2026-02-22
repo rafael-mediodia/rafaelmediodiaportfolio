@@ -48,14 +48,17 @@
     </div>
     
     <div class="project-images-panel">
-        <video data-src="../PinoyPlus/PinoyPlus-Intro.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
-        <video data-src="../PinoyPlus/PinoyPlusSignage.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
+        <video data-src="../PinoyPlus/PinoyPlus-Intro.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Campaign visuals inspired by Filipino banig-weaving."></video>
+        <video data-src="../PinoyPlus/PinoyPlusWebsite.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Website design and interface."></video>
         <div class="project-video-row">
-            <video data-src="../PinoyPlus/Instagram Posts.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
-            <video data-src="../PinoyPlus/PinoyPlusDocuIntros.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
+            <video data-src="../PinoyPlus/Instagram Posts.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Social media posts showcasing Filipino creatives."></video>
+            <video data-src="../PinoyPlus/PinoyPlusDocuIntros.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Documentary introductions showcasing creatives' practices."></video>
         </div>
-        <video data-src="../PinoyPlus/PinoyPlusMerch.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
-        <video data-src="../PinoyPlus/PinoyPlusWebsite.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata"></video>
+        <img data-src="../PinoyPlus/PinoyPlus_Signage_1.png" alt="Pinoy Plus Signage 1" data-caption="Speaker series.">
+        <img data-src="../PinoyPlus/PinoyPlus_Signage_2.png" alt="Pinoy Plus Signage 2" data-caption="Gallery vinyl.">
+        <img data-src="../PinoyPlus/PinoyPlus_Signage_3.jpg" alt="Pinoy Plus Signage 3" data-caption="Promotional signage.">
+        <img data-src="../PinoyPlus/PinoyPlus_Signage-4.jpg" alt="Pinoy Plus Signage 4" data-caption="Promotional signage.">
+        <video data-src="../PinoyPlus/PinoyPlusMerch.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Merchandise design applications"></video>
     </div>
     
     <script>
@@ -107,8 +110,31 @@
             }, { rootMargin: '100px' });
             
             videos.forEach(video => videoObserver.observe(video));
+            
+            // Lazy load project images
+            const images = document.querySelectorAll('.project-images-panel img[data-src]');
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.getAttribute('data-src');
+                        img.removeAttribute('data-src');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, { rootMargin: '100px' });
+            
+            images.forEach(img => imageObserver.observe(img));
         });
     </script>
+    
+    <!-- Image Zoom Modal -->
+    <div class="image-zoom-modal" id="imageZoomModal">
+        <div class="image-zoom-close" id="imageZoomClose"></div>
+        <div class="image-zoom-container">
+            <img id="zoomedImage" alt="Project Image">
+        </div>
+    </div>
     
     <!-- Video Zoom Modal -->
     <div class="video-zoom-modal" id="videoZoomModal">
@@ -121,6 +147,7 @@
     <script src="../cursor.js"></script>
     <script src="../sidebar.js"></script>
     <script src="../project-zoom.js"></script>
+    <script src="../project-captions.js"></script>
 </body>
 </html>
 

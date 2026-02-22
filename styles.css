@@ -259,6 +259,27 @@ body.safari-no-custom-cursor * {
     opacity: 0.9;
 }
 
+/* Project Image Captions */
+.project-image-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.project-image-caption {
+    font-size: 11px;
+    color: var(--text);
+    opacity: 0.6;
+    line-height: 1.4;
+    font-style: normal;
+    margin-top: -0.25rem;
+    transition: opacity 0.2s ease;
+}
+
+.project-image-wrapper:hover .project-image-caption {
+    opacity: 0.8;
+}
+
 /* Field Homepage Slideshow */
 .field-slideshow-container {
     position: relative;
