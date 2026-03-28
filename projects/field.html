@@ -60,11 +60,11 @@
         <video data-src="../Field/Field-Thumbnail.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Musician interview intro featuring Audrey Hobert."></video>
         
         <!-- Storybook slideshow -->
-        <div class="field-slideshow-container" data-caption="Storybook and fairy-tale visual language">
-            <img class="field-slideshow-img field-slideshow-active" data-src="../Field/field-storybook-1.jpg" alt="Field storybook 1">
-            <img class="field-slideshow-img" data-src="../Field/field-storybook-2.jpg" alt="Field storybook 2">
-            <img class="field-slideshow-img" data-src="../Field/field-storybook-3.jpg" alt="Field storybook 3">
-            <img class="field-slideshow-img" data-src="../Field/fieldstorybook-4.jpg" alt="Field storybook 4">
+        <div class="field-slideshow-container" data-caption="Storybook and fairy-tale visual language" data-slide-interval="3000">
+            <img class="field-slideshow-img field-slideshow-active" data-src="../Field/field-storybook-1.png" alt="Field storybook 1">
+            <img class="field-slideshow-img" data-src="../Field/field-storybook-2.png" alt="Field storybook 2">
+            <img class="field-slideshow-img" data-src="../Field/field-storybook-3.png" alt="Field storybook 3">
+            <img class="field-slideshow-img" data-src="../Field/field-storybook-4.png" alt="Field storybook 4">
         </div>
         
         <video data-src="../Field/Field-ArtistIntros.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Artist interview intro sequences"></video>
@@ -169,12 +169,14 @@
                     slideshowImages[currentSlideIndex].classList.add('field-slideshow-active');
                 }
                 
+                const slideIntervalMs = parseInt(slideshowContainer.getAttribute('data-slide-interval'), 10) || 3800;
+                
                 function startSlideshow() {
                     if (reduceMotion || slideStartDelayId || slideIntervalId) return;
                     const staggerMs = slideshowIdx * 1400;
                     slideStartDelayId = setTimeout(() => {
                         slideStartDelayId = null;
-                        slideIntervalId = setInterval(showNextSlide, 3800);
+                        slideIntervalId = setInterval(showNextSlide, slideIntervalMs);
                     }, 2800 + staggerMs);
                 }
                 
