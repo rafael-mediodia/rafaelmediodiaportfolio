@@ -15,7 +15,12 @@ const motionVideos = [
     'Motion/girldinneranimation2-gs-color-addedtext.mp4',
     'WoodlandArtFair/WoodlandArtFairMain.mp4',
     'Motion/Chemistry.mp4',
-    'Motion/EXPIRATIONDATE-POST-GREEN.mp4'
+    'Motion/EXPIRATIONDATE-POST-GREEN.mp4',
+    'Motion/DingDongProductions.mp4',
+    'Motion/MagicalMischief.mp4',
+    'Motion/StudioRafael.mp4',
+    'Motion/cutitout.mp4',
+    'Motion/newstar!studio.mp4'
 ];
 
 // Get random motion video for thumbnail (changes on each page load)
@@ -373,16 +378,16 @@ function initGallery() {
                         if (!isInitialized) {
                             isInitialized = true;
                             startPlaying();
+                        } else if (video1.parentElement) {
+                            playVideo(activeVideo);
                         }
-                        thumbObserver.unobserve(thumb);
                     } else {
-                        // Pause videos when out of view
                         if (video1.parentElement) video1.pause();
                         if (video2.parentElement) video2.pause();
                     }
                 });
             }, {
-                rootMargin: '25px' // Further reduced to prevent premature loading
+                rootMargin: '25px'
             });
             
             thumb.style.position = 'relative';
@@ -435,39 +440,32 @@ function initGallery() {
                 
                 const thumbObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
+                        const vid = entry.target;
                         if (entry.isIntersecting) {
-                            const vid = entry.target;
-                            
-                            // Only use 'auto' preload for Safari when video is actually visible
                             if (isSafari) {
                                 vid.preload = 'auto';
-                            } else {
-                                vid.preload = 'metadata'; // Use metadata for non-Safari browsers
                             }
-                            vid.load();
-                            
-                            const playVideo = () => {
-                                vid.play().catch(() => {
-                                    // Autoplay blocked - this is expected
-                                });
+                            const playThumbVideo = () => {
+                                vid.play().catch(() => {});
                             };
-                            
                             if (isSafari) {
                                 if (vid.readyState >= 3) {
-                                    playVideo();
+                                    playThumbVideo();
                                 } else {
-                                    vid.addEventListener('canplaythrough', playVideo, { once: true });
-                                    vid.addEventListener('loadeddata', playVideo, { once: true });
+                                    vid.addEventListener('canplaythrough', playThumbVideo, { once: true });
+                                    vid.addEventListener('loadeddata', playThumbVideo, { once: true });
                                 }
+                            } else if (vid.readyState >= 2) {
+                                playThumbVideo();
                             } else {
-                                vid.addEventListener('loadeddata', playVideo, { once: true });
+                                vid.addEventListener('loadeddata', playThumbVideo, { once: true });
                             }
-                            
-                            thumbObserver.unobserve(vid);
+                        } else {
+                            vid.pause();
                         }
                     });
                 }, {
-                    rootMargin: '25px' // Further reduced to prevent premature loading
+                    rootMargin: '25px'
                 });
                 
                 thumbObserver.observe(video);
@@ -569,18 +567,18 @@ function initGallery() {
                         if (!isInitialized) {
                             isInitialized = true;
                             startCycling();
+                        } else if (!cycleInterval) {
+                            cycleInterval = setInterval(switchToNextImage, 4000);
                         }
-                        thumbObserver.unobserve(thumb);
                     } else {
                         if (cycleInterval) {
                             clearInterval(cycleInterval);
                             cycleInterval = null;
                         }
-                        isInitialized = false;
                     }
                 });
             }, {
-                rootMargin: '25px' // Further reduced to prevent premature loading
+                rootMargin: '25px'
             });
             
             thumb.style.position = 'relative';

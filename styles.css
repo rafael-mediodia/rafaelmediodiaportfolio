@@ -284,13 +284,14 @@ body.safari-no-custom-cursor * {
 .field-slideshow-container {
     position: relative;
     width: 100%;
+    contain: layout paint;
 }
 
 .field-slideshow-img {
     width: 100%;
     display: block;
     opacity: 0;
-    transition: opacity 1s ease-in-out;
+    transition: opacity 0.65s ease-in-out;
     pointer-events: none;
     cursor: pointer;
     position: absolute;

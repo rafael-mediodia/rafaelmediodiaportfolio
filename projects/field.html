@@ -50,11 +50,15 @@
     <div class="project-images-panel">
         <video data-src="../Field/Field-Thumbnail.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Musician interview intro featuring Audrey Hobert."></video>
         
-        <video data-src="../Field/FieldFleurons-1.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Fleurons typeface: lowercase glyphs"></video>
+        <!-- Storybook slideshow -->
+        <div class="field-slideshow-container" data-caption="Storybook and fairy-tale visual language">
+            <img class="field-slideshow-img field-slideshow-active" data-src="../Field/field-storybook-1.jpg" alt="Field storybook 1">
+            <img class="field-slideshow-img" data-src="../Field/field-storybook-2.jpg" alt="Field storybook 2">
+            <img class="field-slideshow-img" data-src="../Field/field-storybook-3.jpg" alt="Field storybook 3">
+            <img class="field-slideshow-img" data-src="../Field/fieldstorybook-4.jpg" alt="Field storybook 4">
+        </div>
         
-        <video data-src="../Field/FieldFleurons-2.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Fleurons typeface: uppercase glyphs"></video>
-        
-        <!-- Combined Slideshow -->
+        <!-- Website slideshow -->
         <div class="field-slideshow-container" data-caption="Website homepage and article designs">
             <img class="field-slideshow-img field-slideshow-active" data-src="../Field/field-homepage-1.png" alt="Field Homepage 1">
             <img class="field-slideshow-img" data-src="../Field/field-homepage-2.png" alt="Field Homepage 2">
@@ -63,87 +67,140 @@
             <img class="field-slideshow-img" data-src="../Field/field-article-1.png" alt="Field Article">
         </div>
         
+        <video data-src="../Field/Field-ArtistIntros.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Artist interview intro sequences"></video>
+        
+        <video data-src="../Field/FieldFleurons-1.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Fleurons typeface: lowercase glyphs"></video>
+        
+        <video data-src="../Field/FieldFleurons-2.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Fleurons typeface: uppercase glyphs"></video>
+        
         <img data-src="../Field/Field-CD.png" alt="Field CD" data-caption="CD packaging design">
         
         <img data-src="../Field/field-hiring.png" alt="Field Hiring" data-caption="Hiring social media post.">
     </div>
     
     <script>
-        // Lazy load project videos with improved Safari support
+        // Videos: lazy src + only ONE plays at a time (most visible) to avoid decoder overload
         document.addEventListener('DOMContentLoaded', () => {
-            const videos = document.querySelectorAll('.project-images-panel video[data-src]');
+            const fieldVideos = Array.from(document.querySelectorAll('.project-images-panel video'));
             const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            const videoRatios = new Map();
+            fieldVideos.forEach((v) => videoRatios.set(v, 0));
+            
+            function tryPlayVideo(video) {
+                const go = () => video.play().catch(() => {});
+                if (video.readyState >= 2) {
+                    go();
+                } else if (isSafari) {
+                    video.addEventListener('canplaythrough', go, { once: true });
+                    video.addEventListener('loadeddata', go, { once: true });
+                } else {
+                    video.addEventListener('loadeddata', go, { once: true });
+                }
+            }
             
             const videoObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const video = entry.target;
-                        const videoSrc = video.getAttribute('data-src');
-                        if (!videoSrc) return;
-                        
+                entries.forEach((entry) => {
+                    videoRatios.set(entry.target, entry.intersectionRatio);
+                });
+                
+                let bestVideo = null;
+                let bestRatio = 0;
+                videoRatios.forEach((ratio, v) => {
+                    if (ratio > bestRatio) {
+                        bestRatio = ratio;
+                        bestVideo = v;
+                    }
+                });
+                
+                fieldVideos.forEach((video) => {
+                    const ratio = videoRatios.get(video) || 0;
+                    const videoSrc = video.getAttribute('data-src');
+                    
+                    if (videoSrc && ratio > 0.02) {
                         video.src = videoSrc;
                         video.removeAttribute('data-src');
-                        
-                        // Safari needs more explicit loading
-                        if (isSafari) {
-                            video.preload = 'auto';
-                            video.load();
-                            
-                            // Wait for canplaythrough for better Safari compatibility
-                            const playVideo = () => {
-                                video.play().catch(() => {
-                                    // Autoplay blocked - this is expected
-                                });
-                            };
-                            
-                            if (video.readyState >= 3) {
-                                playVideo();
-                            } else {
-                                video.addEventListener('canplaythrough', playVideo, { once: true });
-                                video.addEventListener('loadeddata', playVideo, { once: true });
-                            }
-                        } else {
+                        video.preload = isSafari ? 'auto' : 'metadata';
                         video.load();
-                            video.addEventListener('loadeddata', () => {
-                                video.play().catch(() => {
-                                    // Autoplay blocked
-                                });
-                            }, { once: true });
-                        }
-                        
-                        videoObserver.unobserve(video);
+                    }
+                    
+                    if (!video.src) return;
+                    
+                    if (video === bestVideo && bestRatio > 0.12) {
+                        tryPlayVideo(video);
+                    } else {
+                        video.pause();
                     }
                 });
-            }, { rootMargin: '100px' });
+            }, {
+                rootMargin: '0px',
+                threshold: [0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.45, 0.6, 0.75, 1]
+            });
             
-            videos.forEach(video => videoObserver.observe(video));
+            fieldVideos.forEach((video) => videoObserver.observe(video));
             
-            // Initialize homepage slideshow
-            const slideshowContainer = document.querySelector('.field-slideshow-container');
-            if (slideshowContainer) {
+            // Field slideshows: advance only while visible; respect reduced motion
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            document.querySelectorAll('.field-slideshow-container').forEach((slideshowContainer, slideshowIdx) => {
                 const slideshowImages = slideshowContainer.querySelectorAll('.field-slideshow-img');
+                if (slideshowImages.length === 0) return;
+                
                 let currentSlideIndex = 0;
+                let slideStartDelayId = null;
+                let slideIntervalId = null;
                 
-                // Load all slideshow images immediately
-                slideshowImages.forEach((img) => {
-                    if (img.hasAttribute('data-src')) {
-                        img.src = img.getAttribute('data-src');
-                        img.removeAttribute('data-src');
-                    }
-                });
+                // Load active slide only; other slides load right before they appear (saves memory decode)
+                const firstVisible = slideshowContainer.querySelector('.field-slideshow-active') || slideshowImages[0];
+                if (firstVisible && firstVisible.hasAttribute('data-src')) {
+                    firstVisible.decoding = 'async';
+                    firstVisible.src = firstVisible.getAttribute('data-src');
+                    firstVisible.removeAttribute('data-src');
+                }
                 
-                // Cycle through slides
                 function showNextSlide() {
+                    const nextIndex = (currentSlideIndex + 1) % slideshowImages.length;
+                    const nextImg = slideshowImages[nextIndex];
+                    if (nextImg.hasAttribute('data-src')) {
+                        nextImg.decoding = 'async';
+                        nextImg.src = nextImg.getAttribute('data-src');
+                        nextImg.removeAttribute('data-src');
+                    }
                     slideshowImages[currentSlideIndex].classList.remove('field-slideshow-active');
-                    currentSlideIndex = (currentSlideIndex + 1) % slideshowImages.length;
+                    currentSlideIndex = nextIndex;
                     slideshowImages[currentSlideIndex].classList.add('field-slideshow-active');
                 }
                 
-                // Start slideshow after a delay (3 seconds per slide)
-                setTimeout(() => {
-                    setInterval(showNextSlide, 3000);
-                }, 3000);
-            }
+                function startSlideshow() {
+                    if (reduceMotion || slideStartDelayId || slideIntervalId) return;
+                    const staggerMs = slideshowIdx * 1400;
+                    slideStartDelayId = setTimeout(() => {
+                        slideStartDelayId = null;
+                        slideIntervalId = setInterval(showNextSlide, 3800);
+                    }, 2800 + staggerMs);
+                }
+                
+                function stopSlideshow() {
+                    if (slideStartDelayId) {
+                        clearTimeout(slideStartDelayId);
+                        slideStartDelayId = null;
+                    }
+                    if (slideIntervalId) {
+                        clearInterval(slideIntervalId);
+                        slideIntervalId = null;
+                    }
+                }
+                
+                const slideObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((e) => {
+                        if (e.isIntersecting) {
+                            startSlideshow();
+                        } else {
+                            stopSlideshow();
+                        }
+                    });
+                }, { rootMargin: '60px', threshold: 0.08 });
+                
+                slideObserver.observe(slideshowContainer);
+            });
             
             // Lazy load project images
             const images = document.querySelectorAll('.project-images-panel img[data-src]');

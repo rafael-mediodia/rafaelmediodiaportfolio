@@ -14,7 +14,12 @@ const motionVideos = [
     { file: 'girldinneranimation2-gs-color-addedtext.mp4', tooltip: 'Girl Dinner Titlecard' },
     { file: 'WoodlandArtFair/WoodlandArtFairMain.mp4', tooltip: 'Woodland Art Fair' },
     { file: 'Chemistry.mp4', tooltip: 'Movement Exploration' },
-    { file: 'EXPIRATIONDATE-POST-GREEN.mp4', tooltip: 'Expiration Date' }
+    { file: 'EXPIRATIONDATE-POST-GREEN.mp4', tooltip: 'Expiration Date' },
+    { file: 'DingDongProductions.mp4', tooltip: 'Ding Dong Productions' },
+    { file: 'MagicalMischief.mp4', tooltip: 'Magical Mischief' },
+    { file: 'StudioRafael.mp4', tooltip: 'Studio Rafael' },
+    { file: 'cutitout.mp4', tooltip: 'Cut It Out' },
+    { file: 'newstar!studio.mp4', tooltip: 'New Star Studio' }
 ];
 
 function getMotionVideoFile(videoData) {
@@ -67,21 +72,34 @@ function initMotionFeatured() {
     featuredVideo.setAttribute('muted', '');
     featuredVideo.className = 'motion-featured-video';
     
+    let featuredCycleInterval = null;
+    
+    function startFeaturedCycle() {
+        if (shuffledVideos.length <= 1 || featuredCycleInterval) return;
+        featuredCycleInterval = setInterval(() => {
+            currentFeaturedIndex = (currentFeaturedIndex + 1) % shuffledVideos.length;
+            featuredVideo.src = shuffledVideos[currentFeaturedIndex];
+            featuredVideo.load();
+            featuredVideo.play().catch(() => {});
+        }, 5000);
+    }
+    
+    function stopFeaturedCycle() {
+        if (featuredCycleInterval) {
+            clearInterval(featuredCycleInterval);
+            featuredCycleInterval = null;
+        }
+    }
+    
     const featuredObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 if (isSafariMotion) {
                     featuredVideo.preload = 'auto';
                 }
-                featuredVideo.load();
-                
-                // Safari needs canplaythrough for better compatibility
                 const playVideo = () => {
-                    featuredVideo.play().catch(() => {
-                        // Autoplay blocked
-                    });
+                    featuredVideo.play().catch(() => {});
                 };
-                
                 if (isSafariMotion) {
                     if (featuredVideo.readyState >= 3) {
                         playVideo();
@@ -89,35 +107,25 @@ function initMotionFeatured() {
                         featuredVideo.addEventListener('canplaythrough', playVideo, { once: true });
                         featuredVideo.addEventListener('loadeddata', playVideo, { once: true });
                     }
+                } else if (featuredVideo.readyState >= 2) {
+                    playVideo();
                 } else {
                     featuredVideo.addEventListener('loadeddata', playVideo, { once: true });
                 }
+                startFeaturedCycle();
+            } else {
+                featuredVideo.pause();
+                stopFeaturedCycle();
             }
         });
-    }, { rootMargin: '50px' });
-    
-    featuredObserver.observe(featuredContainer);
+    }, { rootMargin: '80px', threshold: 0.05 });
     
     featuredContainer.appendChild(featuredVideo);
+    featuredObserver.observe(featuredContainer);
     
-    let featuredCycleInterval = null;
-    if (shuffledVideos.length > 1) {
-        featuredCycleInterval = setInterval(() => {
-            currentFeaturedIndex = (currentFeaturedIndex + 1) % shuffledVideos.length;
-            featuredVideo.src = shuffledVideos[currentFeaturedIndex];
-            featuredVideo.load();
-            featuredVideo.play().catch(() => {
-                // Autoplay blocked
-            });
-        }, 5000);
-        
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', () => {
-            if (featuredCycleInterval) {
-                clearInterval(featuredCycleInterval);
-            }
-        });
-    }
+    window.addEventListener('beforeunload', () => {
+        stopFeaturedCycle();
+    });
 }
 
 function initMotionGallery() {
@@ -157,35 +165,27 @@ function initMotionGallery() {
         
         const videoObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
+                const vid = entry.target;
                 if (entry.isIntersecting) {
-                    const vid = entry.target;
                     if (vid.getAttribute('data-src')) {
                         const videoSrc = vid.getAttribute('data-src');
-                        
                         vid.src = videoSrc;
                         vid.removeAttribute('data-src');
-                        
                         if (isSafariMotion) {
                             vid.preload = 'auto';
                         } else {
-                            vid.preload = 'metadata'; // Use metadata for non-Safari browsers
+                            vid.preload = 'metadata';
                         }
                         vid.load();
-                        
                         const handleVideoReady = () => {
                             const duration = vid.duration;
                             if (duration > 3) {
                                 const maxStartTime = Math.max(0, duration - 3);
-                                const randomStart = Math.random() * maxStartTime;
-                                vid.currentTime = randomStart;
+                                vid.currentTime = Math.random() * maxStartTime;
                             }
-                            
                             const playVideo = () => {
-                                vid.play().catch(() => {
-                                    // Autoplay blocked
-                                });
+                                vid.play().catch(() => {});
                             };
-                            
                             if (isSafariMotion && vid.readyState >= 3) {
                                 playVideo();
                             } else if (isSafariMotion) {
@@ -195,18 +195,17 @@ function initMotionGallery() {
                                 playVideo();
                             }
                         };
-                        
-                        if (isSafariMotion) {
-                            vid.addEventListener('canplaythrough', handleVideoReady, { once: true });
-                        }
                         vid.addEventListener('loadedmetadata', handleVideoReady, { once: true });
-                        
-                        videoObserver.unobserve(vid);
+                    } else {
+                        vid.play().catch(() => {});
                     }
+                } else {
+                    vid.pause();
                 }
             });
         }, {
-            rootMargin: '50px' // Reduced from 100px to prevent premature loading
+            rootMargin: '80px',
+            threshold: 0.05
         });
         
         videoObserver.observe(video);
