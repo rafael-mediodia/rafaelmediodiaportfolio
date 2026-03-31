@@ -60,11 +60,11 @@
         <video data-src="../Field/Field-Thumbnail.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Musician interview intro seqeuence."></video>
         
         <!-- Storybook slideshow -->
-        <div class="field-slideshow-container" data-caption="Storybook and fairy-tale visual language established through type and custom glyphs." data-slide-interval="3000">
+        <div class="field-slideshow-container field-storybook-slideshow" data-caption="Storybook and fairy-tale visual language established through type and custom glyphs." data-slide-interval="3000">
             <img class="field-slideshow-img field-slideshow-active" data-src="../Field/field-storybook-1.jpg" alt="Field storybook 1">
             <img class="field-slideshow-img" data-src="../Field/field-storybook-2.jpg" alt="Field storybook 2">
             <img class="field-slideshow-img" data-src="../Field/field-storybook-3.jpg" alt="Field storybook 3">
-            <img class="field-slideshow-img" data-src="../Field/fieldstorybook-4.jpg" alt="Field storybook 4">
+            <img class="field-slideshow-img" data-src="../Field/field-storybook-4.jpg" alt="Field storybook 4">
         </div>
         
         <video data-src="../Field/Field-ArtistIntros.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Artist interview social media main feed posts."></video>
@@ -116,7 +116,7 @@
                     const ratio = videoRatios.get(video) || 0;
                     const videoSrc = video.getAttribute('data-src');
                     
-                    if (videoSrc && ratio > 0.02) {
+                    if (videoSrc && ratio > 0.06) {
                         video.src = videoSrc;
                         video.removeAttribute('data-src');
                         video.preload = isSafari ? 'auto' : 'metadata';
@@ -125,7 +125,12 @@
                     
                     if (!video.src) return;
                     
-                    if (video === bestVideo && bestRatio > 0.12) {
+                    if (document.hidden) {
+                        video.pause();
+                        return;
+                    }
+                    
+                    if (video === bestVideo && bestRatio > 0.22) {
                         tryPlayVideo(video);
                     } else {
                         video.pause();
@@ -157,6 +162,7 @@
                 }
                 
                 function showNextSlide() {
+                    if (document.hidden) return;
                     const nextIndex = (currentSlideIndex + 1) % slideshowImages.length;
                     const nextImg = slideshowImages[nextIndex];
                     if (nextImg.hasAttribute('data-src')) {
@@ -225,6 +231,15 @@
                     imageObserver.observe(img);
                 }
             });
+            
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    fieldVideos.forEach((v) => v.pause());
+                } else {
+                    videoObserver.disconnect();
+                    fieldVideos.forEach((v) => videoObserver.observe(v));
+                }
+            });
         });
     </script>
     
@@ -244,10 +259,10 @@
         </div>
     </div>
     
-    <script src="../cursor.js"></script>
-    <script src="../sidebar.js"></script>
-    <script src="../project-zoom.js"></script>
-    <script src="../project-captions.js"></script>
+    <script src="../cursor.js" defer></script>
+    <script src="../sidebar.js" defer></script>
+    <script src="../project-zoom.js" defer></script>
+    <script src="../project-captions.js" defer></script>
 </body>
 </html>
 

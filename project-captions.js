@@ -3,6 +3,12 @@
 // and displays the caption below the media
 
 document.addEventListener('DOMContentLoaded', () => {
+    requestAnimationFrame(() => {
+        initProjectCaptions();
+    });
+});
+
+function initProjectCaptions() {
     const projectImagesPanel = document.querySelector('.project-images-panel');
     if (!projectImagesPanel) return;
     
@@ -60,4 +66,4 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapper.appendChild(media);
         wrapper.appendChild(captionEl);
     });
-});
+}

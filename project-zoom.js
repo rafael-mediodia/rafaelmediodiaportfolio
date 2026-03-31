@@ -4,6 +4,66 @@ let imageZoomArray = [];
 let currentVideoIndex = 0;
 let videoZoomArray = [];
 
+function normalizeProjectImageUrl(src) {
+    if (!src || src === window.location.href) return '';
+    if (src.startsWith('http') || src.startsWith('//') || src.startsWith('/')) return src;
+    try {
+        return new URL(src, window.location.href).href;
+    } catch {
+        return src;
+    }
+}
+
+function collectGalleryImageSources() {
+    const seen = new Set();
+    const out = [];
+    document.querySelectorAll('.project-images-panel img').forEach((imgEl) => {
+        const raw = imgEl.src || imgEl.getAttribute('data-src') || '';
+        if (!raw || raw === window.location.href) return;
+        const u = normalizeProjectImageUrl(raw);
+        if (!seen.has(u)) {
+            seen.add(u);
+            out.push(u);
+        }
+    });
+    return out;
+}
+
+function closeImageZoomModal() {
+    const modal = document.getElementById('imageZoomModal');
+    if (!modal) return;
+    const zoomedImg = document.getElementById('zoomedImage');
+    modal.style.display = 'none';
+    modal.classList.remove('active');
+    document.body.classList.remove('project-media-modal-open');
+    document.removeEventListener('keydown', handleImageKeydown);
+    requestAnimationFrame(() => {
+        document.body.style.overflow = '';
+        if (zoomedImg) {
+            zoomedImg.style.willChange = 'auto';
+        }
+        window.dispatchEvent(new Event('resize'));
+    });
+}
+
+function closeVideoZoomModal() {
+    const modal = document.getElementById('videoZoomModal');
+    const video = document.getElementById('zoomedVideo');
+    if (!modal) return;
+    modal.style.display = 'none';
+    modal.classList.remove('active');
+    document.body.classList.remove('project-media-modal-open');
+    document.removeEventListener('keydown', handleVideoKeydown);
+    if (video) {
+        video.pause();
+        video.currentTime = 0;
+    }
+    requestAnimationFrame(() => {
+        document.body.style.overflow = '';
+        window.dispatchEvent(new Event('resize'));
+    });
+}
+
 function initProjectImageZoom() {
     const modal = document.getElementById('imageZoomModal');
     if (!modal) return;
@@ -13,21 +73,11 @@ function initProjectImageZoom() {
     
     if (!closeBtn || !img) return;
     
-    const closeModal = () => {
-        modal.style.display = 'none';
-        modal.classList.remove('active');
-        // Use requestAnimationFrame for smoother Safari transitions
-        requestAnimationFrame(() => {
-            document.body.style.overflow = '';
-        });
-        document.removeEventListener('keydown', handleImageKeydown);
-    };
-    
-    closeBtn.addEventListener('click', closeModal);
+    closeBtn.addEventListener('click', closeImageZoomModal);
     
     modal.addEventListener('click', (e) => {
         if (e.target === modal || e.target.closest('.image-zoom-container') === null) {
-            closeModal();
+            closeImageZoomModal();
         }
     });
 }
@@ -38,13 +88,7 @@ function handleImageKeydown(e) {
     } else if (e.key === 'ArrowRight') {
         navigateImage(1);
     } else if (e.key === 'Escape') {
-        const modal = document.getElementById('imageZoomModal');
-        if (modal) {
-            modal.style.display = 'none';
-            modal.classList.remove('active');
-            document.body.style.overflow = '';
-            document.removeEventListener('keydown', handleImageKeydown);
-        }
+        closeImageZoomModal();
     }
 }
 
@@ -89,27 +133,30 @@ function openImageZoom(imageSrc) {
     
     if (!modal || !img) return;
     
-    // Collect all images from the project page (both loaded and unloaded)
-    const projectImages = Array.from(document.querySelectorAll('.project-images-panel img'))
-        .map(imgEl => {
-            // Get src from either src attribute or data-src
-            return imgEl.src || imgEl.getAttribute('data-src') || imgEl.getAttribute('src');
-        })
-        .filter(src => src); // Filter out null/undefined
+    document.querySelectorAll('.project-images-panel video').forEach((v) => v.pause());
+    document.body.classList.add('project-media-modal-open');
+    img.decoding = 'async';
+    img.style.willChange = 'transform, opacity';
     
-    imageZoomArray = projectImages.length > 0 ? projectImages : [imageSrc];
-    currentImageIndex = imageZoomArray.findIndex(src => {
-        if (!src || !imageSrc) return false;
-        return src === imageSrc || 
-               src.endsWith(imageSrc.split('/').pop()) || 
-               imageSrc.endsWith(src.split('/').pop());
+    const projectImages = collectGalleryImageSources();
+    const normalizedClick = normalizeProjectImageUrl(imageSrc);
+    
+    imageZoomArray = projectImages.length > 0 ? projectImages : [normalizedClick];
+    currentImageIndex = imageZoomArray.findIndex((src) => {
+        if (!src || !normalizedClick) return false;
+        const a = normalizeProjectImageUrl(src);
+        const b = normalizedClick;
+        return (
+            a === b ||
+            a.endsWith(b.split('/').pop()) ||
+            b.endsWith(a.split('/').pop())
+        );
     });
     
     if (currentImageIndex === -1) {
         currentImageIndex = 0;
     }
     
-    // Optimize for Safari - use transform instead of opacity for better performance
     img.style.transform = 'scale(0.95)';
     img.style.opacity = '0';
     
@@ -157,23 +204,11 @@ function initProjectVideoZoom() {
     
     if (!closeBtn || !video) return;
     
-    const closeModal = () => {
-        modal.style.display = 'none';
-        modal.classList.remove('active');
-        video.pause();
-        video.currentTime = 0;
-        // Use requestAnimationFrame for smoother Safari transitions
-        requestAnimationFrame(() => {
-            document.body.style.overflow = '';
-        });
-        document.removeEventListener('keydown', handleVideoKeydown);
-    };
-    
-    closeBtn.addEventListener('click', closeModal);
+    closeBtn.addEventListener('click', closeVideoZoomModal);
     
     modal.addEventListener('click', (e) => {
         if (e.target === modal || e.target.closest('.video-zoom-container') === null) {
-            closeModal();
+            closeVideoZoomModal();
         }
     });
 }
@@ -184,16 +219,7 @@ function handleVideoKeydown(e) {
     } else if (e.key === 'ArrowRight') {
         navigateVideo(1);
     } else if (e.key === 'Escape') {
-        const modal = document.getElementById('videoZoomModal');
-        const video = document.getElementById('zoomedVideo');
-        if (modal && video) {
-            modal.style.display = 'none';
-            modal.classList.remove('active');
-            video.pause();
-            video.currentTime = 0;
-            document.body.style.overflow = '';
-            document.removeEventListener('keydown', handleVideoKeydown);
-        }
+        closeVideoZoomModal();
     }
 }
 
@@ -259,6 +285,9 @@ function openVideoZoom(videoSrc, hasControls = false) {
     const video = document.getElementById('zoomedVideo');
     
     if (!modal || !video) return;
+    
+    document.querySelectorAll('.project-images-panel video').forEach((v) => v.pause());
+    document.body.classList.add('project-media-modal-open');
     
     // Collect all videos from the project page (both with src and data-src)
     const projectVideos = Array.from(document.querySelectorAll('.project-images-panel video'))

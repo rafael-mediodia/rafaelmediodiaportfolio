@@ -81,9 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Start initial animation
-    animateCursor();
-    
     // Hover states - use event delegation for better performance
     document.addEventListener('mouseenter', (e) => {
         const target = e.target;

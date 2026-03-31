@@ -35,6 +35,31 @@ document.addEventListener('DOMContentLoaded', () => {
     initMotionFeatured();
     initMotionGallery();
     initVideoZoom();
+    
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            if (featuredVideo) {
+                featuredVideo.pause();
+            }
+            document.querySelectorAll('#motionGallery video').forEach((v) => v.pause());
+        } else {
+            requestAnimationFrame(() => {
+                if (featuredVideo) {
+                    const r = featuredVideo.getBoundingClientRect();
+                    if (r.bottom > 0 && r.top < window.innerHeight) {
+                        featuredVideo.play().catch(() => {});
+                    }
+                }
+                document.querySelectorAll('#motionGallery video').forEach((v) => {
+                    if (v.getAttribute('data-src')) return;
+                    const r = v.getBoundingClientRect();
+                    if (r.bottom > 0 && r.top < window.innerHeight) {
+                        v.play().catch(() => {});
+                    }
+                });
+            });
+        }
+    });
 });
 
 let currentFeaturedIndex = 0;
@@ -77,6 +102,7 @@ function initMotionFeatured() {
     function startFeaturedCycle() {
         if (shuffledVideos.length <= 1 || featuredCycleInterval) return;
         featuredCycleInterval = setInterval(() => {
+            if (document.hidden) return;
             currentFeaturedIndex = (currentFeaturedIndex + 1) % shuffledVideos.length;
             featuredVideo.src = shuffledVideos[currentFeaturedIndex];
             featuredVideo.load();

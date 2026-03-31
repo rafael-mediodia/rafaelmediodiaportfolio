@@ -291,7 +291,7 @@ body.safari-no-custom-cursor * {
     width: 100%;
     display: block;
     opacity: 0;
-    transition: opacity 0.65s ease-in-out;
+    transition: opacity 0.4s ease-in-out;
     pointer-events: none;
     cursor: pointer;
     position: absolute;
@@ -314,6 +314,13 @@ body.safari-no-custom-cursor * {
 .field-slideshow-img.field-slideshow-active:first-child {
     position: relative;
     z-index: 1;
+}
+
+/* Storybook JPGs: richer blacks (JPEGs often look flat vs PNG); shorter fade = less muddy crossfade */
+.field-storybook-slideshow .field-slideshow-img {
+    color-interpolation-filters: sRGB;
+    filter: contrast(1.14) saturate(1.06);
+    transition: opacity 0.22s ease-in-out;
 }
 
 .project-images-panel video {
@@ -723,6 +730,7 @@ body.safari-no-custom-cursor * {
     row-gap: 0.5rem;
     width: 100%;
     max-width: 100%;
+    contain: layout;
 }
 
 /* Motion Gallery */
@@ -773,6 +781,7 @@ body.safari-no-custom-cursor * {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: var(--gap);
     width: 100%;
+    contain: layout;
 }
 
 .illustrations-gallery {
@@ -780,6 +789,7 @@ body.safari-no-custom-cursor * {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: var(--gap);
     width: 100%;
+    contain: layout;
 }
 
 .illustration-item {
@@ -998,6 +1008,11 @@ body:has(.image-zoom-modal[style*="flex"]) .cursor {
     box-shadow: 0 0 0 1px var(--text), 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
+/* Skip painting the media column while lightbox is open (videos, slideshows, filters) */
+body.project-media-modal-open .project-images-panel {
+    visibility: hidden;
+}
+
 
 /* Project Thumbnail */
 .project-thumb {
@@ -1009,6 +1024,7 @@ body:has(.image-zoom-modal[style*="flex"]) .cursor {
     margin: 0;
     padding: 0;
     border: 1px dotted var(--dotted-color);
+    contain: layout paint;
 }
 
 .project-thumb:hover {
@@ -1024,7 +1040,6 @@ body:has(.image-zoom-modal[style*="flex"]) .cursor {
     display: block;
     background: var(--bg);
     image-rendering: auto;
-    will-change: transform;
     /* Maintain aspect ratio while fitting container */
     max-width: 100%;
     max-height: 100%;

@@ -140,9 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
             initSafariPlayOverlay();
         }, 100);
     }
-    // Defer gallery initialization to allow initial render
+    // Defer gallery until after first paint (double rAF) so shell stays responsive
     requestAnimationFrame(() => {
-        initGallery();
+        requestAnimationFrame(() => {
+            initGallery();
+        });
     });
 });
 
@@ -154,17 +156,33 @@ function initSafariPlayOverlay() {
     const hasVisitedBefore = localStorage.getItem('safariHasVisited') === 'true';
     const hasPlayedBefore = localStorage.getItem('safariVideosPlayed') === 'true';
     
-    // Function to play all videos
     const playAllVideos = () => {
-        const videos = document.querySelectorAll('video');
-        videos.forEach(video => {
-            if (video.paused) {
-                video.play().catch(() => {
-                    // If autoplay fails, that's okay
-                });
+        document.querySelectorAll('#gallery video').forEach((video) => {
+            const lazySrc = video.getAttribute('data-src');
+            if (lazySrc && !video.src) {
+                video.src = lazySrc;
+                video.removeAttribute('data-src');
+                const start = video.getAttribute('data-clip-start');
+                if (start !== null) {
+                    const end = parseFloat(video.getAttribute('data-clip-end'), 10);
+                    const t0 = parseFloat(start, 10);
+                    video.addEventListener('loadedmetadata', () => {
+                        video.currentTime = t0;
+                        const loopClip = () => {
+                            if (video.currentTime >= end) {
+                                video.currentTime = t0;
+                            }
+                        };
+                        video.addEventListener('timeupdate', loopClip);
+                    }, { once: true });
+                }
+                if (isSafari) {
+                    video.preload = 'auto';
+                }
+                video.load();
             }
+            video.play().catch(() => {});
         });
-        // Remember that user has played videos
         localStorage.setItem('safariVideosPlayed', 'true');
     };
     
@@ -223,8 +241,6 @@ function initGallery() {
             tooltip.appendChild(tooltipTitle);
             tooltip.appendChild(tooltipSubtitle);
             document.body.appendChild(tooltip);
-            // Initialize positioning
-            tooltip.style.willChange = 'left, top, opacity';
         }
         return tooltip;
     };
@@ -407,12 +423,11 @@ function initGallery() {
             
             if (isVideo) {
                 const video = document.createElement('video');
-                // Set attributes BEFORE setting src for Safari
                 video.muted = true;
                 video.loop = true;
                 video.playsInline = true;
                 video.autoplay = true;
-                video.preload = 'metadata'; // Keep metadata for single video thumbnails
+                video.preload = 'none';
                 video.setAttribute('playsinline', '');
                 video.setAttribute('webkit-playsinline', '');
                 video.setAttribute('loop', '');
@@ -421,27 +436,45 @@ function initGallery() {
                 video.setAttribute('disablePictureInPicture', '');
                 video.setAttribute('disableRemotePlayback', '');
                 video.setAttribute('x-webkit-airplay', 'deny');
-                // Force Safari to not show controls
                 video.controls = false;
-                // Now set src
-                video.src = project.thumbnail;
-                
+                video.setAttribute('data-src', project.thumbnail);
                 if (project.id === 'project-6' && project.thumbnailStartTime !== undefined) {
-                    video.addEventListener('loadedmetadata', () => {
-                        video.currentTime = project.thumbnailStartTime;
+                    video.setAttribute('data-clip-start', String(project.thumbnailStartTime));
+                    video.setAttribute('data-clip-end', String(project.thumbnailEndTime));
+                }
+                
+                function attachClipLoop(vid) {
+                    const start = vid.getAttribute('data-clip-start');
+                    if (start === null) return;
+                    const end = parseFloat(vid.getAttribute('data-clip-end'), 10);
+                    const t0 = parseFloat(start, 10);
+                    vid.addEventListener('loadedmetadata', () => {
+                        vid.currentTime = t0;
                         const loopClip = () => {
-                            if (video.currentTime >= project.thumbnailEndTime) {
-                                video.currentTime = project.thumbnailStartTime;
+                            if (vid.currentTime >= end) {
+                                vid.currentTime = t0;
                             }
                         };
-                        video.addEventListener('timeupdate', loopClip);
-                    });
+                        vid.addEventListener('timeupdate', loopClip);
+                    }, { once: true });
                 }
                 
                 const thumbObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const vid = entry.target;
+                        const lazySrc = vid.getAttribute('data-src');
                         if (entry.isIntersecting) {
+                            if (lazySrc && !vid.src) {
+                                vid.src = lazySrc;
+                                vid.removeAttribute('data-src');
+                                attachClipLoop(vid);
+                                if (isSafari) {
+                                    vid.preload = 'auto';
+                                } else {
+                                    vid.preload = 'metadata';
+                                }
+                            }
+                            if (!vid.src) return;
                             if (isSafari) {
                                 vid.preload = 'auto';
                             }
@@ -465,7 +498,7 @@ function initGallery() {
                         }
                     });
                 }, {
-                    rootMargin: '25px'
+                    rootMargin: '120px'
                 });
                 
                 thumbObserver.observe(video);
@@ -616,12 +649,14 @@ function initGallery() {
                 thumb.addEventListener('mouseleave', () => {
                     if (rafId) cancelAnimationFrame(rafId);
                     tip.style.opacity = '0';
+                    tip.style.willChange = 'auto';
                 });
             }
             const tip = getTooltip();
             // Always update tooltip content when hovering over a thumbnail
             tooltipTitle.textContent = project.title;
             tooltipSubtitle.textContent = project.subtitle;
+            tip.style.willChange = 'left, top, opacity';
             tip.style.opacity = '1';
             // Use left/top for fixed positioning
             tip.style.left = (e.clientX + 5) + 'px';
@@ -635,4 +670,22 @@ function initGallery() {
     
     // Batch append all thumbnails at once
     gallery.appendChild(fragment);
+    
+    function resumeVisibleGalleryVideos() {
+        document.querySelectorAll('#gallery video').forEach((v) => {
+            if (!v.src) return;
+            const r = v.getBoundingClientRect();
+            if (r.bottom > 0 && r.top < window.innerHeight) {
+                v.play().catch(() => {});
+            }
+        });
+    }
+    
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            document.querySelectorAll('#gallery video').forEach((v) => v.pause());
+        } else {
+            resumeVisibleGalleryVideos();
+        }
+    });
 }
