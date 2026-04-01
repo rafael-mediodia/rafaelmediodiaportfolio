@@ -42,8 +42,8 @@ const projects = [
         subtitle: 'A reflection for immigrants in the United States.',
         thumbnail: null,
         thumbnailImages: [
-            'SelfDeclaration/DS3UNIT17_23.jpg',
-            'SelfDeclaration/DS3UNIT17_19.jpg'
+            'SelfDeclaration/Self-Declaration_4.jpg',
+            'SelfDeclaration/Self-Declaration_1.jpg'
         ],
         page: 'projects/self-declaration.html'
     },
