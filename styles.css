@@ -346,6 +346,55 @@ body.safari-no-custom-cursor * {
     pointer-events: auto;
 }
 
+/* Portrait / story-format videos: cap height, center; pair side-by-side on wide viewports */
+.project-portrait-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing);
+    width: 100%;
+}
+
+@media (min-width: 900px) {
+    .project-portrait-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.project-portrait-row .project-image-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+}
+
+.project-images-panel .project-image-wrapper:has(> .project-video-portrait) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.project-images-panel video.project-video-portrait {
+    width: auto;
+    max-width: min(100%, 400px);
+    max-height: min(88vh, 860px);
+    height: auto;
+    object-fit: contain;
+    background: var(--bg);
+}
+
+@media (min-width: 900px) {
+    .project-portrait-row .project-video-portrait {
+        max-width: 100%;
+        max-height: min(78vh, 720px);
+    }
+}
+
+@media (max-width: 768px) {
+    .project-images-panel video.project-video-portrait {
+        max-height: min(82vh, 720px);
+    }
+}
+
 .vimeo-embed-container {
     position: relative;
     width: 100%;
