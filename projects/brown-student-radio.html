@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brown Student Radio — Brand Identity System - Rafael Mediodia</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="cursor"></div>
+    
+    <div class="info-container">
+        <!-- Sidebar content will be injected here -->
+    </div>
+    
+    <div class="project-text-panel">
+        <a href="../index.html" class="project-back-link">← back</a>
+        <div class="project-header">
+            <h1 class="project-title">Brown Student Radio — Brand Identity System (Ongoing)</h1>
+            <div class="project-blurb">
+                <p>An evolving catalogue of work created for Brown University's student-run radio station.</p>
+                <p>I collaborated with the team to shape and implement a cohesive brand identity, developing visual assets and design guidelines.</p>
+                <p>Those assets and guidelines connect the station's eclectic programming with a playful, unified voice.</p>
+            </div>
+        </div>
+        
+        <div class="project-meta">
+            <div class="project-meta-item">
+                <div class="project-meta-label">Year</div>
+                <div class="project-meta-value">Ongoing</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Role</div>
+                <div class="project-meta-value">Designer</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Client</div>
+                <div class="project-meta-value">Brown Student Radio</div>
+            </div>
+        </div>
+        
+        <div class="project-text-content">
+            <div class="project-section">
+                <div class="project-text">
+                    <p>Set in MNKY Maurice.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="project-images-panel">
+        <video data-src="../Brown%20Student%20Radio/BSR420_MainFeed.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Main-feed motion for social — landscape format for the BSR420 campaign."></video>
+        <video data-src="../Brown%20Student%20Radio/BSR420_Story%3AReel.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Story and reel motion — vertical graphics built for the story-native placement."></video>
+        <video data-src="../Brown%20Student%20Radio/BrownCouchSeries.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Intro motion for Brown Couch Series — a Brown Student Radio podcast."></video>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const videos = document.querySelectorAll('.project-images-panel video[data-src]');
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const video = entry.target;
+                        const videoSrc = video.getAttribute('data-src');
+                        if (!videoSrc) return;
+                        
+                        video.src = videoSrc;
+                        video.removeAttribute('data-src');
+                        
+                        if (isSafari) {
+                            video.preload = 'auto';
+                            video.load();
+                            const playVideo = () => {
+                                video.play().catch(() => {});
+                            };
+                            if (video.readyState >= 3) {
+                                playVideo();
+                            } else {
+                                video.addEventListener('canplaythrough', playVideo, { once: true });
+                                video.addEventListener('loadeddata', playVideo, { once: true });
+                            }
+                        } else {
+                            video.load();
+                            video.addEventListener('loadeddata', () => {
+                                video.play().catch(() => {});
+                            }, { once: true });
+                        }
+                        
+                        videoObserver.unobserve(video);
+                    }
+                });
+            }, { rootMargin: '100px' });
+            
+            videos.forEach(video => videoObserver.observe(video));
+        });
+    </script>
+    
+    <div class="video-zoom-modal" id="videoZoomModal">
+        <div class="video-zoom-close" id="videoZoomClose"></div>
+        <div class="video-zoom-container">
+            <video id="zoomedVideo" muted loop playsinline webkit-playsinline></video>
+        </div>
+    </div>
+    
+    <script src="../cursor.js" defer></script>
+    <script src="../sidebar.js" defer></script>
+    <script src="../project-zoom.js" defer></script>
+    <script src="../project-captions.js" defer></script>
+</body>
+</html>

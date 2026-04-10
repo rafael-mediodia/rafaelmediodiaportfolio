@@ -1160,6 +1160,10 @@ video:not([controls])::-webkit-media-controls-play-button {
     object-fit: cover;
 }
 
+.project-thumb[data-project-id="project-brown-student-radio"] video {
+    object-fit: cover;
+}
+
 /* Safari play overlay */
 .safari-play-overlay {
     position: fixed;
@@ -1357,6 +1361,7 @@ video:not([controls])::-webkit-media-controls-play-button {
     font-size: 24px;
     margin-bottom: 1rem;
     font-weight: normal;
+    text-wrap: balance;
 }
 
 .project-blurb {
@@ -1364,6 +1369,8 @@ video:not([controls])::-webkit-media-controls-play-button {
     margin-bottom: 2rem;
     line-height: 1.8;
     text-wrap: pretty;
+    hyphens: auto;
+    -webkit-hyphens: auto;
 }
 
 .project-blurb p {

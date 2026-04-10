@@ -62,16 +62,17 @@ const projects = [
         page: 'projects/breakout-games.html'
     },
     {
+        id: 'project-brown-student-radio',
+        title: 'Brown Student Radio',
+        subtitle: 'Brand identity system (ongoing) for Brown University\'s student-run radio — collaborative identity, assets, and guidelines.',
+        thumbnail: 'Brown Student Radio/BSR_Thumbnail.mp4',
+        page: 'projects/brown-student-radio.html'
+    },
+    {
         id: 'project-risd-gdees',
         title: "RISD GDee's",
-        subtitle: 'Identity and motion for RISD GD\'s inaugural on-screen student showcase.',
-        thumbnail: null,
-        thumbnailVideos: [
-            "RISDGDee's/TheRISDGDee's_MainFeedPromo.mp4",
-            "RISDGDee's/16 by 9 reel.mp4",
-            "RISDGDee's/storyreel.mp4",
-            "RISDGDee's/AdMain-Story.mp4"
-        ],
+        subtitle: 'Identity and motion (ongoing) for RISD GD\'s inaugural on-screen student showcase.',
+        thumbnail: "RISDGDee's/RISDGDee's_Thumbnail.mp4",
         page: 'projects/risd-gdees.html'
     },
     {
@@ -291,7 +292,7 @@ function initGallery() {
                 video.style.left = '0';
                 video.style.width = '100%';
                 video.style.height = '100%';
-                video.style.objectFit = 'contain';
+                video.style.objectFit = 'cover';
                 video.style.transition = 'opacity 0.3s ease';
                 video.style.willChange = 'opacity';
                 video.style.backfaceVisibility = 'hidden';
