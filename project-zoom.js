@@ -312,7 +312,7 @@ function openVideoZoom(videoSrc, hasControls = false) {
             }
             return {
                 src: src,
-                hasControls: vid.hasAttribute('controls')
+                hasControls: vid.hasAttribute('controls') || vid.getAttribute('data-modal-controls') === 'true'
             };
         })
         .filter(v => v.src && v.src !== window.location.href); // Filter out videos without valid src
@@ -336,6 +336,10 @@ function openVideoZoom(videoSrc, hasControls = false) {
     video.src = currentVideo.src;
     if (currentVideo.hasControls) {
         video.setAttribute('controls', '');
+        video.removeAttribute('muted');
+        video.removeAttribute('loop');
+        video.muted = false;
+        video.loop = false;
     } else {
         video.removeAttribute('controls');
         // For autoplay videos, ensure they have the right attributes
@@ -361,11 +365,9 @@ function openVideoZoom(videoSrc, hasControls = false) {
             
             // Handle video loading with better error handling
             const handleVideoLoad = () => {
-                if (!currentVideo.hasControls) {
-                    video.play().catch(() => {
-                        // Autoplay blocked - this is expected in some browsers
-                    });
-                }
+                video.play().catch(() => {
+                    // Autoplay blocked - this is expected in some browsers
+                });
                 video.style.transform = 'scale(1)';
                 video.style.opacity = '1';
             };
@@ -456,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             if (videoSrc && videoSrc !== window.location.href) {
-                const hasControls = vid.hasAttribute('controls');
+                const hasControls = vid.hasAttribute('controls') || vid.getAttribute('data-modal-controls') === 'true';
                 openVideoZoom(videoSrc, hasControls);
             }
         }, { passive: false });
