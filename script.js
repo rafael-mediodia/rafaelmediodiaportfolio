@@ -62,12 +62,17 @@ const projects = [
         page: 'projects/breakout-games.html'
     },
     {
-        id: 'project-upstream',
-        title: 'upstream (COMING SOON)',
-        subtitle: 'Speculative service to watch bodies of water.',
-        thumbnail: 'upstream/Upstream-Motion.mp4',
-        page: 'projects/upstream.html',
-        inProgress: true // Flag to prevent navigation
+        id: 'project-risd-gdees',
+        title: "RISD GDee's",
+        subtitle: 'Identity and motion for RISD GD\'s inaugural on-screen student showcase.',
+        thumbnail: null,
+        thumbnailVideos: [
+            "RISDGDee's/TheRISDGDee's_MainFeedPromo.mp4",
+            "RISDGDee's/16 by 9 reel.mp4",
+            "RISDGDee's/storyreel.mp4",
+            "RISDGDee's/AdMain-Story.mp4"
+        ],
+        page: 'projects/risd-gdees.html'
     },
     {
         id: 'project-8',

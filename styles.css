@@ -1156,9 +1156,8 @@ video:not([controls])::-webkit-media-controls-play-button {
     /* Field fills the container */
 }
 
-.project-thumb[data-project-id="project-upstream"] video {
+.project-thumb[data-project-id="project-risd-gdees"] video {
     object-fit: cover;
-    /* Upstream fills the container */
 }
 
 /* Safari play overlay */
@@ -1364,6 +1363,15 @@ video:not([controls])::-webkit-media-controls-play-button {
     font-size: 14px;
     margin-bottom: 2rem;
     line-height: 1.8;
+    text-wrap: pretty;
+}
+
+.project-blurb p {
+    margin: 0 0 0.65em;
+}
+
+.project-blurb p:last-child {
+    margin-bottom: 0;
 }
 
 

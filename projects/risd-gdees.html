@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>upstream (WIP) - Rafael Mediodia</title>
+    <title>RISD GDee's - Rafael Mediodia</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="stylesheet" href="../styles.css">
 </head>
@@ -17,42 +17,46 @@
     <div class="project-text-panel">
         <a href="../index.html" class="project-back-link">← back</a>
         <div class="project-header">
-            <h1 class="project-title">upstream (WIP)</h1>
-            <p class="project-blurb">
-                Speculative service to watch bodies of water.
-            </p>
+            <h1 class="project-title">RISD GDee's</h1>
+            <div class="project-blurb">
+                <p>Visual identity and motion for GDee's: RISD Graphic Design's inaugural on-screen showcase of student time-based work.</p>
+                <p>Key art, motion for social feed and story, and landscape and portrait reels for the April screening in the GD Commons.</p>
+            </div>
         </div>
         
         <div class="project-meta">
             <div class="project-meta-item">
                 <div class="project-meta-label">Year</div>
-                <div class="project-meta-value">2025</div>
+                <div class="project-meta-value">2026</div>
             </div>
             <div class="project-meta-item">
                 <div class="project-meta-label">Role</div>
-                <div class="project-meta-value">Designer, Developer</div>
+                <div class="project-meta-value">Designer</div>
             </div>
             <div class="project-meta-item">
-                <div class="project-meta-label">Type</div>
-                <div class="project-meta-value">Service Design</div>
+                <div class="project-meta-label">Client</div>
+                <div class="project-meta-value">RISD Graphic Design</div>
             </div>
         </div>
         
         <div class="project-text-content">
             <div class="project-section">
                 <div class="project-text">
-                    <p>In progress.</p>
+                    <p>Set in Gal Gothic.</p>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="project-images-panel">
-        <video data-src="../upstream/Upstream-Motion.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Service motion piece for speculative water monitoring platform"></video>
+        <video data-src="../RISDGDee%27s/TheRISDGDee%27s_MainFeedPromo.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Primary Instagram feed loop to anchor the campaign and introduces the typographic motion language at full width."></video>
+        <img data-src="../RISDGDee%27s/aArtboard%201_1.jpg" alt="RISD GDee's key art" data-caption="Adaptive logo for different video aspect ratios aiming to represent a sense of theater.">
+        <video data-src="../RISDGDee%27s/16%20by%209%20reel.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="16:9 motion reel for projection and shareable landscape cuts — the identity scaled to a cinematic frame."></video>
+        <video data-src="../RISDGDee%27s/storyreel.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Portrait story reel — separate graphics and layouts built for the story format, not a crop or resize of the landscape work."></video>
+        <video data-src="../RISDGDee%27s/AdMain-Story.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Story-format companion piece; tight vertical composition that pairs with the feed hero for a consistent social set."></video>
     </div>
     
     <script>
-        // Lazy load project videos with improved Safari support
         document.addEventListener('DOMContentLoaded', () => {
             const videos = document.querySelectorAll('.project-images-panel video[data-src]');
             const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -67,18 +71,12 @@
                         video.src = videoSrc;
                         video.removeAttribute('data-src');
                         
-                        // Safari needs more explicit loading
                         if (isSafari) {
                             video.preload = 'auto';
                             video.load();
-                            
-                            // Wait for canplaythrough for better Safari compatibility
                             const playVideo = () => {
-                                video.play().catch(() => {
-                                    // Autoplay blocked - this is expected
-                                });
+                                video.play().catch(() => {});
                             };
-                            
                             if (video.readyState >= 3) {
                                 playVideo();
                             } else {
@@ -86,11 +84,9 @@
                                 video.addEventListener('loadeddata', playVideo, { once: true });
                             }
                         } else {
-                        video.load();
+                            video.load();
                             video.addEventListener('loadeddata', () => {
-                                video.play().catch(() => {
-                                    // Autoplay blocked
-                                });
+                                video.play().catch(() => {});
                             }, { once: true });
                         }
                         
@@ -101,7 +97,6 @@
             
             videos.forEach(video => videoObserver.observe(video));
             
-            // Lazy load project images
             const images = document.querySelectorAll('.project-images-panel img[data-src]');
             const imageObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -119,7 +114,6 @@
         });
     </script>
     
-    <!-- Image Zoom Modal -->
     <div class="image-zoom-modal" id="imageZoomModal">
         <div class="image-zoom-close" id="imageZoomClose"></div>
         <div class="image-zoom-container">
@@ -127,7 +121,6 @@
         </div>
     </div>
     
-    <!-- Video Zoom Modal -->
     <div class="video-zoom-modal" id="videoZoomModal">
         <div class="video-zoom-close" id="videoZoomClose"></div>
         <div class="video-zoom-container">
