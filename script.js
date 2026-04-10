@@ -62,18 +62,18 @@ const projects = [
         page: 'projects/breakout-games.html'
     },
     {
-        id: 'project-brown-student-radio',
-        title: 'Brown Student Radio',
-        subtitle: 'Brand identity system (ongoing) for Brown University\'s student-run radio — collaborative identity, assets, and guidelines.',
-        thumbnail: 'Brown Student Radio/BSR_Thumbnail.mp4',
-        page: 'projects/brown-student-radio.html'
-    },
-    {
         id: 'project-risd-gdees',
         title: "RISD GDee's",
-        subtitle: 'Identity and motion (ongoing) for RISD GD\'s inaugural on-screen student showcase.',
+        subtitle: 'Ongoing identity and motion for RISD GD\'s student showcase.',
         thumbnail: "RISDGDee's/RISDGDee's_Thumbnail.mp4",
         page: 'projects/risd-gdees.html'
+    },
+    {
+        id: 'project-brown-student-radio',
+        title: 'Brown Student Radio',
+        subtitle: 'Ongoing brand identity for Brown\'s student-run radio.',
+        thumbnail: 'Brown Student Radio/BSR_Thumbnail.mp4',
+        page: 'projects/brown-student-radio.html'
     },
     {
         id: 'project-8',
