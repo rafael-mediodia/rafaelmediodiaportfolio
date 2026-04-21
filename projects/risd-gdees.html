@@ -6,6 +6,31 @@
     <title>RISD GDee's</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="stylesheet" href="../styles.css">
+    <style>
+        .gdees-awards-slideshow {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .gdees-awards-slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.35s ease-in-out;
+            pointer-events: none;
+        }
+
+        .gdees-awards-slide.gdees-awards-slide-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
 </head>
 <body>
     <div class="cursor"></div>
@@ -55,6 +80,14 @@
         <div class="project-portrait-row">
             <video class="project-video-portrait" data-src="../RISDGDee%27s/storyreel.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Portrait story reel — separate graphics and layouts built for the story format, not a crop or resize of the landscape work."></video>
             <video class="project-video-portrait" data-src="../RISDGDee%27s/AdMain-Story.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Story-format companion piece; tight vertical composition that pairs with the feed hero for a consistent social set."></video>
+        </div>
+        <video data-src="../RISDGDee%27s/GDEES_ONSCREEN_PRESHOW.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Campaign language extended into event space."></video>
+        <video data-src="../RISDGDee%27s/NameCardReel.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Namecard animation system used to identify and credit each motion contributor across the screening package."></video>
+        <video data-src="../RISDGDee%27s/RISDGDee%27s_Thumbnail.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Animated thumbnail treatment for digital listings and previews."></video>
+        <div class="gdees-awards-slideshow" data-caption="3D award variations of the GDee's branding created by TypeShop Technician Ed Brown for participant giveaways.">
+            <img class="gdees-awards-slide gdees-awards-slide-active" data-src="../RISDGDee%27s/GDee%27sAwards.png" alt="GDee's 3D awards by Ed Brown">
+            <img class="gdees-awards-slide" data-src="../RISDGDee%27s/GDee%27sAwards_1.png" alt="GDee's 3D award variation one by Ed Brown">
+            <img class="gdees-awards-slide" data-src="../RISDGDee%27s/GDee%27sAwards_2.png" alt="GDee's 3D award variation two by Ed Brown">
         </div>
     </div>
     
@@ -113,6 +146,54 @@
             }, { rootMargin: '100px' });
             
             images.forEach(img => imageObserver.observe(img));
+
+            const awardsSlideshows = document.querySelectorAll('.gdees-awards-slideshow');
+            awardsSlideshows.forEach((slideshow, slideshowIndex) => {
+                const slides = slideshow.querySelectorAll('.gdees-awards-slide');
+                if (slides.length <= 1) return;
+
+                let currentSlideIndex = 0;
+                let startDelayId = null;
+                let intervalId = null;
+                const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                function showNextSlide() {
+                    slides[currentSlideIndex].classList.remove('gdees-awards-slide-active');
+                    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+                    slides[currentSlideIndex].classList.add('gdees-awards-slide-active');
+                }
+
+                function startSlideshow() {
+                    if (reduceMotion || startDelayId || intervalId) return;
+                    startDelayId = setTimeout(() => {
+                        startDelayId = null;
+                        intervalId = setInterval(showNextSlide, 2200);
+                    }, 1200 + slideshowIndex * 500);
+                }
+
+                function stopSlideshow() {
+                    if (startDelayId) {
+                        clearTimeout(startDelayId);
+                        startDelayId = null;
+                    }
+                    if (intervalId) {
+                        clearInterval(intervalId);
+                        intervalId = null;
+                    }
+                }
+
+                const slideshowObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            startSlideshow();
+                        } else {
+                            stopSlideshow();
+                        }
+                    });
+                }, { rootMargin: '60px', threshold: 0.1 });
+
+                slideshowObserver.observe(slideshow);
+            });
         });
     </script>
     
