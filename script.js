@@ -48,25 +48,18 @@ const projects = [
         page: 'projects/self-declaration.html'
     },
     {
-        id: 'project-1',
-        title: 'Pinoy Plus',
-        subtitle: 'A campaign for mga Pinoy creatives.',
-        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
-        page: 'projects/pinoy-plus.html'
-    },
-    {
-        id: 'project-3',
-        title: 'Breakout Games',
-        subtitle: 'Discovery and exploration motion identity work.',
-        thumbnail: 'Breakout/Breakout-Transition.mp4',
-        page: 'projects/breakout-games.html'
-    },
-    {
         id: 'project-risd-gdees',
         title: "RISD GDee's",
         subtitle: 'Ongoing identity and motion for RISD GD\'s student showcase.',
         thumbnail: "RISDGDee's/RISDGDee's_Thumbnail.mp4",
         page: 'projects/risd-gdees.html'
+    },
+    {
+        id: 'project-1',
+        title: 'Pinoy Plus',
+        subtitle: 'A campaign for mga Pinoy creatives.',
+        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
+        page: 'projects/pinoy-plus.html'
     },
     {
         id: 'project-brown-student-radio',
@@ -78,9 +71,16 @@ const projects = [
     {
         id: 'project-providenceland',
         title: 'ProvidenceLand',
-        subtitle: 'Title card for Nora Guttman.',
+        subtitle: 'Title card for Nora Guttman, by Nora Guttman.',
         thumbnail: 'ProvidenceLand/ProvidenceLandTItleCard.mp4',
         page: 'projects/providenceland.html'
+    },
+    {
+        id: 'project-3',
+        title: 'Breakout Games',
+        subtitle: 'Discovery and exploration motion identity work.',
+        thumbnail: 'Breakout/Breakout-Transition.mp4',
+        page: 'projects/breakout-games.html'
     },
     {
         id: 'project-8',
