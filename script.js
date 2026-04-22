@@ -76,6 +76,13 @@ const projects = [
         page: 'projects/brown-student-radio.html'
     },
     {
+        id: 'project-providenceland',
+        title: 'ProvidenceLand',
+        subtitle: 'Title card for Nora Guttman.',
+        thumbnail: 'ProvidenceLand/ProvidenceLandTItleCard.mp4',
+        page: 'projects/providenceland.html'
+    },
+    {
         id: 'project-8',
         title: 'superstition superstition superstition',
         subtitle: 'Film about systems and growing up.',
@@ -113,6 +120,20 @@ const projects = [
         thumbnailStartTime: 2,
         thumbnailEndTime: 4,
         page: 'projects/american-dream-series.html'
+    },
+    {
+        id: 'project-mycelium-titlecard',
+        title: 'Mycelium Title Card',
+        subtitle: 'Film Title for MYCELIUM, by Veronica Egas.',
+        thumbnail: 'MYCELIUM_TITLECARD.mp4',
+        page: 'projects/mycelium-titlecard.html'
+    },
+    {
+        id: 'project-chasing-sunsets',
+        title: 'Chasing Sunsets',
+        subtitle: 'Film Title Card for Chasing Sunsets, by Veronica Egas.',
+        thumbnail: 'CHASINGSUNSETS.mp4',
+        page: 'projects/chasing-sunsets.html'
     },
     {
         id: 'illustrations',

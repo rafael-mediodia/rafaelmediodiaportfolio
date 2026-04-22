@@ -342,6 +342,11 @@ body.safari-no-custom-cursor * {
     pointer-events: auto;
 }
 
+.single-video-project .project-images-panel > video:first-child {
+    position: sticky;
+    top: var(--spacing);
+}
+
 .project-images-panel video[controls] {
     pointer-events: auto;
 }
@@ -1184,6 +1189,20 @@ video:not([controls])::-webkit-media-controls-play-button {
     transition: opacity 0.2s ease;
 }
 
+.project-thumb[data-project-id="project-chasing-sunsets"],
+.project-thumb[data-project-id="project-mycelium-titlecard"],
+.project-thumb[data-project-id="project-providenceland"] {
+    background: #111 !important;
+    border: 1px dotted var(--dotted-color) !important;
+}
+
+.project-thumb[data-project-id="project-chasing-sunsets"] video,
+.project-thumb[data-project-id="project-mycelium-titlecard"] video,
+.project-thumb[data-project-id="project-providenceland"] video {
+    background: #111 !important;
+    transition: opacity 0.2s ease;
+}
+
 .project-thumb[data-project-id="project-8"] {
     background: #d3d2dd !important;
     border: 1px dotted var(--dotted-color) !important;
@@ -1484,9 +1503,6 @@ video:not([controls])::-webkit-media-controls-play-button {
     background: var(--bg);
 }
 
-
-
-
 /* Responsive */
 @media (max-width: 1200px) {
     .project-text-panel {
@@ -1497,6 +1513,7 @@ video:not([controls])::-webkit-media-controls-play-button {
         margin-left: 710px;
         width: calc(100% - 710px);
     }
+
 }
 
 @media (max-width: 768px) {
@@ -1524,7 +1541,11 @@ video:not([controls])::-webkit-media-controls-play-button {
         width: 100%;
         padding: var(--spacing);
     }
-    
+
+    .single-video-project .project-images-panel > video:first-child {
+        position: static;
+    }
+
     .gallery-container {
         margin-left: 0;
         width: 100%;

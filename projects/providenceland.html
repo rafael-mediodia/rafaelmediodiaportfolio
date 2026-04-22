@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Providenceland - Rafael Mediodia</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="cursor"></div>
+
+    <div class="info-container">
+        <!-- Sidebar content will be injected here -->
+    </div>
+
+    <div class="project-text-panel">
+        <a href="../index.html" class="project-back-link">← back</a>
+        <div class="project-header">
+            <h1 class="project-title">Providenceland</h1>
+            <div class="project-blurb">
+                <p>Title card design for Nora Guttman's film, Providenceland.</p>
+                <p>Providenceland is a film about two young knights set out on a quest for the King.</p>
+            </div>
+        </div>
+
+        <div class="project-meta">
+            <div class="project-meta-item">
+                <div class="project-meta-label">Year</div>
+                <div class="project-meta-value">2026</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Role</div>
+                <div class="project-meta-value">Motion Designer</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Type</div>
+                <div class="project-meta-value">Title Card</div>
+            </div>
+        </div>
+
+        <div class="project-section">
+            <div class="project-text">
+                <p>
+                    Handlettering done by Rafael Mediodia!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="project-images-panel">
+        <video data-src="../ProvidenceLand/ProvidenceLandTItleCard.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Final ProvidenceLand title card in motion." style="background: #111;"></video>
+        <img data-src="../ProvidenceLand/FinalTitleCard_Still.png" alt="ProvidenceLand final title card still" data-caption="Final title-card still frame.">
+        <img data-src="../ProvidenceLand/OnceUponATimeHandlettering.png" alt="ProvidenceLand hand lettering exploration" data-caption="Once Upon a Time hand lettering for title card.">
+        <img data-src="../ProvidenceLand/ProvidencelandOptions.png" alt="ProvidenceLand title options" data-caption="Options for title card, exploring medieval blackletter aesthetics.">
+        <img data-src="../ProvidenceLand/FirstPass.png" alt="ProvidenceLand first pass" data-caption="All letterforms are derived from handmade clay experimentations to match the soft and warm tone of the film.">
+        <img data-src="../ProvidenceLand/SecondPass.png" alt="ProvidenceLand second pass" data-caption="Revised pass with capital letter P.">
+        <img data-src="../ProvidenceLand/PR.png" alt="ProvidenceLand visual development" data-caption="This is what the clay looked like before editing it.">
+        <img data-src="../ProvidenceLand/Test1.png" alt="ProvidenceLand test frame one" data-caption="Good things come from practice. This test is a proof of that.">
+        <img data-src="../ProvidenceLand/Test2.jpg" alt="ProvidenceLand test frame two" data-caption="Another test in the learning process. Hahaha.">
+    </div>
+
+    <div class="image-zoom-modal" id="imageZoomModal">
+        <div class="image-zoom-close" id="imageZoomClose"></div>
+        <div class="image-zoom-container">
+            <img id="zoomedImage" alt="Project Image">
+        </div>
+    </div>
+
+    <div class="video-zoom-modal" id="videoZoomModal">
+        <div class="video-zoom-close" id="videoZoomClose"></div>
+        <div class="video-zoom-container">
+            <video id="zoomedVideo" muted loop playsinline webkit-playsinline></video>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const videos = document.querySelectorAll('.project-images-panel video[data-src]');
+            const images = document.querySelectorAll('.project-images-panel img[data-src]');
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    const video = entry.target;
+                    const videoSrc = video.getAttribute('data-src');
+                    if (!videoSrc) return;
+
+                    video.src = videoSrc;
+                    video.removeAttribute('data-src');
+
+                    if (isSafari) {
+                        video.preload = 'auto';
+                    }
+                    video.load();
+                    video.addEventListener('loadeddata', () => {
+                        video.play().catch(() => {});
+                    }, { once: true });
+                    videoObserver.unobserve(video);
+                });
+            }, { rootMargin: '100px' });
+
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    const img = entry.target;
+                    const src = img.getAttribute('data-src');
+                    if (!src) return;
+                    img.src = src;
+                    img.removeAttribute('data-src');
+                    imageObserver.unobserve(img);
+                });
+            }, { rootMargin: '100px' });
+
+            videos.forEach((video) => videoObserver.observe(video));
+            images.forEach((img) => imageObserver.observe(img));
+        });
+    </script>
+
+    <script src="../cursor.js" defer></script>
+    <script src="../sidebar.js" defer></script>
+    <script src="../project-zoom.js" defer></script>
+    <script src="../project-captions.js" defer></script>
+</body>
+</html>
