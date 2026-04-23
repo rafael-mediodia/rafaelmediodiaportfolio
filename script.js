@@ -70,7 +70,7 @@ const projects = [
     },
     {
         id: 'project-providenceland',
-        title: 'ProvidenceLand',
+        title: 'Providenceland',
         subtitle: 'Title card for Nora Guttman, by Nora Guttman.',
         thumbnail: 'ProvidenceLand/ProvidenceLandTItleCard.mp4',
         page: 'projects/providenceland.html'
