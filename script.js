@@ -65,7 +65,7 @@ const projects = [
         id: 'project-brown-student-radio',
         title: 'Brown Student Radio',
         subtitle: 'Ongoing brand identity for Brown\'s student-run radio.',
-        thumbnail: 'Brown Student Radio/BSR_Thumbnail.mp4',
+        thumbnail: 'Brown Student Radio/BSRShirt_thumb.jpg',
         page: 'projects/brown-student-radio.html'
     },
     {
@@ -535,6 +535,7 @@ function initGallery() {
             } else {
                 const img = document.createElement('img');
                 img.loading = 'lazy'; // Lazy load images
+                img.decoding = 'async';
                 img.src = project.thumbnail;
                 img.alt = project.title;
                 thumb.appendChild(img);

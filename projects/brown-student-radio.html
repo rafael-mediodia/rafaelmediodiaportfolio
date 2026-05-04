@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="stylesheet" href="../styles.css">
 </head>
-<body>
+<body class="project-brown-student-radio-page">
     <div class="cursor"></div>
     
     <div class="info-container">
@@ -20,8 +20,7 @@
             <h1 class="project-title">Brown Student Radio</h1>
             <div class="project-blurb">
                 <p>An evolving catalogue of work created for Brown University's student-run radio station.</p>
-                <p>I collaborated with the team to shape and implement a cohesive brand identity, developing visual assets and design guidelines.</p>
-                <p>The balance of guidelines and freedom of expression connect the station's eclectic programming with a playful, unified voice.</p>
+                <p>I collaborated with the team to shape and implement identity that allows for playful experimentation between the illustration and design teams.</p>
             </div>
         </div>
         
@@ -50,6 +49,7 @@
     </div>
     
     <div class="project-images-panel">
+        <img data-src="../Brown%20Student%20Radio/BSRShirt_web.jpg" alt="Brown Student Radio shirt" decoding="async" loading="lazy" data-caption="Shirt made for the BSR 4/20 event with pins of our design team!">
         <video data-src="../Brown%20Student%20Radio/BSR420_MainFeed.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Main-feed motion for social — landscape format for the BSR420 campaign."></video>
         <video class="project-video-portrait" data-src="../Brown%20Student%20Radio/BSR420_Story%3AReel.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Story and reel motion — vertical graphics built for the story-native placement."></video>
         <video data-src="../Brown%20Student%20Radio/BrownCouchSeries.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Intro motion for Brown Couch Series — a Brown Student Radio podcast."></video>
@@ -95,8 +95,30 @@
             }, { rootMargin: '100px' });
             
             videos.forEach(video => videoObserver.observe(video));
+
+            const images = document.querySelectorAll('.project-images-panel img[data-src]');
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const img = entry.target;
+                    const src = img.getAttribute('data-src');
+                    if (!src) return;
+                    img.src = src;
+                    img.removeAttribute('data-src');
+                    imageObserver.unobserve(img);
+                });
+            }, { rootMargin: '100px' });
+
+            images.forEach(img => imageObserver.observe(img));
         });
     </script>
+
+    <div class="image-zoom-modal" id="imageZoomModal">
+        <div class="image-zoom-close" id="imageZoomClose"></div>
+        <div class="image-zoom-container">
+            <img id="zoomedImage" alt="Project Image">
+        </div>
+    </div>
     
     <div class="video-zoom-modal" id="videoZoomModal">
         <div class="video-zoom-close" id="videoZoomClose"></div>
