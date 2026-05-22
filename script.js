@@ -1,31 +1,12 @@
 // Cache browser detection to avoid repeated regex calls
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-// Motion videos for random thumbnail selection
-const motionVideos = [
-    'Motion/LOGO1-FULL.mp4',
-    'Motion/LOGO2-FULL.mp4',
-    'Motion/Whats at the core.mp4',
-    'Motion/Comp 2.mp4',
-    'Motion/Comp 3.mp4',
-    'Motion/RAFAELMEDIODIA_FORMINMOTION.mp4',
-    'Motion/2nd Ad.mp4',
-    'Motion/Bubbles (2).mp4',
-    'Motion/RAFAELMEDIODIA_ASSIGNMENT4_COLORLIGHTSHADOW.mp4',
-    'Motion/girldinneranimation2-gs-color-addedtext.mp4',
-    'WoodlandArtFair/WoodlandArtFairMain.mp4',
-    'Motion/Chemistry.mp4',
-    'Motion/EXPIRATIONDATE-POST-GREEN.mp4',
-    'Motion/DingDongProductions.mp4',
-    'Motion/MagicalMischief.mp4',
-    'Motion/StudioRafael.mp4',
-    'Motion/cutitout.mp4',
-    'Motion/newstar!studio.mp4'
-];
-
-// Get random motion video for thumbnail (changes on each page load)
+// Reuse motion.js list when available (motion.js loads before script.js on homepage)
 function getRandomMotionVideo() {
-    return motionVideos[Math.floor(Math.random() * motionVideos.length)];
+    if (typeof motionVideos !== 'undefined' && motionVideos.length && typeof getMotionVideoSrc === 'function') {
+        return getMotionVideoSrc(motionVideos[Math.floor(Math.random() * motionVideos.length)]);
+    }
+    return 'Motion/LOGO1-FULL.mp4';
 }
 
 const projects = [
@@ -106,13 +87,6 @@ const projects = [
         page: 'projects/bounce-museum.html'
     },
     {
-        id: 'project-7',
-        title: 'Rough Pixel',
-        subtitle: 'A typeface mixing digital and analog worlds.',
-        thumbnail: 'RoughPixel/ROUGHPIXEL_THUMBNAIL.png',
-        page: 'projects/rough-pixel.html'
-    },
-    {
         id: 'project-6',
         title: 'American Dream Series: Part 0',
         subtitle: 'A pilot episode exploring what the American Dream is.',
@@ -148,14 +122,14 @@ const projects = [
             'Illustrations/mockup.jpg',
             'Illustrations/IMG_7604.PNG'
         ],
-        page: 'illustrations.html'
+        archivePanel: 'illustrations'
     },
     {
         id: 'motion',
         title: 'Motion',
         subtitle: 'Take a peek at what I\'ve made move!',
         thumbnail: getRandomMotionVideo(),
-        page: 'motion.html'
+        archivePanel: 'motion'
     },
 ];
 
@@ -280,11 +254,16 @@ function initGallery() {
         thumb.className = 'project-thumb';
         thumb.setAttribute('data-project-id', project.id);
         thumb.onclick = () => {
-            // Don't navigate if project is in progress
             if (project.inProgress) {
                 return;
             }
-            window.location.href = project.page;
+            if (project.archivePanel && typeof window.openArchivePanel === 'function') {
+                window.openArchivePanel(project.archivePanel);
+                return;
+            }
+            if (project.page) {
+                window.location.href = project.page;
+            }
         };
         
         if (project.thumbnailVideos && project.thumbnailVideos.length > 0) {

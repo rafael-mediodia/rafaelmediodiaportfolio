@@ -2,113 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="0; url=index.html#motion">
     <title>Motion - Rafael Mediodia</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="styles.css">
+    <script>window.location.replace('index.html#motion');</script>
 </head>
-<body class="motion-page">
-    <div class="cursor"></div>
-    
-    <div class="info-container">
-        <!-- Sidebar content will be injected here -->
-    </div>
-
-    <main class="gallery-container">
-        <a href="index.html" class="project-back-link">← back</a>
-        <div class="motion-header">
-            <h1 class="motion-title">Motion</h1>
-            <p class="motion-subtitle">Take a peek at what I've made move! (◕‿◕) ✧ ˚ ༘</p>
-        </div>
-        
-        <div class="motion-featured" id="motionFeatured">
-            <!-- Featured video player will be here -->
-        </div>
-        
-        <div class="motion-gallery" id="motionGallery">
-            <!-- Videos will be injected here -->
-        </div>
-    </main>
-    
-    <!-- Video Zoom Modal -->
-    <div class="video-zoom-modal" id="videoZoomModal">
-        <div class="video-zoom-close" id="videoZoomClose"></div>
-        <div class="video-zoom-container">
-            <video id="zoomedVideo" controls></video>
-        </div>
-    </div>
-
-    <!-- Safari video play overlay -->
-    <div class="safari-play-overlay" id="safariPlayOverlay">
-        <button class="safari-play-button">click to play videos for safari users!</button>
-    </div>
-
-    <!-- Safari play all button for motion page -->
-    <button class="safari-play-all-button" id="safariPlayAllThumbnails" style="display: none;">PLAY ALL</button>
-
-    <script src="cursor.js" defer></script>
-    <script src="sidebar.js" defer></script>
-    <script src="motion.js" defer></script>
-    <script>
-        // Initialize Safari play overlay for motion page
-        document.addEventListener('DOMContentLoaded', () => {
-            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-            if (!isSafari) return;
-            
-            const overlay = document.getElementById('safariPlayOverlay');
-            const playAllButton = document.getElementById('safariPlayAllThumbnails');
-            
-            // Check if user has visited before (not just clicked play)
-            const hasVisitedBefore = localStorage.getItem('safariHasVisited') === 'true';
-            const hasPlayedBefore = localStorage.getItem('safariVideosPlayed') === 'true';
-            
-            // Function to play all videos
-            const playAllVideos = () => {
-                const videos = document.querySelectorAll('video');
-                videos.forEach(video => {
-                    if (video.paused) {
-                        video.play().catch(() => {});
-                    }
-                });
-                localStorage.setItem('safariVideosPlayed', 'true');
-            };
-            
-            // Mark that user has visited
-            localStorage.setItem('safariHasVisited', 'true');
-            
-            // Only show big overlay on first visit
-            if (hasVisitedBefore) {
-                // Don't show overlay on subsequent visits
-                if (overlay) overlay.style.display = 'none';
-                // Auto-play videos if they've played before
-                if (hasPlayedBefore) {
-                    setTimeout(() => {
-                        playAllVideos();
-                    }, 500);
-                }
-            } else {
-                // First visit - show the big overlay
-                if (overlay) {
-                    overlay.style.display = 'flex';
-                    const button = overlay.querySelector('.safari-play-button');
-                    if (button) {
-                        button.addEventListener('click', () => {
-                            playAllVideos();
-                            overlay.style.display = 'none';
-                        });
-                    }
-                }
-            }
-            
-            // Always show corner button
-            if (playAllButton) {
-                playAllButton.style.display = 'block';
-                playAllButton.addEventListener('click', () => {
-                    playAllVideos();
-                });
-            }
-        });
-    </script>
+<body>
+    <p><a href="index.html#motion">Go to Motion</a></p>
 </body>
 </html>
-

@@ -16,104 +16,170 @@ const illustrations = [
     { file: 'WaitingROom.png', tooltip: 'Waiting Room' }
 ];
 
-function getIllustrationFile(illustrationData) {
-    return typeof illustrationData === 'string' ? illustrationData : illustrationData.file;
+let illustrationsInitialized = false;
+let illustrationsImageObserver = null;
+let illustrationsArchiveTooltip = null;
+const illustrationLoadQueue = [];
+let illustrationLoadsActive = 0;
+const MAX_ILLUSTRATION_LOADS = 2;
+
+function scheduleIllustrationWork(fn) {
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(fn, { timeout: 250 });
+    } else {
+        setTimeout(fn, 16);
+    }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    initIllustrationsGallery();
-    initImageZoom();
-});
-
-function initIllustrationsGallery() {
-    const gallery = document.getElementById('illustrationsGallery');
-    const tooltip = document.createElement('div');
-    tooltip.className = 'project-tooltip';
-    document.body.appendChild(tooltip);
-    
-    const imagesToLoad = illustrations.length > 0 ? illustrations : [];
-    
-    if (imagesToLoad.length === 0) {
-        return;
+function drainIllustrationLoadQueue() {
+    while (illustrationLoadsActive < MAX_ILLUSTRATION_LOADS && illustrationLoadQueue.length) {
+        const img = illustrationLoadQueue.shift();
+        const lazySrc = img.getAttribute('data-src');
+        if (!lazySrc) continue;
+        illustrationLoadsActive += 1;
+        const done = () => {
+            illustrationLoadsActive = Math.max(0, illustrationLoadsActive - 1);
+            drainIllustrationLoadQueue();
+        };
+        img.addEventListener('load', done, { once: true });
+        img.addEventListener('error', done, { once: true });
+        img.src = lazySrc;
+        img.removeAttribute('data-src');
+        illustrationsImageObserver?.unobserve(img);
     }
-    
-    imagesToLoad.forEach((imageData, index) => {
-        const imageFile = typeof imageData === 'string' ? imageData : imageData.file;
-        const tooltipText = typeof imageData === 'string' ? 'Illustration' : (imageData.tooltip || 'Illustration');
-        
-        const imageContainer = document.createElement('div');
-        imageContainer.className = 'illustration-item';
-        imageContainer.setAttribute('data-image-src', `Illustrations/${imageFile}`);
-        
-        const img = document.createElement('img');
-        img.setAttribute('data-src', `Illustrations/${imageFile}`);
-        img.alt = tooltipText;
-        
-        imageContainer.appendChild(img);
-        
-        const imageObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const image = entry.target;
-                    if (image.getAttribute('data-src')) {
-                        image.src = image.getAttribute('data-src');
-                        image.removeAttribute('data-src');
-                        imageObserver.unobserve(image);
-                    }
-                }
-            });
-        }, {
-            rootMargin: '100px'
-        });
-        
-        imageObserver.observe(img);
-        
-        imageContainer.addEventListener('mouseenter', (e) => {
-            tooltip.innerHTML = `
-                <div class="project-tooltip-title">${tooltipText}</div>
-            `;
-            tooltip.style.opacity = '1';
-            tooltip.style.left = e.clientX + 5 + 'px';
-            tooltip.style.top = e.clientY + 5 + 'px';
-        });
-        
-        imageContainer.addEventListener('mousemove', (e) => {
-            tooltip.style.left = e.clientX + 5 + 'px';
-            tooltip.style.top = e.clientY + 5 + 'px';
-        });
-        
-        imageContainer.addEventListener('mouseleave', () => {
-            tooltip.style.opacity = '0';
-        });
-        
-        imageContainer.addEventListener('click', () => {
-            openImageZoom(`Illustrations/${imageFile}`);
-        });
-        
-        gallery.appendChild(imageContainer);
+}
+let currentImageIndex = 0;
+let imageZoomArray = [];
+let imageZoomBound = false;
+
+function bootIllustrations() {
+    if (illustrationsInitialized || !document.getElementById('illustrationsGallery')) return;
+    illustrationsInitialized = true;
+    scheduleIllustrationWork(() => {
+        if (document.getElementById('imageZoomModal')) {
+            initImageZoom();
+        }
+        initIllustrationsGallery();
     });
 }
 
-let currentImageIndex = 0;
-let imageZoomArray = [];
+function setupIllustrationsOnPage() {
+    if (!document.getElementById('illustrationsGallery')) return;
+
+    if (!document.getElementById('archivePanels') && document.getElementById('imageZoomModal')) {
+        initImageZoom();
+    }
+
+    if (document.getElementById('archivePanels')) {
+        if (typeof registerArchivePanelBoot === 'function') {
+            registerArchivePanelBoot('illustrations', bootIllustrations);
+        }
+        if (document.querySelector('.archive-panel[data-panel="illustrations"]')?.classList.contains('archive-panel--open')) {
+            bootIllustrations();
+        }
+    } else {
+        bootIllustrations();
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupIllustrationsOnPage);
+} else {
+    setupIllustrationsOnPage();
+}
+
+function initIllustrationsGallery() {
+    const gallery = document.getElementById('illustrationsGallery');
+    if (!gallery || gallery.dataset.ready === 'true') return;
+    gallery.dataset.ready = 'true';
+
+    if (!illustrationsArchiveTooltip) {
+        illustrationsArchiveTooltip = document.createElement('div');
+        illustrationsArchiveTooltip.className = 'project-tooltip';
+        document.body.appendChild(illustrationsArchiveTooltip);
+    }
+
+    const panelInner = gallery.closest('.archive-panel-inner');
+
+    if (!illustrationsImageObserver) {
+        illustrationsImageObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                const img = entry.target;
+                if (!img.getAttribute('data-src')) return;
+                illustrationLoadQueue.push(img);
+            });
+            drainIllustrationLoadQueue();
+        }, { root: panelInner || null, rootMargin: '60px 0px', threshold: 0.05 });
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    illustrations.forEach((imageData) => {
+        const imageFile = imageData.file;
+        const src = `Illustrations/${imageFile}`;
+
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'illustration-item';
+        imageContainer.dataset.imageSrc = src;
+        imageContainer.dataset.tooltip = imageData.tooltip || 'Illustration';
+
+        const img = document.createElement('img');
+        img.setAttribute('data-src', src);
+        img.alt = imageContainer.dataset.tooltip;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+
+        imageContainer.appendChild(img);
+        fragment.appendChild(imageContainer);
+        illustrationsImageObserver.observe(img);
+    });
+
+    gallery.appendChild(fragment);
+
+    gallery.addEventListener('mouseover', (e) => {
+        const item = e.target.closest('.illustration-item');
+        if (!item || !gallery.contains(item)) return;
+        illustrationsArchiveTooltip.innerHTML = `<div class="project-tooltip-title">${item.dataset.tooltip}</div>`;
+        illustrationsArchiveTooltip.style.opacity = '1';
+        illustrationsArchiveTooltip.style.left = `${e.clientX + 5}px`;
+        illustrationsArchiveTooltip.style.top = `${e.clientY + 5}px`;
+    });
+
+    gallery.addEventListener('mousemove', (e) => {
+        if (illustrationsArchiveTooltip.style.opacity !== '1') return;
+        illustrationsArchiveTooltip.style.left = `${e.clientX + 5}px`;
+        illustrationsArchiveTooltip.style.top = `${e.clientY + 5}px`;
+    });
+
+    gallery.addEventListener('mouseleave', () => {
+        illustrationsArchiveTooltip.style.opacity = '0';
+    });
+
+    gallery.addEventListener('click', (e) => {
+        const item = e.target.closest('.illustration-item');
+        if (item?.dataset.imageSrc) {
+            openImageZoom(item.dataset.imageSrc);
+        }
+    });
+}
 
 function initImageZoom() {
+    if (imageZoomBound) return;
     const modal = document.getElementById('imageZoomModal');
     const closeBtn = document.getElementById('imageZoomClose');
     const img = document.getElementById('zoomedImage');
-    
+    if (!modal || !closeBtn || !img) return;
+    imageZoomBound = true;
+
     const closeModal = () => {
         modal.style.display = 'none';
         modal.classList.remove('active');
-        // Use requestAnimationFrame for smoother Safari transitions
-        requestAnimationFrame(() => {
-            document.body.style.overflow = '';
-        });
+        document.body.style.overflow = '';
         document.removeEventListener('keydown', handleImageKeydown);
     };
-    
+
     closeBtn.addEventListener('click', closeModal);
-    
     modal.addEventListener('click', (e) => {
         if (e.target === modal || e.target.closest('.image-zoom-container') === null) {
             closeModal();
@@ -129,75 +195,38 @@ function handleImageKeydown(e) {
     } else if (e.key === 'Escape') {
         const modal = document.getElementById('imageZoomModal');
         if (modal) {
-        modal.style.display = 'none';
-        modal.classList.remove('active');
+            modal.style.display = 'none';
+            modal.classList.remove('active');
             document.body.style.overflow = '';
-        document.removeEventListener('keydown', handleImageKeydown);
+            document.removeEventListener('keydown', handleImageKeydown);
         }
     }
 }
 
 function navigateImage(direction) {
     if (imageZoomArray.length === 0) return;
-    
+
     currentImageIndex = (currentImageIndex + direction + imageZoomArray.length) % imageZoomArray.length;
     const img = document.getElementById('zoomedImage');
     if (!img) return;
-    
-    const imageFile = typeof imageZoomArray[currentImageIndex] === 'string' 
-        ? imageZoomArray[currentImageIndex] 
-        : imageZoomArray[currentImageIndex].file;
-    
-    // Use requestAnimationFrame for smoother transitions in Safari
-    requestAnimationFrame(() => {
-        img.style.opacity = '0';
-        requestAnimationFrame(() => {
+
+    const imageFile = imageZoomArray[currentImageIndex].file;
     img.src = `Illustrations/${imageFile}`;
-            img.onload = () => {
-                requestAnimationFrame(() => {
-                    img.style.opacity = '1';
-                });
-            };
-        });
-    });
 }
 
 function openImageZoom(imageSrc) {
     const modal = document.getElementById('imageZoomModal');
     const img = document.getElementById('zoomedImage');
-    
     if (!modal || !img) return;
-    
+
     imageZoomArray = illustrations;
     const imageFile = imageSrc.split('/').pop();
-    currentImageIndex = illustrations.findIndex(i => {
-        const file = typeof i === 'string' ? i : i.file;
-        return file === imageFile;
-    });
-    
-    if (currentImageIndex === -1) {
-        currentImageIndex = 0;
-    }
-    
-    // Optimize for Safari - use transform instead of opacity for better performance
-    img.style.transform = 'scale(0.95)';
-    img.style.opacity = '0';
+    currentImageIndex = illustrations.findIndex((i) => i.file === imageFile);
+    if (currentImageIndex === -1) currentImageIndex = 0;
+
     img.src = imageSrc;
-    
-    // Prevent body scroll when modal is open
     document.body.style.overflow = 'hidden';
-    
     modal.style.display = 'flex';
-    
-    // Use requestAnimationFrame for smoother Safari animations
-    requestAnimationFrame(() => {
     modal.classList.add('active');
-        requestAnimationFrame(() => {
-            img.style.transform = 'scale(1)';
-            img.style.opacity = '1';
-        });
-    });
-    
     document.addEventListener('keydown', handleImageKeydown);
 }
-

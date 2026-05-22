@@ -31,12 +31,35 @@ function getMotionVideoSrc(videoData) {
     return file.includes('/') ? file : `Motion/${file}`;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    initMotionFeatured();
-    initMotionGallery();
-    initVideoZoom();
-    
+let motionInitialized = false;
+let motionGalleryObserver = null;
+let motionArchiveTooltip = null;
+let activeArchiveVideoLoads = 0;
+const MAX_ARCHIVE_VIDEO_LOADS = 2;
+
+function scheduleMotionWork(fn) {
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(fn, { timeout: 250 });
+    } else {
+        setTimeout(fn, 16);
+    }
+}
+
+function bootMotion() {
+    if (motionInitialized || !document.getElementById('motionGallery')) return;
+    motionInitialized = true;
+    if (document.getElementById('videoZoomModal')) {
+        initVideoZoom();
+    }
+    scheduleMotionWork(() => {
+        initMotionGallery();
+        initMotionFeatured();
+    });
+}
+
+function initMotionVisibilityHandler() {
     document.addEventListener('visibilitychange', () => {
+        if (!motionInitialized) return;
         if (document.hidden) {
             if (featuredVideo) {
                 featuredVideo.pause();
@@ -60,7 +83,33 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
-});
+}
+
+function setupMotionOnPage() {
+    if (!document.getElementById('motionGallery')) return;
+
+    if (!document.getElementById('archivePanels') && document.getElementById('videoZoomModal')) {
+        initVideoZoom();
+    }
+
+    if (document.getElementById('archivePanels')) {
+        if (typeof registerArchivePanelBoot === 'function') {
+            registerArchivePanelBoot('motion', bootMotion);
+        }
+        if (document.querySelector('.archive-panel[data-panel="motion"]')?.classList.contains('archive-panel--open')) {
+            bootMotion();
+        }
+    } else {
+        bootMotion();
+        initMotionVisibilityHandler();
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupMotionOnPage);
+} else {
+    setupMotionOnPage();
+}
 
 let currentFeaturedIndex = 0;
 let featuredVideo = null;
@@ -85,11 +134,10 @@ function initMotionFeatured() {
     currentFeaturedIndex = 0;
     
     featuredVideo = document.createElement('video');
-    featuredVideo.src = shuffledVideos[0];
+    featuredVideo.setAttribute('data-src', shuffledVideos[0]);
     featuredVideo.muted = true;
     featuredVideo.loop = true;
     featuredVideo.playsInline = true;
-    featuredVideo.autoplay = true;
     featuredVideo.preload = 'metadata';
     featuredVideo.setAttribute('playsinline', '');
     featuredVideo.setAttribute('webkit-playsinline', '');
@@ -117,34 +165,18 @@ function initMotionFeatured() {
         }
     }
     
+    const panelInner = featuredContainer.closest('.archive-panel-inner');
     const featuredObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                if (isSafariMotion) {
-                    featuredVideo.preload = 'auto';
-                }
-                const playVideo = () => {
-                    featuredVideo.play().catch(() => {});
-                };
-                if (isSafariMotion) {
-                    if (featuredVideo.readyState >= 3) {
-                        playVideo();
-                    } else {
-                        featuredVideo.addEventListener('canplaythrough', playVideo, { once: true });
-                        featuredVideo.addEventListener('loadeddata', playVideo, { once: true });
-                    }
-                } else if (featuredVideo.readyState >= 2) {
-                    playVideo();
-                } else {
-                    featuredVideo.addEventListener('loadeddata', playVideo, { once: true });
-                }
+                playLazyArchiveVideo(featuredVideo);
                 startFeaturedCycle();
             } else {
                 featuredVideo.pause();
                 stopFeaturedCycle();
             }
         });
-    }, { rootMargin: '80px', threshold: 0.05 });
+    }, { root: panelInner || null, rootMargin: '0px', threshold: 0.1 });
     
     featuredContainer.appendChild(featuredVideo);
     featuredObserver.observe(featuredContainer);
@@ -154,111 +186,114 @@ function initMotionFeatured() {
     });
 }
 
-function initMotionGallery() {
-    const gallery = document.getElementById('motionGallery');
-    const tooltip = document.createElement('div');
-    tooltip.className = 'project-tooltip';
-    document.body.appendChild(tooltip);
-    
-    const videosToLoad = motionVideos.length > 0 ? motionVideos : [];
-    
-    if (videosToLoad.length === 0) {
+function playLazyArchiveVideo(vid) {
+    const panel = vid.closest('.archive-panel[data-panel="motion"]');
+    if (panel && !panel.classList.contains('archive-panel--open')) return;
+
+    const lazySrc = vid.getAttribute('data-src');
+    if (lazySrc) {
+        if (activeArchiveVideoLoads >= MAX_ARCHIVE_VIDEO_LOADS) return;
+        activeArchiveVideoLoads += 1;
+        vid.src = lazySrc;
+        vid.removeAttribute('data-src');
+        vid.preload = 'metadata';
+        vid.load();
+        vid.addEventListener('loadedmetadata', () => {
+            const duration = vid.duration;
+            if (duration > 3) {
+                vid.currentTime = Math.random() * Math.max(0, duration - 3);
+            }
+            vid.play().catch(() => {});
+        }, { once: true });
+        vid.addEventListener('pause', () => {
+            activeArchiveVideoLoads = Math.max(0, activeArchiveVideoLoads - 1);
+        }, { once: true });
         return;
     }
-    
-    videosToLoad.forEach((videoData, index) => {
-        const videoFile = getMotionVideoFile(videoData);
+    vid.play().catch(() => {});
+}
+
+function initMotionGallery() {
+    const gallery = document.getElementById('motionGallery');
+    if (!gallery || gallery.dataset.ready === 'true') return;
+    gallery.dataset.ready = 'true';
+
+    if (!motionArchiveTooltip) {
+        motionArchiveTooltip = document.createElement('div');
+        motionArchiveTooltip.className = 'project-tooltip';
+        document.body.appendChild(motionArchiveTooltip);
+    }
+
+    const panelInner = gallery.closest('.archive-panel-inner');
+    const observerRoot = panelInner || null;
+
+    if (!motionGalleryObserver) {
+        motionGalleryObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                const vid = entry.target;
+                if (entry.isIntersecting) {
+                    playLazyArchiveVideo(vid);
+                } else {
+                    if (vid.src) {
+                        activeArchiveVideoLoads = Math.max(0, activeArchiveVideoLoads - 1);
+                    }
+                    vid.pause();
+                }
+            });
+        }, { root: observerRoot, rootMargin: '40px 0px', threshold: 0.2 });
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    motionVideos.forEach((videoData) => {
         const videoSrc = getMotionVideoSrc(videoData);
-        const tooltipText = typeof videoData === 'string' ? 'More Motion' : (videoData.tooltip || 'More Motion');
-        
+        const tooltipText = videoData.tooltip || 'More Motion';
+
         const videoContainer = document.createElement('div');
         videoContainer.className = 'motion-video-item';
-        videoContainer.setAttribute('data-video-src', videoSrc);
-        
+        videoContainer.dataset.videoSrc = videoSrc;
+        videoContainer.dataset.tooltip = tooltipText;
+
         const video = document.createElement('video');
         video.setAttribute('data-src', videoSrc);
         video.muted = true;
         video.loop = true;
         video.playsInline = true;
-        video.autoplay = true;
-        video.preload = 'metadata';
+        video.preload = 'none';
         video.setAttribute('playsinline', '');
         video.setAttribute('webkit-playsinline', '');
-        video.setAttribute('loop', '');
-        video.setAttribute('muted', '');
-        
+
         videoContainer.appendChild(video);
-        
-        const videoObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const vid = entry.target;
-                if (entry.isIntersecting) {
-                    if (vid.getAttribute('data-src')) {
-                        const videoSrc = vid.getAttribute('data-src');
-                        vid.src = videoSrc;
-                        vid.removeAttribute('data-src');
-                        if (isSafariMotion) {
-                            vid.preload = 'auto';
-                        } else {
-                            vid.preload = 'metadata';
-                        }
-                        vid.load();
-                        const handleVideoReady = () => {
-                            const duration = vid.duration;
-                            if (duration > 3) {
-                                const maxStartTime = Math.max(0, duration - 3);
-                                vid.currentTime = Math.random() * maxStartTime;
-                            }
-                            const playVideo = () => {
-                                vid.play().catch(() => {});
-                            };
-                            if (isSafariMotion && vid.readyState >= 3) {
-                                playVideo();
-                            } else if (isSafariMotion) {
-                                vid.addEventListener('canplaythrough', playVideo, { once: true });
-                                vid.addEventListener('loadeddata', playVideo, { once: true });
-                            } else {
-                                playVideo();
-                            }
-                        };
-                        vid.addEventListener('loadedmetadata', handleVideoReady, { once: true });
-                    } else {
-                        vid.play().catch(() => {});
-                    }
-                } else {
-                    vid.pause();
-                }
-            });
-        }, {
-            rootMargin: '80px',
-            threshold: 0.05
-        });
-        
-        videoObserver.observe(video);
-        
-        videoContainer.addEventListener('mouseenter', (e) => {
-            tooltip.innerHTML = `
-                <div class="project-tooltip-title">${tooltipText}</div>
-            `;
-            tooltip.style.opacity = '1';
-            tooltip.style.left = e.clientX + 5 + 'px';
-            tooltip.style.top = e.clientY + 5 + 'px';
-        });
-        
-        videoContainer.addEventListener('mousemove', (e) => {
-            tooltip.style.left = e.clientX + 5 + 'px';
-            tooltip.style.top = e.clientY + 5 + 'px';
-        });
-        
-        videoContainer.addEventListener('mouseleave', () => {
-            tooltip.style.opacity = '0';
-        });
-        
-        videoContainer.addEventListener('click', () => {
-            openVideoZoom(videoSrc);
-        });
-        
-        gallery.appendChild(videoContainer);
+        fragment.appendChild(videoContainer);
+        motionGalleryObserver.observe(video);
+    });
+
+    gallery.appendChild(fragment);
+
+    gallery.addEventListener('mouseover', (e) => {
+        const item = e.target.closest('.motion-video-item');
+        if (!item || !gallery.contains(item)) return;
+        motionArchiveTooltip.innerHTML = `<div class="project-tooltip-title">${item.dataset.tooltip}</div>`;
+        motionArchiveTooltip.style.opacity = '1';
+        motionArchiveTooltip.style.left = `${e.clientX + 5}px`;
+        motionArchiveTooltip.style.top = `${e.clientY + 5}px`;
+    });
+
+    gallery.addEventListener('mousemove', (e) => {
+        if (motionArchiveTooltip.style.opacity !== '1') return;
+        motionArchiveTooltip.style.left = `${e.clientX + 5}px`;
+        motionArchiveTooltip.style.top = `${e.clientY + 5}px`;
+    });
+
+    gallery.addEventListener('mouseleave', () => {
+        motionArchiveTooltip.style.opacity = '0';
+    });
+
+    gallery.addEventListener('click', (e) => {
+        const item = e.target.closest('.motion-video-item');
+        if (item?.dataset.videoSrc) {
+            openVideoZoom(item.dataset.videoSrc);
+        }
     });
 }
 
@@ -269,6 +304,7 @@ function initVideoZoom() {
     const modal = document.getElementById('videoZoomModal');
     const closeBtn = document.getElementById('videoZoomClose');
     const video = document.getElementById('zoomedVideo');
+    if (!modal || !closeBtn || !video) return;
     
     const closeModal = () => {
         modal.style.display = 'none';

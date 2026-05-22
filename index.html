@@ -2,23 +2,69 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Rafael Mediodia</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="home-page">
     <div class="cursor"></div>
     
     <div class="info-container">
         <!-- Sidebar content will be injected here -->
     </div>
 
-    <main class="gallery-container">
-        <div class="gallery" id="gallery">
-            <!-- Projects will be injected here -->
+    <div class="home-layout">
+        <div class="archive-panels" id="archivePanels">
+            <aside class="archive-panel" data-panel="typefaces" aria-label="Typefaces">
+                <button type="button" class="archive-panel-toggle" aria-expanded="false" aria-controls="typefacesPanelInner">
+                    <span class="archive-panel-toggle-label">Typefaces</span>
+                </button>
+                <div class="archive-panel-inner" id="typefacesPanelInner">
+                    <div class="typefaces-list" id="typefacesList"></div>
+                </div>
+            </aside>
+
+            <aside class="archive-panel" data-panel="motion" aria-label="Motion">
+                <button type="button" class="archive-panel-toggle" aria-expanded="false" aria-controls="motionPanelInner">
+                    <span class="archive-panel-toggle-label">Motion</span>
+                </button>
+                <div class="archive-panel-inner" id="motionPanelInner">
+                    <div class="motion-featured" id="motionFeatured"></div>
+                    <div class="motion-gallery" id="motionGallery"></div>
+                </div>
+            </aside>
+
+            <aside class="archive-panel" data-panel="illustrations" aria-label="Illustrations">
+                <button type="button" class="archive-panel-toggle" aria-expanded="false" aria-controls="illustrationsPanelInner">
+                    <span class="archive-panel-toggle-label">Illustration</span>
+                </button>
+                <div class="archive-panel-inner" id="illustrationsPanelInner">
+                    <div class="illustrations-gallery" id="illustrationsGallery"></div>
+                </div>
+            </aside>
         </div>
-    </main>
+
+        <main class="gallery-container">
+            <div class="gallery" id="gallery">
+                <!-- Projects will be injected here -->
+            </div>
+        </main>
+    </div>
+
+    <div class="video-zoom-modal" id="videoZoomModal">
+        <div class="video-zoom-close" id="videoZoomClose"></div>
+        <div class="video-zoom-container">
+            <video id="zoomedVideo" controls></video>
+        </div>
+    </div>
+
+    <div class="image-zoom-modal" id="imageZoomModal">
+        <div class="image-zoom-close" id="imageZoomClose"></div>
+        <div class="image-zoom-container">
+            <img id="zoomedImage" alt="Illustration">
+        </div>
+    </div>
 
     <!-- Safari video play overlay -->
     <div class="safari-play-overlay" id="safariPlayOverlay">
@@ -30,7 +76,8 @@
 
     <script src="cursor.js" defer></script>
     <script src="sidebar.js" defer></script>
+    <script src="archive-panels.js" defer></script>
+    <script src="typefaces.js" defer></script>
     <script src="script.js" defer></script>
-    <!-- motion.js loaded only when needed (on motion.html) -->
 </body>
 </html>
