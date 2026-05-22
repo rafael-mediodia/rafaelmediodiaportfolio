@@ -294,32 +294,13 @@ body.safari-no-custom-cursor * {
 
 .info-bio-more .info-about-extended {
     margin-bottom: 0.85rem;
-}
-
-.info-bio-more .info-recognition {
-    padding-top: 0;
-    border-top: none;
-}
-
-.info-bio-more .info-recognition::before,
-.info-bio-footer .info-current::before,
-.info-bio-footer .info-links::before {
-    content: '';
-    display: block;
-    width: 100%;
+    padding-top: 0.65rem;
     border-top: 1px dotted var(--dotted-color);
 }
 
-.info-bio-more .info-recognition::before {
-    margin-bottom: 0.65rem;
-}
-
-.info-bio-footer .info-current::before {
-    margin-bottom: 0.65rem;
-}
-
-.info-bio-footer .info-links::before {
-    margin-bottom: 0.65rem;
+.info-bio-more .info-recognition {
+    padding-top: 0.65rem;
+    border-top: 1px dotted var(--dotted-color);
 }
 
 .info-recognition {
@@ -347,22 +328,19 @@ body.safari-no-custom-cursor * {
 
 .info-bio-footer .info-current {
     margin-top: 0.65rem;
-    padding-top: 0;
-    border-top: none;
+    padding-top: 0.65rem;
+    border-top: 1px dotted var(--dotted-color);
 }
 
 .info-bio-footer .info-links {
     margin-top: 0.65rem;
-    padding-top: 0;
-    border-top: none;
+    padding-top: 0.65rem;
+    border-top: 1px dotted var(--dotted-color);
 }
 
 .info-container--more-open .info-bio-footer .info-current {
     margin-top: 0.5rem;
-}
-
-.info-container--more-open .info-bio-footer .info-current::before {
-    margin-bottom: 0.5rem;
+    padding-top: 0.5rem;
 }
 
 .info-recognition .info-section-label {
@@ -1094,7 +1072,7 @@ body.safari-no-custom-cursor * {
     height: 100%;
     min-height: 100%;
     background: var(--bg);
-    border-right: none;
+    border-right: 1px dotted var(--dotted-color);
     overflow: hidden;
     width: var(--archive-panel-collapsed);
     flex-shrink: 0;
@@ -1127,7 +1105,7 @@ body.safari-no-custom-cursor * {
     color: var(--text);
     background: var(--bg);
     border: none;
-    border-right: 1px dotted var(--dotted-color);
+    border-right: none;
     cursor: pointer;
     padding: 0;
     display: flex;
@@ -1151,6 +1129,7 @@ body.safari-no-custom-cursor * {
 
 .archive-panel--open .archive-panel-toggle {
     color: #7cb342;
+    border-right: 1px dotted var(--dotted-color);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -2449,11 +2428,6 @@ video:not([controls])::-webkit-media-controls-play-button {
 
     .info-bio-footer .info-current {
         margin-top: 0.75rem;
-    }
-
-    .info-bio-footer .info-current::before,
-    .info-bio-footer .info-links::before {
-        margin-bottom: 0.65rem;
     }
 
     .info-bio-footer .info-previous {
