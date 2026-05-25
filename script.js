@@ -110,6 +110,13 @@ const projects = [
         page: 'projects/chasing-sunsets.html'
     },
     {
+        id: 'typefaces',
+        title: 'Typefaces',
+        subtitle: 'Original typefaces and lettering.',
+        thumbnailType: 'typefaces',
+        archivePanel: 'typefaces',
+    },
+    {
         id: 'illustrations',
         title: 'Illustrations',
         subtitle: 'Illustration Collection',
@@ -266,7 +273,9 @@ function initGallery() {
             }
         };
         
-        if (project.thumbnailVideos && project.thumbnailVideos.length > 0) {
+        if (project.thumbnailType === 'typefaces' && typeof window.initTypefaceGalleryThumb === 'function') {
+            window.initTypefaceGalleryThumb(thumb);
+        } else if (project.thumbnailVideos && project.thumbnailVideos.length > 0) {
             // Handle cycling video thumbnails - each video loops fully once
             // Use two video elements for seamless crossfade transitions
             const video1 = document.createElement('video');

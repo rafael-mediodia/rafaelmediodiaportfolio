@@ -782,4 +782,138 @@ function initTypefacesList() {
     list.appendChild(fragment);
 }
 
+const TYPEFACE_THUMB_PALETTES = [
+    { bg: '#fafafa', fg: '#000000' },
+    { bg: '#1a1a1a', fg: '#f5f5f5' },
+    { bg: '#7cb342', fg: '#0f1608' },
+    { bg: '#e8d4b8', fg: '#2a1810' },
+    { bg: '#1e4178', fg: '#eef3ff' },
+    { bg: '#f3b5c7', fg: '#2a1020' },
+    { bg: '#2d4a3e', fg: '#e8f5e9' },
+    { bg: '#f0e04a', fg: '#1a1800' },
+];
+
+function buildTypefaceThumbSlides() {
+    return typefaces.map((face, index) => {
+        const palette = TYPEFACE_THUMB_PALETTES[index % TYPEFACE_THUMB_PALETTES.length];
+        let fontVariationSettings = '';
+        if (face.variableFont && face.id === 'suburb') {
+            fontVariationSettings = '"wdth" 650';
+        }
+        return {
+            label: face.name,
+            family: typefaceFamily(face),
+            bg: palette.bg,
+            fg: palette.fg,
+            fontVariationSettings,
+            large: face.id === 'suburb',
+        };
+    });
+}
+
+function createTypefaceThumbSlide(slide) {
+    const layer = document.createElement('div');
+    layer.className = 'typeface-thumb-slide';
+    layer.style.backgroundColor = slide.bg;
+
+    const label = document.createElement('span');
+    label.className = 'typeface-thumb-label';
+    label.textContent = slide.label;
+    label.style.fontFamily = slide.family;
+    label.style.color = slide.fg;
+    if (slide.fontVariationSettings) {
+        label.style.fontVariationSettings = slide.fontVariationSettings;
+    }
+    if (slide.large) {
+        label.classList.add('typeface-thumb-label--large');
+    }
+
+    layer.appendChild(label);
+    return layer;
+}
+
+function initTypefaceGalleryThumb(thumb) {
+    injectTypefaceFonts();
+    const slides = buildTypefaceThumbSlides();
+    if (!slides.length) return;
+
+    thumb.classList.add('typeface-thumb');
+    thumb.style.position = 'relative';
+
+    const slideA = createTypefaceThumbSlide(slides[0]);
+    const slideB = createTypefaceThumbSlide(slides[1] || slides[0]);
+    slideA.style.opacity = '1';
+    slideB.style.opacity = '0';
+    slideB.style.pointerEvents = 'none';
+    thumb.appendChild(slideA);
+    thumb.appendChild(slideB);
+
+    let index = 0;
+    let active = slideA;
+    let next = slideB;
+    let cycleTimer = null;
+    let isInitialized = false;
+
+    function applySlide(layer, slide) {
+        layer.style.backgroundColor = slide.bg;
+        const label = layer.querySelector('.typeface-thumb-label');
+        label.textContent = slide.label;
+        label.style.fontFamily = slide.family;
+        label.style.color = slide.fg;
+        label.style.fontVariationSettings = slide.fontVariationSettings || '';
+        label.classList.toggle('typeface-thumb-label--large', !!slide.large);
+    }
+
+    function switchSlide() {
+        const nextIndex = (index + 1) % slides.length;
+        const nextSlide = slides[nextIndex];
+        applySlide(next, nextSlide);
+
+        active.style.opacity = '0';
+        next.style.opacity = '1';
+        next.style.pointerEvents = 'none';
+        active.style.pointerEvents = 'none';
+
+        const temp = active;
+        active = next;
+        next = temp;
+        index = nextIndex;
+    }
+
+    function startCycling() {
+        if (cycleTimer) return;
+        cycleTimer = window.setInterval(switchSlide, 3200);
+    }
+
+    function stopCycling() {
+        if (!cycleTimer) return;
+        window.clearInterval(cycleTimer);
+        cycleTimer = null;
+    }
+
+    const thumbObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    if (!isInitialized) {
+                        isInitialized = true;
+                        slides.forEach((slide) => {
+                            document.fonts?.load?.(`16px ${slide.family}`);
+                        });
+                    }
+                    startCycling();
+                } else {
+                    stopCycling();
+                }
+            });
+        },
+        { rootMargin: '25px' }
+    );
+
+    thumbObserver.observe(thumb);
+    window.addEventListener('beforeunload', stopCycling);
+}
+
+window.initTypefaceGalleryThumb = initTypefaceGalleryThumb;
+
 document.addEventListener('DOMContentLoaded', initTypefacesList);

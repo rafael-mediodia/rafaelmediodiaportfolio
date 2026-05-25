@@ -119,6 +119,11 @@ function openArchivePanel(panelId) {
         return;
     }
 
+    if (panelId === 'writing') {
+        archivePanelBoot.get(panelId)?.();
+        return;
+    }
+
     schedulePanelBoot(panelId);
 }
 

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -5,13 +7,15 @@
 }
 
 :root {
+    --font-family: 'IBM Plex Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
     --bg: #fafafa;
     --text: #000;
     --dotted-color: #000;
     --spacing: 2rem;
     --gap: 1.5rem;
-    --sidebar-prose-width: 48ch;
-    --sidebar-padding: 1.25rem;
+    /* ch = one glyph in mono; sans used wider counts (e.g. 44ch) for a similar rag */
+    --sidebar-prose-width: 38ch;
+    --sidebar-padding: 1rem;
     --sidebar-width: min(
         calc(var(--sidebar-prose-width) + var(--sidebar-padding) * 2),
         calc(100vw - var(--grid-peek-width))
@@ -19,12 +23,19 @@
     --grid-peek-width: 280px;
     --archive-panel-collapsed: 32px;
     --archive-panel-open: min(520px, 55vw);
+    --writing-prose-width: 36ch;
+    --writing-body-measure: 68ch;
+    --archive-panel-writing-open: calc(
+        var(--archive-panel-collapsed) + var(--writing-prose-width) + 2rem
+    );
     --typeface-warm-green: rgba(145, 178, 98, 0.11);
     --typeface-warm-green-strong: rgba(124, 179, 66, 0.16);
 }
 
 body {
-    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-family: var(--font-family);
+    font-variant-ligatures: none;
+    font-feature-settings: 'liga' 0, 'calt' 0;
     background: var(--bg);
     color: var(--text);
     font-size: 14px;
@@ -123,6 +134,8 @@ body.safari-no-custom-cursor * {
     display: block;
     flex: 1;
     min-height: 0;
+    width: var(--sidebar-prose-width);
+    max-width: 100%;
 }
 
 .info-name-link {
@@ -167,8 +180,8 @@ body.safari-no-custom-cursor * {
 
 .info-sidebar-primary {
     --info-prose-size: 12px;
-    --info-prose-leading: 1.6;
-    width: var(--sidebar-prose-width);
+    --info-prose-leading: 1.65;
+    width: 100%;
     max-width: var(--sidebar-prose-width);
 }
 
@@ -321,9 +334,16 @@ body.safari-no-custom-cursor * {
 .info-bio-footer .info-links {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     width: 100%;
-    max-width: 100%;
+    max-width: var(--sidebar-prose-width);
     box-sizing: border-box;
+}
+
+.info-bio-footer .info-link {
+    display: block;
+    width: 100%;
+    max-width: var(--sidebar-prose-width);
 }
 
 .info-bio-footer .info-current {
@@ -827,7 +847,7 @@ body.safari-no-custom-cursor * {
     width: 100%;
     min-height: 120px;
     padding: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-family);
     font-size: 12px;
     border: 1px dotted var(--dotted-color);
     background: var(--bg);
@@ -1090,6 +1110,14 @@ body.safari-no-custom-cursor * {
     max-width: calc(min(480px, 50vw) - var(--archive-panel-collapsed));
 }
 
+.archive-panel[data-panel="writing"].archive-panel--open {
+    width: min(var(--archive-panel-writing-open), 92vw);
+}
+
+.archive-panel[data-panel="writing"].archive-panel--open .archive-panel-inner {
+    max-width: calc(var(--archive-panel-writing-open) - var(--archive-panel-collapsed));
+}
+
 .archive-panel-toggle {
     flex: 0 0 var(--archive-panel-collapsed);
     width: var(--archive-panel-collapsed);
@@ -1200,6 +1228,297 @@ body.safari-no-custom-cursor * {
     line-height: 1.7;
     margin: 0;
     opacity: 0.65;
+}
+
+.archive-panel-placeholder code {
+    font-size: 11px;
+}
+
+.writing-list-wrap {
+    width: 100%;
+    max-width: var(--writing-prose-width);
+}
+
+.writing-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.writing-item {
+    border-top: 1px dotted var(--dotted-color);
+}
+
+.writing-item:first-child {
+    border-top: none;
+}
+
+.writing-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.85rem 0;
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.writing-title {
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: normal;
+    hyphens: none;
+    word-break: normal;
+    overflow-wrap: normal;
+}
+
+.writing-meta {
+    font-size: 11px;
+    line-height: 1.45;
+    opacity: 0.65;
+    letter-spacing: 0.04em;
+}
+
+.writing-excerpt {
+    font-size: 12px;
+    line-height: 1.6;
+    opacity: 0.85;
+    max-width: 100%;
+    hyphens: none;
+    word-break: normal;
+    overflow-wrap: normal;
+    text-wrap: pretty;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .writing-link:hover {
+        color: #7cb342;
+    }
+
+    .writing-link:hover .writing-title {
+        font-weight: bold;
+    }
+}
+
+/* Writing reader page */
+.writing-page {
+    --writing-measure: var(--writing-body-measure);
+    --writing-gutter: clamp(1rem, 4vw, 2.5rem);
+}
+
+.writing-page .writing-text-panel {
+    left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    max-width: none;
+    height: 100vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--writing-gutter);
+    padding-bottom: calc(var(--writing-gutter) * 2);
+    background: #f3f3f3;
+}
+
+.writing-reader-inner {
+    width: 100%;
+    max-width: var(--writing-measure);
+    background: var(--bg);
+    border: 1px dotted var(--dotted-color);
+    padding: clamp(1.35rem, 3vw, 2.25rem);
+    box-sizing: border-box;
+}
+
+.writing-page .project-back-link {
+    margin-bottom: 1.5rem;
+}
+
+.writing-piece-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.35rem;
+    border-bottom: 1px dotted var(--dotted-color);
+}
+
+.writing-piece-title {
+    margin-bottom: 0.65rem;
+    font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+    line-height: 1.25;
+    letter-spacing: 0.02em;
+    text-wrap: wrap;
+}
+
+.writing-byline {
+    font-size: 11px;
+    margin: 0;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.55;
+}
+
+.writing-body {
+    max-width: none;
+}
+
+.writing-chapter {
+    margin-bottom: 2.25rem;
+    padding-top: 1.75rem;
+    border-top: 1px dotted var(--dotted-color);
+}
+
+.writing-chapter:first-child {
+    padding-top: 0;
+    border-top: none;
+}
+
+.writing-chapter-title {
+    font-size: 11px;
+    font-weight: normal;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 0 0 1rem;
+    opacity: 0.55;
+}
+
+.writing-chapter p {
+    font-size: 14px;
+    line-height: 1.85;
+    margin: 0 0 1.1rem;
+    hyphens: none;
+    -webkit-hyphens: none;
+    word-break: normal;
+    overflow-wrap: normal;
+    text-wrap: pretty;
+}
+
+.writing-chapter p:last-child {
+    margin-bottom: 0;
+}
+
+.writing-line--dialogue {
+    margin-bottom: 0.65rem;
+}
+
+.writing-line--lead {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.writing-dialogue {
+    margin: 1rem 0 1.25rem;
+    padding-left: 1rem;
+    border-left: 1px dotted var(--dotted-color);
+}
+
+.writing-dialogue p {
+    font-size: 12px;
+    line-height: 1.65;
+    margin: 0 0 0.5rem;
+    opacity: 0.9;
+}
+
+.writing-dialogue p:last-child {
+    margin-bottom: 0;
+}
+
+.writing-separator {
+    text-align: center;
+    letter-spacing: 0.35em;
+    opacity: 0.45;
+    margin: 1.5rem 0;
+}
+
+.writing-list-prose {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0 0 0 1.25rem;
+    border-left: 1px dotted var(--dotted-color);
+}
+
+.writing-list-prose li {
+    font-size: 13px;
+    line-height: 1.65;
+    margin-bottom: 0.35rem;
+}
+
+.writing-chant {
+    margin: 1.25rem 0;
+    padding: 0.85rem 0 0.85rem 1rem;
+    border-left: 1px dotted var(--dotted-color);
+    font-size: 12px;
+    line-height: 1.6;
+    font-style: normal;
+    opacity: 0.9;
+}
+
+.writing-chant p {
+    margin: 0;
+}
+
+.writing-supplement {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px dotted var(--dotted-color);
+}
+
+.writing-supplement-intro {
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 0 0 1.5rem;
+    opacity: 0.85;
+}
+
+.writing-figures {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.writing-figure {
+    margin: 0;
+}
+
+.writing-figure img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border: 1px dotted var(--dotted-color);
+    background: var(--bg);
+}
+
+.writing-figure figcaption {
+    font-size: 11px;
+    line-height: 1.5;
+    margin-top: 0.5rem;
+    opacity: 0.65;
+    letter-spacing: 0.03em;
+}
+
+@media (max-width: 768px) {
+    .writing-page .writing-text-panel {
+        position: relative;
+        left: 0;
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        padding: 1rem;
+        padding-left: max(1rem, env(safe-area-inset-left));
+        padding-right: max(1rem, env(safe-area-inset-right));
+        background: var(--bg);
+    }
+
+    .writing-reader-inner {
+        border: none;
+        padding: 0;
+        max-width: 100%;
+    }
 }
 
 .typefaces-list {
@@ -1858,6 +2177,40 @@ body.project-media-modal-open .project-images-panel {
     visibility: hidden;
 }
 
+
+/* Typefaces grid thumbnail — cycles fonts + background colors */
+.project-thumb.typeface-thumb {
+    background: var(--bg);
+}
+
+.typeface-thumb-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem;
+    box-sizing: border-box;
+    transition: opacity 0.45s ease;
+    will-change: opacity;
+}
+
+.typeface-thumb-label {
+    display: block;
+    max-width: 100%;
+    font-size: clamp(1.35rem, 7.5vw, 2.85rem);
+    line-height: 1.05;
+    text-align: center;
+    letter-spacing: 0.02em;
+    word-break: break-word;
+    hyphens: none;
+}
+
+.typeface-thumb-label--large {
+    font-size: clamp(2rem, 12vw, 4.25rem);
+    letter-spacing: 0.03em;
+    line-height: 0.95;
+}
 
 /* Project Thumbnail */
 .project-thumb {
@@ -2569,6 +2922,14 @@ video:not([controls])::-webkit-media-controls-play-button {
     }
 
     .archive-panel[data-panel='typefaces'].archive-panel--open .archive-panel-inner {
+        max-width: 100%;
+    }
+
+    .archive-panel[data-panel='writing'].archive-panel--open {
+        width: 100%;
+    }
+
+    .archive-panel[data-panel='writing'].archive-panel--open .archive-panel-inner {
         max-width: 100%;
     }
 
