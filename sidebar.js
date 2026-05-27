@@ -414,7 +414,7 @@ function initRandomAccentHovers() {
         { selector: '.typeface-usage-email', mode: 'text' },
         { selector: '.gallery .project-thumb', mode: 'border' },
         { selector: '.illustrations-gallery .illustration-item', mode: 'border' },
-        { selector: '.motion-gallery .motion-video-item', mode: 'border' },
+        { selector: '.motion-gallery .motion-video-item', mode: 'text' },
         { selector: '.project-blurb a', mode: 'text' },
         { selector: '.project-text a', mode: 'text' },
         { selector: '.writing-chapter a', mode: 'text' },

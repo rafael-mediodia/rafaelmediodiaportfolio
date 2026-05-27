@@ -12,7 +12,6 @@ const motionVideos = [
     { file: 'Bubbles (2).mp4', tooltip: 'Particles' },
     { file: 'RAFAELMEDIODIA_ASSIGNMENT4_COLORLIGHTSHADOW.mp4', tooltip: 'RISD Museum Show' },
     { file: 'girldinneranimation2-gs-color-addedtext.mp4', tooltip: 'Girl Dinner Titlecard' },
-    { file: 'WoodlandArtFair/WoodlandArtFairMain.mp4', tooltip: 'Woodland Art Fair' },
     { file: 'Chemistry.mp4', tooltip: 'Movement Exploration' },
     { file: 'EXPIRATIONDATE-POST-GREEN.mp4', tooltip: 'Expiration Date' },
     { file: 'DingDongProductions.mp4', tooltip: 'Ding Dong Productions' },
@@ -111,30 +110,15 @@ if (document.readyState === 'loading') {
     setupMotionOnPage();
 }
 
-let currentFeaturedIndex = 0;
 let featuredVideo = null;
-let shuffledVideos = [];
-
-function shuffleArray(array) {
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-}
 
 function initMotionFeatured() {
     const featuredContainer = document.getElementById('motionFeatured');
-    const videosToUse = motionVideos.length > 0 ? motionVideos : [];
-    if (videosToUse.length === 0) return;
-    
-    // Shuffle videos for random order
-    shuffledVideos = shuffleArray(videosToUse.map(getMotionVideoSrc));
-    currentFeaturedIndex = 0;
+    if (!featuredContainer) return;
     
     featuredVideo = document.createElement('video');
-    featuredVideo.setAttribute('data-src', shuffledVideos[0]);
+    featuredVideo.setAttribute('data-src', 'RAFAELMEDIODIA_MOTIONREEL.mp4');
+    const featuredSrc = 'RAFAELMEDIODIA_MOTIONREEL.mp4';
     featuredVideo.muted = true;
     featuredVideo.loop = true;
     featuredVideo.playsInline = true;
@@ -144,45 +128,54 @@ function initMotionFeatured() {
     featuredVideo.setAttribute('loop', '');
     featuredVideo.setAttribute('muted', '');
     featuredVideo.className = 'motion-featured-video';
-    
-    let featuredCycleInterval = null;
-    
-    function startFeaturedCycle() {
-        if (shuffledVideos.length <= 1 || featuredCycleInterval) return;
-        featuredCycleInterval = setInterval(() => {
-            if (document.hidden) return;
-            currentFeaturedIndex = (currentFeaturedIndex + 1) % shuffledVideos.length;
-            featuredVideo.src = shuffledVideos[currentFeaturedIndex];
-            featuredVideo.load();
-            featuredVideo.play().catch(() => {});
-        }, 5000);
-    }
-    
-    function stopFeaturedCycle() {
-        if (featuredCycleInterval) {
-            clearInterval(featuredCycleInterval);
-            featuredCycleInterval = null;
-        }
-    }
-    
+    featuredContainer.dataset.videoSrc = featuredSrc;
+    featuredContainer.dataset.tooltip = 'Rafael Mediodia Motion Reel 2026!';
+    featuredContainer.setAttribute('aria-label', 'Motion Reel');
+
     const panelInner = featuredContainer.closest('.archive-panel-inner');
     const featuredObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 playLazyArchiveVideo(featuredVideo);
-                startFeaturedCycle();
             } else {
                 featuredVideo.pause();
-                stopFeaturedCycle();
             }
         });
     }, { root: panelInner || null, rootMargin: '0px', threshold: 0.1 });
     
     featuredContainer.appendChild(featuredVideo);
     featuredObserver.observe(featuredContainer);
-    
-    window.addEventListener('beforeunload', () => {
-        stopFeaturedCycle();
+
+    if (!motionArchiveTooltip) {
+        motionArchiveTooltip = document.createElement('div');
+        motionArchiveTooltip.className = 'project-tooltip';
+        document.body.appendChild(motionArchiveTooltip);
+    }
+
+    const featuredCaption = document.createElement('div');
+    featuredCaption.className = 'motion-featured-caption';
+    featuredCaption.textContent = 'Rafael Mediodia Motion Reel 2026!';
+    featuredContainer.insertAdjacentElement('afterend', featuredCaption);
+
+    featuredContainer.addEventListener('click', () => {
+        openVideoZoom(featuredSrc);
+    });
+
+    featuredContainer.addEventListener('mouseover', (e) => {
+        motionArchiveTooltip.innerHTML = '<div class="project-tooltip-title">Rafael Mediodia Motion Reel 2026!</div>';
+        motionArchiveTooltip.style.opacity = '1';
+        motionArchiveTooltip.style.left = `${e.clientX + 5}px`;
+        motionArchiveTooltip.style.top = `${e.clientY + 5}px`;
+    });
+
+    featuredContainer.addEventListener('mousemove', (e) => {
+        if (motionArchiveTooltip.style.opacity !== '1') return;
+        motionArchiveTooltip.style.left = `${e.clientX + 5}px`;
+        motionArchiveTooltip.style.top = `${e.clientY + 5}px`;
+    });
+
+    featuredContainer.addEventListener('mouseleave', () => {
+        motionArchiveTooltip.style.opacity = '0';
     });
 }
 
