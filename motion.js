@@ -51,8 +51,8 @@ function bootMotion() {
         initVideoZoom();
     }
     scheduleMotionWork(() => {
-        initMotionGallery();
         initMotionFeatured();
+        initMotionGallery();
     });
 }
 
@@ -122,7 +122,7 @@ function initMotionFeatured() {
     featuredVideo.muted = true;
     featuredVideo.loop = true;
     featuredVideo.playsInline = true;
-    featuredVideo.preload = 'metadata';
+    featuredVideo.preload = 'auto';
     featuredVideo.setAttribute('playsinline', '');
     featuredVideo.setAttribute('webkit-playsinline', '');
     featuredVideo.setAttribute('loop', '');
@@ -136,7 +136,10 @@ function initMotionFeatured() {
     const featuredObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                playLazyArchiveVideo(featuredVideo);
+                playLazyArchiveVideo(featuredVideo, {
+                    prioritize: true,
+                    randomStart: false,
+                });
             } else {
                 featuredVideo.pause();
             }
@@ -179,21 +182,22 @@ function initMotionFeatured() {
     });
 }
 
-function playLazyArchiveVideo(vid) {
+function playLazyArchiveVideo(vid, options = {}) {
+    const { prioritize = false, randomStart = true } = options;
     const panel = vid.closest('.archive-panel[data-panel="motion"]');
     if (panel && !panel.classList.contains('archive-panel--open')) return;
 
     const lazySrc = vid.getAttribute('data-src');
     if (lazySrc) {
-        if (activeArchiveVideoLoads >= MAX_ARCHIVE_VIDEO_LOADS) return;
+        if (!prioritize && activeArchiveVideoLoads >= MAX_ARCHIVE_VIDEO_LOADS) return;
         activeArchiveVideoLoads += 1;
         vid.src = lazySrc;
         vid.removeAttribute('data-src');
-        vid.preload = 'metadata';
+        vid.preload = prioritize ? 'auto' : 'metadata';
         vid.load();
         vid.addEventListener('loadedmetadata', () => {
             const duration = vid.duration;
-            if (duration > 3) {
+            if (randomStart && duration > 3) {
                 vid.currentTime = Math.random() * Math.max(0, duration - 3);
             }
             vid.play().catch(() => {});
