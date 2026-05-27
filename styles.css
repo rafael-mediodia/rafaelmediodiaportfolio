@@ -155,7 +155,7 @@ body.safari-no-custom-cursor * {
     width: var(--sidebar-width);
     height: 100vh;
     background: var(--bg);
-    border-right: 1px dotted var(--dotted-color);
+    border-right: 0.25px solid var(--dotted-color);
     padding: var(--sidebar-padding);
     z-index: 99;
     overflow-y: auto;
@@ -259,7 +259,7 @@ body.safari-no-custom-cursor * {
     margin-bottom: 0.5rem;
     line-height: 1.4;
     padding-top: 0.75rem;
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
     margin-top: 0.75rem;
     hyphens: none;
     word-break: normal;
@@ -280,7 +280,7 @@ body.safari-no-custom-cursor * {
     line-height: 1.4;
     opacity: 0.7;
     padding-top: 0.75rem;
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
     margin-top: 0.5rem;
     hyphens: none;
     word-break: normal;
@@ -291,14 +291,14 @@ body.safari-no-custom-cursor * {
     flex-direction: column;
     gap: 0.5rem;
     padding-top: 0.75rem;
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
     margin-top: 0.75rem;
 }
 
 .info-links-secondary {
     margin-top: 0.75rem;
     padding-top: 0.75rem;
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
 }
 
 .info-about-extended {
@@ -353,7 +353,7 @@ body.safari-no-custom-cursor * {
     width: 100%;
     max-width: var(--sidebar-prose-width);
     margin: 0 0 0.65rem;
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     overflow: hidden;
     background: var(--bg);
 }
@@ -370,12 +370,12 @@ body.safari-no-custom-cursor * {
 .info-bio-more .info-about-extended {
     margin-bottom: 0.85rem;
     padding-top: 0.65rem;
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
 }
 
 .info-bio-more .info-recognition {
     padding-top: 0.65rem;
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
 }
 
 .info-recognition {
@@ -411,13 +411,13 @@ body.safari-no-custom-cursor * {
 .info-bio-footer .info-current {
     margin-top: 0.65rem;
     padding-top: 0.65rem;
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
 }
 
 .info-bio-footer .info-links {
     margin-top: 0.65rem;
     padding-top: 0.65rem;
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
 }
 
 .info-container--more-open .info-bio-footer .info-current {
@@ -440,7 +440,7 @@ body.safari-no-custom-cursor * {
 .info-section {
     margin-top: 0.85rem;
     padding-top: 0.85rem;
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
 }
 
 
@@ -538,7 +538,7 @@ body.safari-no-custom-cursor * {
     width: var(--project-text-width, 400px);
     height: 100vh;
     background: var(--bg);
-    border-right: 1px dotted var(--dotted-color);
+    border-right: 0.25px solid var(--dotted-color);
     padding: var(--spacing);
     overflow-y: auto;
     z-index: 98;
@@ -570,7 +570,7 @@ body.safari-no-custom-cursor * {
     width: 100%;
     aspect-ratio: 4/3;
     background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 100%);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
 }
 
 .project-images-panel img {
@@ -799,7 +799,7 @@ body.safari-no-custom-cursor * {
 .showcase-sample {
     width: 100%;
     padding: calc(var(--spacing) * 1.5);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     background: var(--bg);
 }
 
@@ -850,7 +850,7 @@ body.safari-no-custom-cursor * {
     gap: 1.5rem;
     margin-bottom: var(--spacing);
     padding: var(--spacing);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     background: var(--bg);
 }
 
@@ -900,7 +900,7 @@ body.safari-no-custom-cursor * {
     padding: 0.75rem;
     font-family: var(--font-family);
     font-size: 12px;
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     background: var(--bg);
     color: var(--text);
     resize: vertical;
@@ -916,7 +916,7 @@ body.safari-no-custom-cursor * {
     width: 100%;
     height: 4px;
     background: var(--bg);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     outline: none;
     -webkit-appearance: none;
     appearance: none;
@@ -949,7 +949,7 @@ body.safari-no-custom-cursor * {
 .typeface-tester-display {
     margin-bottom: var(--spacing);
     padding: var(--spacing);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     background: var(--bg);
     min-height: 200px;
     display: flex;
@@ -983,7 +983,7 @@ body.safari-no-custom-cursor * {
 
 .charset-section {
     padding: var(--spacing);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     background: var(--bg);
 }
 
@@ -1009,7 +1009,7 @@ body.safari-no-custom-cursor * {
 
 .sample-block {
     padding: var(--spacing);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     background: var(--bg);
 }
 
@@ -1143,7 +1143,7 @@ body.safari-no-custom-cursor * {
     height: 100%;
     min-height: 100%;
     background: var(--bg);
-    border-right: 1px dotted var(--dotted-color);
+    border-right: 0.25px solid var(--dotted-color);
     overflow: hidden;
     width: var(--archive-panel-collapsed);
     flex-shrink: 0;
@@ -1249,7 +1249,7 @@ body.safari-no-custom-cursor * {
 }
 
 .archive-panel--open .archive-panel-toggle {
-    border-right: 1px dotted var(--dotted-color);
+    border-right: 0.25px solid var(--dotted-color);
 }
 
 .archive-panel-inner {
@@ -1335,7 +1335,7 @@ body.safari-no-custom-cursor * {
 }
 
 .writing-item {
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
 }
 
 .writing-item:first-child {
@@ -1404,7 +1404,7 @@ body.safari-no-custom-cursor * {
     width: 100%;
     max-width: var(--writing-measure);
     background: var(--bg);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     padding: clamp(1.35rem, 3vw, 2.25rem);
     box-sizing: border-box;
 }
@@ -1416,7 +1416,7 @@ body.safari-no-custom-cursor * {
 .writing-piece-header {
     margin-bottom: 2rem;
     padding-bottom: 1.35rem;
-    border-bottom: 1px dotted var(--dotted-color);
+    border-bottom: 0.25px solid var(--dotted-color);
 }
 
 .writing-piece-title {
@@ -1442,7 +1442,7 @@ body.safari-no-custom-cursor * {
 .writing-chapter {
     margin-bottom: 2.25rem;
     padding-top: 1.75rem;
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
 }
 
 .writing-chapter:first-child {
@@ -1486,7 +1486,7 @@ body.safari-no-custom-cursor * {
 .writing-dialogue {
     margin: 1rem 0 1.25rem;
     padding-left: 1rem;
-    border-left: 1px dotted var(--dotted-color);
+    border-left: 0.25px solid var(--dotted-color);
 }
 
 .writing-dialogue p {
@@ -1511,7 +1511,7 @@ body.safari-no-custom-cursor * {
     list-style: none;
     margin: 0 0 1rem;
     padding: 0 0 0 1.25rem;
-    border-left: 1px dotted var(--dotted-color);
+    border-left: 0.25px solid var(--dotted-color);
 }
 
 .writing-list-prose li {
@@ -1523,7 +1523,7 @@ body.safari-no-custom-cursor * {
 .writing-chant {
     margin: 1.25rem 0;
     padding: 0.85rem 0 0.85rem 1rem;
-    border-left: 1px dotted var(--dotted-color);
+    border-left: 0.25px solid var(--dotted-color);
     font-size: 12px;
     line-height: 1.6;
     font-style: normal;
@@ -1537,7 +1537,7 @@ body.safari-no-custom-cursor * {
 .writing-supplement {
     margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
 }
 
 .writing-supplement-intro {
@@ -1565,7 +1565,7 @@ body.safari-no-custom-cursor * {
     width: 100%;
     max-width: 100%;
     height: auto;
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     background: var(--bg);
 }
 
@@ -2323,7 +2323,7 @@ body.project-media-modal-open .project-images-panel {
     transition: transform 0.2s ease, opacity 0.2s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     margin: 0;
     padding: 0;
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     contain: layout paint;
 }
 
@@ -2427,7 +2427,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 
 .project-thumb[data-project-id="project-6"] {
     background: #1e4178 !important;
-    border: 1px dotted var(--dotted-color) !important;
+    border: 0.25px solid var(--dotted-color) !important;
 }
 
 .project-thumb[data-project-id="project-6"] video {
@@ -2439,7 +2439,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 .project-thumb[data-project-id="project-mycelium-titlecard"],
 .project-thumb[data-project-id="project-providenceland"] {
     background: #111 !important;
-    border: 1px dotted var(--dotted-color) !important;
+    border: 0.25px solid var(--dotted-color) !important;
 }
 
 .project-thumb[data-project-id="project-chasing-sunsets"] video,
@@ -2451,7 +2451,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 
 .project-thumb[data-project-id="project-8"] {
     background: #d3d2dd !important;
-    border: 1px dotted var(--dotted-color) !important;
+    border: 0.25px solid var(--dotted-color) !important;
 }
 
 .project-thumb[data-project-id="project-8"] video {
@@ -2509,7 +2509,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 .safari-play-button {
     background: var(--bg);
     color: var(--text);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     padding: 0.6rem 1.2rem;
     font-family: inherit;
     font-size: 12px;
@@ -2532,7 +2532,7 @@ video:not([controls])::-webkit-media-controls-play-button {
     right: 1.5rem;
     background: var(--bg);
     color: var(--text);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     padding: 0.5rem 1rem;
     font-family: inherit;
     font-size: 11px;
@@ -2617,7 +2617,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 
 .project-thumb[data-project-id="motion"] {
     background: #000 !important;
-    border: 1px dotted var(--dotted-color) !important;
+    border: 0.25px solid var(--dotted-color) !important;
 }
 
 .project-thumb[data-project-id="motion"] video {
@@ -2644,7 +2644,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 .project-tooltip {
     position: fixed;
     background: var(--bg);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     padding: 0.4rem 0.6rem;
     opacity: 0;
     pointer-events: none;
@@ -2676,7 +2676,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 
 
 .project-header {
-    border-top: 1px dotted var(--dotted-color);
+    border-top: 0.25px solid var(--dotted-color);
     padding-top: var(--spacing);
     margin-bottom: var(--spacing);
 }
@@ -2724,7 +2724,7 @@ video:not([controls])::-webkit-media-controls-play-button {
     gap: 1rem;
     margin-bottom: var(--spacing);
     padding: var(--spacing);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     background: var(--bg);
 }
 
@@ -2745,7 +2745,7 @@ video:not([controls])::-webkit-media-controls-play-button {
     font-size: 14px;
     line-height: 1.8;
     padding: var(--spacing);
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     background: var(--bg);
 }
 
@@ -2765,7 +2765,7 @@ video:not([controls])::-webkit-media-controls-play-button {
 }
 
 .project-section {
-    border: 1px dotted var(--dotted-color);
+    border: 0.25px solid var(--dotted-color);
     padding: var(--spacing);
     background: var(--bg);
 }
@@ -2802,7 +2802,7 @@ video:not([controls])::-webkit-media-controls-play-button {
     }
 
     .info-container.info-container--collapsible {
-        border-bottom: 1px dotted var(--dotted-color);
+        border-bottom: 0.25px solid var(--dotted-color);
     }
 
     .info-container.info-container--collapsible .info-sidebar-toggle {
@@ -2833,7 +2833,7 @@ video:not([controls])::-webkit-media-controls-play-button {
     .info-container.info-container--open .info-sidebar-toggle {
         color: var(--accent-yellow);
         background: var(--accent-yellow-soft);
-        border-bottom: 1px dotted var(--dotted-color);
+        border-bottom: 0.25px solid var(--dotted-color);
     }
 
     .info-sidebar-toggle--pressed,
@@ -2921,7 +2921,7 @@ video:not([controls])::-webkit-media-controls-play-button {
         height: auto;
         left: 0;
         border-right: none;
-        border-bottom: 1px dotted var(--dotted-color);
+        border-bottom: 0.25px solid var(--dotted-color);
         padding: var(--spacing);
     }
     
@@ -2992,7 +2992,7 @@ video:not([controls])::-webkit-media-controls-play-button {
     }
 
     .archive-panel:last-child .archive-panel-toggle {
-        border-bottom: 1px dotted var(--dotted-color);
+        border-bottom: 0.25px solid var(--dotted-color);
     }
 
     .archive-panel--open {
@@ -3005,7 +3005,7 @@ video:not([controls])::-webkit-media-controls-play-button {
         min-height: 44px;
         flex: none;
         border-right: none;
-        border-bottom: 1px dotted var(--dotted-color);
+        border-bottom: 0.25px solid var(--dotted-color);
         padding: 0.7rem 1rem;
         padding-left: max(1rem, env(safe-area-inset-left));
         padding-right: max(1rem, env(safe-area-inset-right));
