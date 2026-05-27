@@ -11,11 +11,18 @@ function getRandomMotionVideo() {
 
 const projects = [
     {
-        id: 'project-field',
-        title: 'field',
-        subtitle: 'A site for interviews, discussions, and music.',
-        thumbnail: 'Field/Field-Thumbnail.mp4',
-        page: 'projects/field.html'
+        id: 'project-1',
+        title: 'Pinoy Plus',
+        subtitle: 'A campaign for mga Pinoy creatives.',
+        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
+        page: 'projects/pinoy-plus.html'
+    },
+    {
+        id: 'project-make-my-mark',
+        title: 'Make My Mark',
+        subtitle: 'Degree project book on fast making and assembly.',
+        thumbnail: 'MakeMyMark/MakeMyMark.mp4',
+        page: 'projects/make-my-mark.html'
     },
     {
         id: 'project-5',
@@ -36,11 +43,11 @@ const projects = [
         page: 'projects/risd-gdees.html'
     },
     {
-        id: 'project-1',
-        title: 'Pinoy Plus',
-        subtitle: 'A campaign for mga Pinoy creatives.',
-        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
-        page: 'projects/pinoy-plus.html'
+        id: 'project-field',
+        title: 'field',
+        subtitle: 'A site for interviews, discussions, and music.',
+        thumbnail: 'Field/Field-Thumbnail.mp4',
+        page: 'projects/field.html'
     },
     {
         id: 'project-brown-student-radio',

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Make My Mark - Rafael Mediodia</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <div class="cursor"></div>
+
+    <div class="info-container">
+        <!-- Sidebar content will be injected here -->
+    </div>
+
+    <div class="project-text-panel">
+        <a href="../index.html" class="project-back-link">← back</a>
+        <div class="project-header">
+            <h1 class="project-title">Make My Mark</h1>
+            <p class="project-blurb">
+                Make My Mark is my RISD Graphic Design degree project — a tall 4.25×11 in book where I gathered what I was inspired by, thinking through, and making along the way, all set in typefaces I drew myself. It's printed on Astrobrights color paper and held together with binder clips, so you can keep it bound or take it apart. That felt like the right way to hold a project that's still always growing. Read <a href="../writing/words-on-making-my-mark.html">Words on Making My Mark</a>.
+            </p>
+        </div>
+
+        <div class="project-meta">
+            <div class="project-meta-item">
+                <div class="project-meta-label">Year</div>
+                <div class="project-meta-value">2026</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Role</div>
+                <div class="project-meta-value">Designer</div>
+            </div>
+            <div class="project-meta-item">
+                <div class="project-meta-label">Type</div>
+                <div class="project-meta-value">Publication Design</div>
+            </div>
+        </div>
+
+        <div class="project-text-content">
+            <div class="project-section">
+                <div class="project-text">
+                    <p>Typeset in Istorya, Clayletter, WarpWoven, Suburb, Pearface, Rough Pixel.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="project-images-panel">
+        <img data-src="../MakeMyMark/DSC_1625.jpg" alt="Make My Mark — two edition covers" data-caption="Make My Mark: A Degree Project Publication. Pictured above are two editions.">
+        <video data-src="../MakeMyMark/MakeMyMark.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Flip-through of pages documenting what I was thinking, making, and inspired by in my research. This book branches out to a larger research inquiry that will continue in a digital space."></video>
+        <img data-src="../MakeMyMark/DSC_1635.jpg" alt="Make My Mark — binder clip note" data-caption="A small note invites the reader to maintain or unbind the clips based on their preference.">
+        <img data-src="../MakeMyMark/DSC_1696.jpg" alt="Make My Mark — detail" data-caption="Detail shot!">
+    </div>
+
+    <div class="image-zoom-modal" id="imageZoomModal">
+        <div class="image-zoom-close" id="imageZoomClose"></div>
+        <div class="image-zoom-container">
+            <img id="zoomedImage" alt="Project Image">
+        </div>
+    </div>
+
+    <div class="video-zoom-modal" id="videoZoomModal">
+        <div class="video-zoom-close" id="videoZoomClose"></div>
+        <div class="video-zoom-container">
+            <video id="zoomedVideo" muted loop playsinline webkit-playsinline></video>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const videos = document.querySelectorAll('.project-images-panel video[data-src]');
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    const video = entry.target;
+                    const videoSrc = video.getAttribute('data-src');
+                    if (!videoSrc) return;
+
+                    video.src = videoSrc;
+                    video.removeAttribute('data-src');
+
+                    const playVideo = () => {
+                        video.play().catch(() => {});
+                    };
+
+                    if (isSafari) {
+                        video.preload = 'auto';
+                        video.load();
+                        if (video.readyState >= 3) {
+                            playVideo();
+                        } else {
+                            video.addEventListener('canplaythrough', playVideo, { once: true });
+                            video.addEventListener('loadeddata', playVideo, { once: true });
+                        }
+                    } else {
+                        video.load();
+                        video.addEventListener('loadeddata', playVideo, { once: true });
+                    }
+
+                    videoObserver.unobserve(video);
+                });
+            }, { rootMargin: '100px' });
+
+            videos.forEach((video) => videoObserver.observe(video));
+
+            const images = document.querySelectorAll('.project-images-panel img[data-src]');
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    const img = entry.target;
+                    img.src = img.getAttribute('data-src');
+                    img.removeAttribute('data-src');
+                    imageObserver.unobserve(img);
+                });
+            }, { rootMargin: '100px' });
+
+            images.forEach((img) => imageObserver.observe(img));
+        });
+    </script>
+    <script src="../cursor.js" defer></script>
+    <script src="../sidebar.js" defer></script>
+    <script src="../project-zoom.js" defer></script>
+    <script src="../project-captions.js" defer></script>
+</body>
+</html>

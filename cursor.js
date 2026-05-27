@@ -26,7 +26,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let hasMoved = false;
     let isAnimating = false;
     let hoverScale = 1;
-    
+
+    function resolveHoverScale(from) {
+        if (!(from instanceof Element)) return 1;
+        if (from.closest('.info-name-link')) return 0.5;
+        if (
+            from.closest(
+                'a, button, .project-thumb, .name-trigger, .back-link, .bio-link, .project-back-link'
+            )
+        ) {
+            return 1.5;
+        }
+        return 1;
+    }
+
     function updateCursorTransform() {
         cursor.style.transform = `translate(${cursorX - 4}px, ${cursorY - 4}px) scale(${hoverScale})`;
     }
@@ -37,6 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
+
+        const nextScale = resolveHoverScale(e.target);
+        if (nextScale !== hoverScale) {
+            hoverScale = nextScale;
+            updateCursorTransform();
+        }
+
         if (!hasMoved) {
             // On first move, snap cursor to mouse position
             cursorX = mouseX;
@@ -80,23 +100,5 @@ document.addEventListener('DOMContentLoaded', () => {
             isAnimating = false;
         }
     }
-    
-    // Hover states - use event delegation for better performance
-    document.addEventListener('mouseenter', (e) => {
-        const target = e.target;
-        if (target.matches('a, button, .project-thumb, .name-trigger, .back-link, .bio-link, .project-back-link')) {
-            hoverScale = 1.5;
-            updateCursorTransform();
-        }
-    }, true);
-    
-    document.addEventListener('mouseleave', (e) => {
-        const target = e.target;
-        if (target.matches('a, button, .project-thumb, .name-trigger, .back-link, .bio-link, .project-back-link')) {
-            hoverScale = 1;
-            updateCursorTransform();
-        }
-    }, true);
-    
 });
 

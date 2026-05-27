@@ -6,6 +6,15 @@
  */
 const writings = [
     {
+        id: 'words-on-making-my-mark',
+        title: 'Words on Making My Mark',
+        year: '2026',
+        venue: 'Essay',
+        excerpt: 'Writing from my thesis. The Mark and The Assembly.',
+        href: 'writing/words-on-making-my-mark.html',
+        external: false,
+    },
+    {
         id: 'little-bits-of-odd',
         title: 'Little Bits of Odd',
         venue: 'Fiction',

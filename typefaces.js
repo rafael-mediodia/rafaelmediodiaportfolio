@@ -65,7 +65,6 @@ const typefaces = [
 
 const glyphCache = new Map();
 let opentypePromise = null;
-let activeId = null;
 
 function typefaceFontUrl(face) {
     return `${TYPEFACES_BASE}/${face.id}/${face.fontFile || 'font.woff2'}`;
@@ -590,7 +589,7 @@ const DETAIL_TABS = [
     { id: 'tester', label: 'Type tester' },
 ];
 
-function setupDetailTabs(detail, defaultTab = 'tester') {
+function setupDetailTabs(detail, defaultTab = 'set') {
     const nav = detail.querySelector('[data-detail-nav]');
     if (!nav || nav.dataset.bound) return;
 
@@ -667,11 +666,22 @@ function createDetailPanel(face) {
         </div>
     `;
 
-    setupDetailTabs(detail, 'tester');
+    setupDetailTabs(detail, 'set');
     return detail;
 }
 
-function showEntryDetail(entry, face) {
+function collapseEntryDetail(entry, face) {
+    const item = entry.querySelector('.typeface-item');
+    const detail = entry.querySelector('.typeface-detail');
+    if (!item || !detail) return;
+    item.classList.remove('typeface-item--open');
+    item.setAttribute('aria-expanded', 'false');
+    setTitleAxisAnimation(item, face, false);
+    detail.hidden = true;
+}
+
+function expandEntryDetail(entry, face, opts = {}) {
+    const { scroll = true } = opts;
     const item = entry.querySelector('.typeface-item');
     const detail = entry.querySelector('.typeface-detail');
     const glyphsEl = detail.querySelector('[data-glyphs]');
@@ -680,6 +690,9 @@ function showEntryDetail(entry, face) {
     if (!detail || !glyphsEl || !item) return;
 
     detail.hidden = false;
+    item.classList.add('typeface-item--open');
+    item.setAttribute('aria-expanded', 'true');
+    setTitleAxisAnimation(item, face, true);
 
     if (descEl) {
         descEl.textContent = face.description?.trim() || '';
@@ -687,13 +700,15 @@ function showEntryDetail(entry, face) {
 
     glyphsEl.innerHTML = '<p class="typeface-glyphs-loading">Loading characters…</p>';
 
-    requestAnimationFrame(() => {
-        const touchLike = window.matchMedia('(hover: none), (pointer: coarse)').matches;
-        entry.scrollIntoView({
-            block: touchLike ? 'start' : 'nearest',
-            behavior: 'smooth',
+    if (scroll) {
+        requestAnimationFrame(() => {
+            const touchLike = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+            entry.scrollIntoView({
+                block: touchLike ? 'start' : 'nearest',
+                behavior: 'smooth',
+            });
         });
-    });
+    }
 
     const subject = face.emailSubject || `${face.name} usage inquiry`;
     if (emailEl) {
@@ -703,25 +718,15 @@ function showEntryDetail(entry, face) {
 
     loadGlyphSet(face)
         .then((charset) => {
-            if (activeId !== face.id) return;
+            if (detail.hidden || !glyphsEl.isConnected) return;
             renderGlyphGrid(glyphsEl, face, charset);
             setupTester(detail, face, charset);
         })
         .catch(() => {
-            if (activeId !== face.id) return;
+            if (detail.hidden || !glyphsEl.isConnected) return;
             glyphsEl.innerHTML =
                 '<p class="typeface-glyphs-loading">Could not load characters.</p>';
         });
-}
-
-function hideAllDetails(list) {
-    list.querySelectorAll('.typeface-entry').forEach((entry) => {
-        const item = entry.querySelector('.typeface-item');
-        const face = typefaces.find((f) => f.id === item?.getAttribute('data-typeface-id'));
-        setTitleAxisAnimation(item, face, false);
-        const detail = entry.querySelector('.typeface-detail');
-        if (detail) detail.hidden = true;
-    });
 }
 
 function initTypefacesList() {
@@ -731,15 +736,14 @@ function initTypefacesList() {
     injectTypefaceFonts();
     loadOpentype().catch(() => {});
 
-    document.addEventListener('archive-panel-open', (e) => {
-        if (e.detail === 'typefaces') loadOpentype().catch(() => {});
-    });
-
     const fragment = document.createDocumentFragment();
 
-    typefaces.forEach((face) => {
+    const ENTRY_ACCENT_CLASSES = ['typeface-entry--sky', 'typeface-entry--yellow', 'typeface-entry--orange', 'typeface-entry--green'];
+
+    typefaces.forEach((face, faceIndex) => {
         const entry = document.createElement('div');
         entry.className = 'typeface-entry';
+        entry.classList.add(ENTRY_ACCENT_CLASSES[faceIndex % ENTRY_ACCENT_CLASSES.length]);
         if (face.listScale) entry.classList.add('typeface-entry--scaled');
 
         const item = document.createElement('button');
@@ -749,29 +753,15 @@ function initTypefacesList() {
         item.setAttribute('data-typeface-id', face.id);
         item.setAttribute('aria-expanded', 'false');
         item.style.fontFamily = typefaceFamily(face);
+        item.style.color = '#000';
         item.textContent = face.name;
 
         const detail = createDetailPanel(face);
 
         item.addEventListener('click', () => {
-            const isOpen = activeId === face.id;
-
-            list.querySelectorAll('.typeface-item').forEach((el) => {
-                el.classList.remove('typeface-item--open');
-                el.setAttribute('aria-expanded', 'false');
-            });
-            hideAllDetails(list);
-
-            if (isOpen) {
-                activeId = null;
-                return;
+            if (!item.classList.contains('typeface-item--open')) {
+                expandEntryDetail(entry, face, { scroll: true });
             }
-
-            activeId = face.id;
-            item.classList.add('typeface-item--open');
-            item.setAttribute('aria-expanded', 'true');
-            setTitleAxisAnimation(item, face, true);
-            showEntryDetail(entry, face);
         });
 
         entry.appendChild(item);
@@ -780,17 +770,48 @@ function initTypefacesList() {
     });
 
     list.appendChild(fragment);
+
+    function expandAllEntries() {
+        list.querySelectorAll('.typeface-entry').forEach((entry) => {
+            const item = entry.querySelector('.typeface-item');
+            const id = item?.getAttribute('data-typeface-id');
+            const face = typefaces.find((f) => f.id === id);
+            if (face) expandEntryDetail(entry, face, { scroll: false });
+        });
+    }
+
+    let didAutoExpand = false;
+    const tryAutoExpand = () => {
+        if (didAutoExpand) return;
+        const panel = document.querySelector('.archive-panel[data-panel="typefaces"]');
+        if (!panel?.classList.contains('archive-panel--open')) return;
+        didAutoExpand = true;
+        expandAllEntries();
+    };
+
+    document.addEventListener('archive-panel-open', (e) => {
+        if (e.detail === 'typefaces') {
+            loadOpentype().catch(() => {});
+            tryAutoExpand();
+        }
+    });
+
+    requestAnimationFrame(() => tryAutoExpand());
 }
+
+/** Homepage typeface tile — cycles sky → yellow → orange → green (toned to match site accents) */
+const TYPEFACE_THUMB_ACCENT_CYCLE = [
+    { bg: '#4aabdb', fg: '#051218' },
+    { bg: '#edd942', fg: '#1a1600' },
+    { bg: '#f0a050', fg: '#1a0c04' },
+    { bg: '#92c948', fg: '#0f1309' },
+];
 
 const TYPEFACE_THUMB_PALETTES = [
     { bg: '#fafafa', fg: '#000000' },
     { bg: '#1a1a1a', fg: '#f5f5f5' },
-    { bg: '#7cb342', fg: '#0f1608' },
-    { bg: '#e8d4b8', fg: '#2a1810' },
-    { bg: '#1e4178', fg: '#eef3ff' },
-    { bg: '#f3b5c7', fg: '#2a1020' },
-    { bg: '#2d4a3e', fg: '#e8f5e9' },
-    { bg: '#f0e04a', fg: '#1a1800' },
+    ...TYPEFACE_THUMB_ACCENT_CYCLE,
+    { bg: '#3d5a42', fg: '#e8f0e4' },
 ];
 
 function buildTypefaceThumbSlides() {
