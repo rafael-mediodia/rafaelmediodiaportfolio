@@ -223,8 +223,9 @@ function buildSidebarHTML(prefix) {
                         <img src="${prefix}ItsMe.jpg" alt="Rafael Mediodia in the studio" width="608" height="1080" loading="lazy" decoding="async">
                     </figure>
                     <div class="info-about-extended">
-                        <p>Rafael is pursuing his BFA in ${nb('Graphic', 'Design')} at the ${nb('Rhode', 'Island', 'School', 'of', 'Design')} with a focus on Computation, Culture, and Technology. He is driven by connection with others and the power of feeling.</p>
-                        <p>Rafael enjoys the act of play in serious and unserious ways, systems that connect people together, and putting the motion in emotion and is willing to help out and connect by any means if that catches your fancy. Email me for any freelance inquiries/questions!</p>
+                        <p>Rafael is pursuing his BFA in graphic design at the Rhode Island School of Design, with a focus on Computation, Culture, and Technology. He is driven by connection with others and the power of feeling.</p>
+                        <p>Rafael enjoys the act of play in serious and unserious ways, systems that connect people together, and putting the motion in emotion.</p>
+                        <p>He is willing to help out and connect by any means if that catches your fancy. <a href="mailto:rmediodi@risd.edu" class="info-link">Email me</a> for any freelance inquiries or questions.</p>
                     </div>
                     <section class="info-recognition" aria-label="Awards and exhibitions">
                         <h2 class="info-section-label">Awards & Exhibitions</h2>

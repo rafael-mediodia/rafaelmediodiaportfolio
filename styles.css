@@ -14,7 +14,8 @@
     --spacing: 2rem;
     --gap: 1.5rem;
     /* ch = one glyph in mono; sans used wider counts (e.g. 44ch) for a similar rag */
-    --sidebar-prose-width: 38ch;
+    --sidebar-prose-width: 44ch;
+    --info-bio-measure: 44ch;
     --sidebar-padding: 1rem;
     --sidebar-width: min(
         calc(var(--sidebar-prose-width) + var(--sidebar-padding) * 2),
@@ -303,14 +304,23 @@ body.safari-no-custom-cursor * {
 
 .info-about-extended {
     margin-bottom: 0;
+    width: 100%;
+    max-width: min(100%, var(--info-bio-measure));
 }
 
 .info-about-extended p {
     margin: 0 0 0.75em;
+    text-wrap: pretty;
 }
 
 .info-about-extended p:last-child {
     margin-bottom: 0;
+}
+
+.info-about-extended .info-link {
+    display: inline;
+    width: auto;
+    max-width: none;
 }
 
 .info-read-more-btn {
@@ -2914,6 +2924,7 @@ video:not([controls])::-webkit-media-controls-play-button {
         --gap: 0.85rem;
         --archive-panel-open: min(100vw, 100%);
         --sidebar-prose-width: 100%;
+        --info-bio-measure: min(44ch, calc(100vw - 2rem));
     }
 
     body {
