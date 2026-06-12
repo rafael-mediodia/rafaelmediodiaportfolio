@@ -19,7 +19,7 @@
         <div class="project-header">
             <h1 class="project-title">field</h1>
             <p class="project-blurb">
-                A hypothetical media outlet for interviews, discussions, and music with a visual language rooted in storybooks and fairy tales. field is a way for people to connect and to be heard.
+                A hypothetical media outlet for interviews, discussions, and music with a visual language rooted in storybooks and fairy tales. field is a way for people to connect and to be heard. The work spans brand identity, motion, type, and a full website for articles and interviews.
             </p>
         </div>
         
@@ -30,7 +30,7 @@
             </div>
             <div class="project-meta-item">
                 <div class="project-meta-label">Role</div>
-                <div class="project-meta-value">Brand and Motion Designer</div>
+                <div class="project-meta-value">Brand, Motion &amp; Web Designer</div>
             </div>
             <div class="project-meta-item">
                 <div class="project-meta-label">Type</div>
@@ -41,22 +41,29 @@
         <div class="project-text-content">
             <div class="project-section">
                 <div class="project-text">
-                    <p>Set with JAF Herb, Schoolbook, and FieldFleurons (Custom Typeface).</p>
+                    <p>Set with JAF Herb, Schoolbook, and FieldFleurons (Custom Typeface). Explore the site below, or <a href="../FieldWebsite/index.html" target="_blank" rel="noopener noreferrer">open it in a new tab</a>.</p>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="project-images-panel">
-        <!-- Website slideshow -->
-        <div class="field-slideshow-container" data-caption="Website platform designed to showcase articles and interviews with artists.">
-            <img class="field-slideshow-img field-slideshow-active" data-src="../Field/field-homepage-1.png" alt="Field Homepage 1">
-            <img class="field-slideshow-img" data-src="../Field/field-homepage-2.png" alt="Field Homepage 2">
-            <img class="field-slideshow-img" data-src="../Field/field-homepage-3.png" alt="Field Homepage 3">
-            <img class="field-slideshow-img" data-src="../Field/fieldnotes-1.png" alt="Field Notes">
-            <img class="field-slideshow-img" data-src="../Field/field-article-1.png" alt="Field Article">
+        <div class="project-image-wrapper">
+            <div class="project-site-preview" data-preview-url="../FieldWebsite/index.html">
+                <div class="project-site-preview__bar">
+                    <span class="project-site-preview__label">Try the website</span>
+                    <a href="../FieldWebsite/index.html" class="project-site-preview__link" target="_blank" rel="noopener noreferrer">Open full site ↗</a>
+                </div>
+                <div class="project-site-preview__frame">
+                    <div class="project-site-preview__placeholder">
+                        <img class="project-site-preview__poster" src="../FieldWebsite/images/field-homepage-1-8051ed87-a58b-40a1-bf79-e607d1181f67.png" alt="" decoding="async" loading="lazy">
+                        <button type="button" class="project-site-preview__load-btn">Load preview</button>
+                    </div>
+                </div>
+            </div>
+            <div class="project-image-caption">Interactive website for articles, field notes, and artist interviews.</div>
         </div>
-        
+
         <video data-src="../Field/Field-Thumbnail.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Musician interview intro sequence."></video>
         
         <!-- Storybook slideshow -->
@@ -84,6 +91,7 @@
             const fieldVideos = Array.from(document.querySelectorAll('.project-images-panel video'));
             const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             const videoRatios = new Map();
+            let previewActive = false;
             fieldVideos.forEach((v) => videoRatios.set(v, 0));
             
             function tryPlayVideo(video) {
@@ -125,7 +133,7 @@
                     
                     if (!video.src) return;
                     
-                    if (document.hidden) {
+                    if (previewActive || document.hidden) {
                         video.pause();
                         return;
                     }
@@ -232,6 +240,96 @@
                 }
             });
             
+            const preview = document.querySelector('.project-site-preview');
+            if (preview) {
+                const frame = preview.querySelector('.project-site-preview__frame');
+                const placeholder = preview.querySelector('.project-site-preview__placeholder');
+                const loadBtn = preview.querySelector('.project-site-preview__load-btn');
+                const previewUrl = preview.dataset.previewUrl;
+                let iframe = null;
+                let unloadTimer = null;
+
+                function pauseFieldVideos() {
+                    fieldVideos.forEach((video) => video.pause());
+                }
+
+                function resumeFieldVideos() {
+                    previewActive = false;
+                    if (document.hidden) return;
+
+                    let bestVideo = null;
+                    let bestRatio = 0;
+                    videoRatios.forEach((ratio, video) => {
+                        if (ratio > bestRatio) {
+                            bestRatio = ratio;
+                            bestVideo = video;
+                        }
+                    });
+
+                    fieldVideos.forEach((video) => {
+                        if (!video.src) return;
+                        if (video === bestVideo && bestRatio > 0.22) {
+                            tryPlayVideo(video);
+                        } else {
+                            video.pause();
+                        }
+                    });
+                }
+
+                function unloadPreview() {
+                    if (!iframe) return;
+                    iframe.remove();
+                    iframe = null;
+                    placeholder?.removeAttribute('hidden');
+                    preview.classList.remove('is-loaded');
+                    loadBtn.disabled = false;
+                    loadBtn.textContent = 'Load preview';
+                    resumeFieldVideos();
+                }
+
+                function loadPreview() {
+                    if (!previewUrl || iframe) return;
+                    if (unloadTimer) {
+                        clearTimeout(unloadTimer);
+                        unloadTimer = null;
+                    }
+
+                    previewActive = true;
+                    pauseFieldVideos();
+                    placeholder?.setAttribute('hidden', '');
+                    loadBtn.textContent = 'Loading preview…';
+                    loadBtn.disabled = true;
+
+                    iframe = document.createElement('iframe');
+                    iframe.src = previewUrl;
+                    iframe.title = 'field website preview';
+                    iframe.setAttribute('fetchpriority', 'low');
+                    iframe.addEventListener('load', () => {
+                        loadBtn.disabled = false;
+                        loadBtn.textContent = 'Preview loaded';
+                    }, { once: true });
+                    frame.appendChild(iframe);
+                    preview.classList.add('is-loaded');
+                }
+
+                loadBtn?.addEventListener('click', loadPreview);
+
+                const previewObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (unloadTimer) {
+                            clearTimeout(unloadTimer);
+                            unloadTimer = null;
+                        }
+                        if (!iframe) return;
+                        if (!entry.isIntersecting) {
+                            unloadTimer = setTimeout(unloadPreview, 1200);
+                        }
+                    });
+                }, { threshold: 0.04 });
+
+                previewObserver.observe(preview);
+            }
+
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) {
                     fieldVideos.forEach((v) => v.pause());
