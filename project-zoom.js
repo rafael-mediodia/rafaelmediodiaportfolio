@@ -14,10 +14,15 @@ function normalizeProjectImageUrl(src) {
     }
 }
 
+function isZoomableProjectImage(imgEl) {
+    return imgEl && !imgEl.closest('.project-site-preview');
+}
+
 function collectGalleryImageSources() {
     const seen = new Set();
     const out = [];
     document.querySelectorAll('.project-images-panel img').forEach((imgEl) => {
+        if (!isZoomableProjectImage(imgEl)) return;
         const raw = imgEl.src || imgEl.getAttribute('data-src') || '';
         if (!raw || raw === window.location.href) return;
         const u = normalizeProjectImageUrl(raw);
@@ -398,6 +403,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add click handlers to project images
     const projectImages = document.querySelectorAll('.project-images-panel img');
     projectImages.forEach(img => {
+        if (!isZoomableProjectImage(img)) return;
+
         // Make images clickable
         img.style.cursor = 'pointer';
         

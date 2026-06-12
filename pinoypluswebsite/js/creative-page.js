@@ -9,6 +9,7 @@ import {
   workImageUrl,
 } from "./data.js";
 import { renderSidebarWeave } from "./sidebar-weave.js";
+import { initGalleryZoom } from "./gallery-zoom.js";
 import { initSite } from "./site.js";
 
 const ORIENTATION_CLASSES = ["wide", "landscape", "square", "portrait", "tall"];
@@ -175,6 +176,7 @@ if (!artist) {
       .map((work, index) => renderWorkMarkup(work, artist.name, index))
       .join("");
     initWorkShowcase([...worksEl.querySelectorAll(".profile-work")]);
+    initGalleryZoom(worksEl);
   }
 
   const sidebar = document.getElementById("creativeSidebar");

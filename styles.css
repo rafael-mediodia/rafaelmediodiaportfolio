@@ -822,6 +822,12 @@ body.safari-no-custom-cursor * {
     object-fit: cover;
     object-position: center;
     filter: saturate(0.92) brightness(0.94);
+    cursor: default;
+    pointer-events: none;
+}
+
+.project-site-preview__poster:hover {
+    opacity: 1;
 }
 
 .project-site-preview__load-btn {
