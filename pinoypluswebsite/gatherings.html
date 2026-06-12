@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Gatherings — Pinoy Plus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="woven-bg" data-page="gatherings">
+  <header class="site-header">
+    <a href="index.html" class="logo" aria-label="Pinoy Plus home">
+      <img class="logo-img" src="assets/pinoy-plus-logo.svg" alt="Pinoy Plus">
+    </a>
+    <div class="site-header__end">
+      <nav class="weave-nav" id="weaveNav" aria-hidden="true" aria-label="Main"></nav>
+      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="weaveNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+<main class="page">
+    <section class="page-hero page-hero--gatherings page-hero--solo">
+      <div class="page-hero__content">
+        <p class="page-hero__eyebrow">Gatherings</p>
+        <h1 class="page-hero__title">Let's celebrate.</h1>
+        <p class="page-hero__lead">Smaller meetups throughout the year — end-of-season potlucks, portfolio reviews, and the occasional karaoke night. Usually twenty to thirty people. Always BYO dish.</p>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="page-section__inner">
+        <h2>Upcoming</h2>
+        <div class="event-list" id="gatheringsList"></div>
+      </div>
+    </section>
+
+    <section class="page-section page-section--accent">
+      <div class="page-section__inner page-section__inner--split">
+        <div>
+          <h2>How it works</h2>
+          <p class="page-prose">Gatherings are informal and free. We send dates through our community list and post them here. No dress code, no presentation required — show up with food to share and something you've been working on if you want feedback.</p>
+          <ul class="page-list">
+            <li>Portfolio reviews — bring prints or a laptop</li>
+            <li>Roundtable discussions — seasonal themes, open floor</li>
+            <li>Karaoke — optional, always encouraged</li>
+          </ul>
+        </div>
+        <div class="page-callout page-callout--green">
+          <p class="page-callout__tag">Festival eve</p>
+          <p class="page-callout__text">The night before Plus One Festival we host a smaller warm-up. Meet the speakers and help hang the show.</p>
+          <a class="page-cta page-cta--light" href="festival.html">Plus One Festival →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/gatherings.js" type="module"></script>
+</body>
+</html>

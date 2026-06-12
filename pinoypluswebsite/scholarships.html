@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Scholarships — Pinoy Plus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="woven-bg" data-page="scholarships">
+  <header class="site-header">
+    <a href="index.html" class="logo" aria-label="Pinoy Plus home">
+      <img class="logo-img" src="assets/pinoy-plus-logo.svg" alt="Pinoy Plus">
+    </a>
+    <div class="site-header__end">
+      <nav class="weave-nav" id="weaveNav" aria-hidden="true" aria-label="Main"></nav>
+      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="weaveNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+<main class="page">
+    <section class="page-hero page-hero--scholarships page-hero--solo">
+      <div class="page-hero__content">
+        <p class="page-hero__eyebrow">Scholarships</p>
+        <h1 class="page-hero__title">Support for emerging makers.</h1>
+        <p class="page-hero__lead">Two small grants each fall for Filipino students and early-career artists. Covers materials, residency fees, or a month of studio rent.</p>
+        <p class="page-hero__meta" id="scholarshipDates"></p>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="page-section__inner">
+        <div class="stats-row" id="scholarshipStats"></div>
+      </div>
+    </section>
+
+    <section class="page-section page-section--accent">
+      <div class="page-section__inner page-section__inner--split">
+        <div>
+          <h2>Who can apply</h2>
+          <ul class="page-list" id="scholarshipCriteria"></ul>
+        </div>
+        <div>
+          <h2>What to send</h2>
+          <p class="page-prose">A short proposal (500 words max), five images or links to recent work, and a line on how you'd use the grant. We review blind — names are hidden during the first pass.</p>
+          <a class="page-cta" id="scholarshipApply" href="#">Apply by email →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="page-section__inner">
+        <h2>Questions</h2>
+        <dl class="faq">
+          <div class="faq__item">
+            <dt>Can I apply if I'm not in the Bay Area?</dt>
+            <dd>Yes — we support makers across the diaspora. Funds are sent in USD; international recipients handle conversion on their end.</dd>
+          </div>
+          <div class="faq__item">
+            <dt>Is this tied to the festival?</dt>
+            <dd>No obligation to attend, but recipients are invited to share work at a gathering or the following year's festival if they'd like.</dd>
+          </div>
+          <div class="faq__item">
+            <dt>When do recipients hear back?</dt>
+            <dd>Within six weeks of the October 15 deadline. Two recipients announced each November.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/scholarships.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="85 182 1835 750" aria-hidden="true">
+  <defs>
+    <style>
+      .logo-text {
+        fill: #ede8d5;
+        font-family: 'Hanken Grotesk', HankenGrotesk-Bold, system-ui, sans-serif;
+        font-size: 170.13px;
+        font-weight: 700;
+      }
+
+      .logo-text--o {
+        letter-spacing: -0.02em;
+      }
+    </style>
+  </defs>
+  <g fill="#ede8d5">
+    <rect x="100.15" y="465.14" width="182.88" height="182.88"/>
+    <rect x="283.03" y="282.26" width="182.88" height="182.88"/>
+    <rect x="465.91" y="465.14" width="182.88" height="182.88"/>
+    <rect x="283.03" y="648.02" width="182.88" height="182.88"/>
+    <rect x="774.83" y="187.54" width="182.88" height="738.08"/>
+  </g>
+  <text class="logo-text" transform="translate(1083.73 602.17)">
+    <tspan x="0" y="0">Pin</tspan>
+    <tspan class="logo-text--o" x="231.2" y="0">o</tspan>
+    <tspan x="324.78" y="0">y Plus</tspan>
+  </text>
+</svg>

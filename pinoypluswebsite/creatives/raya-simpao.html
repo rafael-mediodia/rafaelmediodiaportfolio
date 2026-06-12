@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Creative — Pinoy Plus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="woven-bg page-creative" data-page="creatives" data-slug="raya-simpao">
+  <header class="site-header">
+    <a href="../index.html" class="logo" aria-label="Pinoy Plus home">
+      <img class="logo-img" src="../assets/pinoy-plus-logo.svg" alt="Pinoy Plus">
+    </a>
+    <div class="site-header__end">
+      <nav class="weave-nav" id="weaveNav" aria-hidden="true" aria-label="Main"></nav>
+      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="weaveNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="profiles-main">
+    <div class="profiles-layout profiles-layout--detail">
+      <aside class="profiles-sidebar profiles-sidebar--weave">
+        <a href="../profiles.html" class="profiles-back">← Tapestry</a>
+        <nav class="sidebar-weave" id="creativeSidebar" aria-label="All creatives"></nav>
+      </aside>
+
+      <div class="profiles-content">
+        <header class="profile-intro" id="creativeHero">
+          <div class="profile-intro__main">
+            <h1 class="profile-intro__name" id="creativeName"></h1>
+            <p class="profile-intro__meta">
+              <span id="creativeDiscipline"></span><span class="profile-intro__dot" aria-hidden="true">·</span><span id="creativeLocation"></span>
+            </p>
+          </div>
+          <ul class="profile-contact" id="creativeContact" aria-label="Contact"></ul>
+          <div class="profile-intro__nav">
+            <a class="cross-control cross-control--solid" id="creativePrev" aria-label="Previous profile">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            </a>
+            <a class="cross-control cross-control--solid" id="creativeNext" aria-label="Next profile">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+            </a>
+          </div>
+        </header>
+
+        <section class="profile-works profile-works--focus" aria-label="Work">
+          <div class="profile-works__showcase" id="creativeWorks"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/creative-page.js" type="module"></script>
+</body>
+</html>

@@ -19,7 +19,7 @@
         <div class="project-header">
             <h1 class="project-title">Pinoy Plus</h1>
             <p class="project-blurb">
-                Pinoy Plus is a campaign that aims to uplift Filipino artists and designers and make space for people to come together, bring a plus one, and enjoy one anothers' presence.
+                Pinoy Plus is a campaign that aims to uplift Filipino artists and designers and make space for people to come together, bring a plus one, and enjoy one anothers' presence. The work spans identity, motion, signage, and a full website for creatives and community programming.
             </p>
         </div>
         
@@ -30,7 +30,7 @@
             </div>
             <div class="project-meta-item">
                 <div class="project-meta-label">Role</div>
-                <div class="project-meta-value">Identity Designer</div>
+                <div class="project-meta-value">Identity &amp; Web Designer</div>
             </div>
             <div class="project-meta-item">
                 <div class="project-meta-label">Client</div>
@@ -41,13 +41,29 @@
         <div class="project-text-content">
             <div class="project-section">
                 <div class="project-text">
-                    <p>Set in Hanken Grotesk.</p>
+                    <p>Set in Hanken Grotesk. Explore the site below, or <a href="../pinoypluswebsite/index.html" target="_blank" rel="noopener noreferrer">open it in a new tab</a>.</p>
                 </div>
             </div>
         </div>
     </div>
     
     <div class="project-images-panel">
+        <div class="project-image-wrapper">
+            <div class="project-site-preview" data-preview-url="../pinoypluswebsite/index.html">
+                <div class="project-site-preview__bar">
+                    <span class="project-site-preview__label">Try the website</span>
+                    <a href="../pinoypluswebsite/index.html" class="project-site-preview__link" target="_blank" rel="noopener noreferrer">Open full site ↗</a>
+                </div>
+                <div class="project-site-preview__frame">
+                    <div class="project-site-preview__placeholder">
+                        <img class="project-site-preview__poster" src="../pinoypluswebsite/assets/signage.jpg" alt="" decoding="async" loading="lazy">
+                        <button type="button" class="project-site-preview__load-btn">Load preview</button>
+                    </div>
+                </div>
+            </div>
+            <div class="project-image-caption">Interactive website for Filipino creatives, events, and scholarship programming.</div>
+        </div>
+
         <video data-src="../PinoyPlus/PinoyPlus-Intro.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Campaign visuals inspired by Filipino banig-weaving."></video>
         <video data-src="../PinoyPlus/PinoyPlusWebsite.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-caption="Website design and interface highlighting creatives and event programming."></video>
         <div class="project-video-row">
@@ -62,69 +78,176 @@
     </div>
     
     <script>
-        // Lazy load project videos with improved Safari support
         document.addEventListener('DOMContentLoaded', () => {
-            const videos = document.querySelectorAll('.project-images-panel video[data-src]');
+            const panel = document.querySelector('.project-images-panel');
+            const videos = panel ? [...panel.querySelectorAll('video[data-src], video[src]')] : [];
             const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-            
+            const videoRatios = new Map();
+            let previewActive = false;
+
+            function tryPlayVideo(video) {
+                const go = () => video.play().catch(() => {});
+                if (video.readyState >= 2) {
+                    go();
+                } else {
+                    video.addEventListener('loadeddata', go, { once: true });
+                }
+            }
+
+            function pausePortfolioVideos() {
+                videos.forEach((video) => video.pause());
+            }
+
             const videoObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const video = entry.target;
-                        const videoSrc = video.getAttribute('data-src');
-                        if (!videoSrc) return;
-                        
+                entries.forEach((entry) => {
+                    videoRatios.set(entry.target, entry.intersectionRatio);
+                });
+
+                if (previewActive || document.hidden) {
+                    pausePortfolioVideos();
+                    return;
+                }
+
+                let bestVideo = null;
+                let bestRatio = 0;
+                videoRatios.forEach((ratio, video) => {
+                    if (ratio > bestRatio) {
+                        bestRatio = ratio;
+                        bestVideo = video;
+                    }
+                });
+
+                videos.forEach((video) => {
+                    const ratio = videoRatios.get(video) || 0;
+                    const videoSrc = video.getAttribute('data-src');
+
+                    if (videoSrc && ratio > 0.08) {
                         video.src = videoSrc;
                         video.removeAttribute('data-src');
-                        
-                        // Safari needs more explicit loading
-                        if (isSafari) {
-                            video.preload = 'auto';
-                            video.load();
-                            
-                            // Wait for canplaythrough for better Safari compatibility
-                            const playVideo = () => {
-                                video.play().catch(() => {
-                                    // Autoplay blocked - this is expected
-                                });
-                            };
-                            
-                            if (video.readyState >= 3) {
-                                playVideo();
-                            } else {
-                                video.addEventListener('canplaythrough', playVideo, { once: true });
-                                video.addEventListener('loadeddata', playVideo, { once: true });
-                            }
-                        } else {
+                        video.preload = isSafari ? 'auto' : 'metadata';
                         video.load();
-                            video.addEventListener('loadeddata', () => {
-                                video.play().catch(() => {
-                                    // Autoplay blocked
-                                });
-                            }, { once: true });
-                        }
-                        
-                        videoObserver.unobserve(video);
+                    }
+
+                    if (!video.src) return;
+
+                    if (video === bestVideo && bestRatio > 0.25) {
+                        tryPlayVideo(video);
+                    } else {
+                        video.pause();
                     }
                 });
-            }, { rootMargin: '100px' });
-            
-            videos.forEach(video => videoObserver.observe(video));
-            
-            // Lazy load project images
+            }, {
+                rootMargin: '0px',
+                threshold: [0, 0.1, 0.2, 0.35, 0.5, 0.75, 1]
+            });
+
+            videos.forEach((video) => videoObserver.observe(video));
+
             const images = document.querySelectorAll('.project-images-panel img[data-src]');
             const imageObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.getAttribute('data-src');
-                        img.removeAttribute('data-src');
-                        imageObserver.unobserve(img);
-                    }
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    const img = entry.target;
+                    img.decoding = 'async';
+                    img.src = img.getAttribute('data-src');
+                    img.removeAttribute('data-src');
+                    imageObserver.unobserve(img);
                 });
-            }, { rootMargin: '100px' });
-            
-            images.forEach(img => imageObserver.observe(img));
+            }, { rootMargin: '48px' });
+
+            images.forEach((img) => imageObserver.observe(img));
+
+            const preview = document.querySelector('.project-site-preview');
+            if (preview) {
+                const frame = preview.querySelector('.project-site-preview__frame');
+                const placeholder = preview.querySelector('.project-site-preview__placeholder');
+                const loadBtn = preview.querySelector('.project-site-preview__load-btn');
+                const previewUrl = preview.dataset.previewUrl;
+                let iframe = null;
+                let unloadTimer = null;
+
+                function resumePortfolioVideos() {
+                    previewActive = false;
+                    if (document.hidden) return;
+
+                    let bestVideo = null;
+                    let bestRatio = 0;
+                    videoRatios.forEach((ratio, video) => {
+                        if (ratio > bestRatio) {
+                            bestRatio = ratio;
+                            bestVideo = video;
+                        }
+                    });
+
+                    videos.forEach((video) => {
+                        if (!video.src) return;
+                        if (video === bestVideo && bestRatio > 0.25) {
+                            tryPlayVideo(video);
+                        } else {
+                            video.pause();
+                        }
+                    });
+                }
+
+                function unloadPreview() {
+                    if (!iframe) return;
+                    iframe.remove();
+                    iframe = null;
+                    placeholder?.removeAttribute('hidden');
+                    preview.classList.remove('is-loaded');
+                    loadBtn.disabled = false;
+                    loadBtn.textContent = 'Load preview';
+                    resumePortfolioVideos();
+                }
+
+                function loadPreview() {
+                    if (!previewUrl || iframe) return;
+                    if (unloadTimer) {
+                        clearTimeout(unloadTimer);
+                        unloadTimer = null;
+                    }
+
+                    previewActive = true;
+                    pausePortfolioVideos();
+                    placeholder?.setAttribute('hidden', '');
+                    loadBtn.textContent = 'Loading preview…';
+                    loadBtn.disabled = true;
+
+                    iframe = document.createElement('iframe');
+                    iframe.src = previewUrl;
+                    iframe.title = 'Pinoy Plus website preview';
+                    iframe.setAttribute('fetchpriority', 'low');
+                    iframe.addEventListener('load', () => {
+                        loadBtn.disabled = false;
+                        loadBtn.textContent = 'Preview loaded';
+                    }, { once: true });
+                    frame.appendChild(iframe);
+                    preview.classList.add('is-loaded');
+                }
+
+                loadBtn?.addEventListener('click', loadPreview);
+
+                const previewObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (unloadTimer) {
+                            clearTimeout(unloadTimer);
+                            unloadTimer = null;
+                        }
+                        if (!iframe) return;
+                        if (!entry.isIntersecting) {
+                            unloadTimer = setTimeout(unloadPreview, 1200);
+                        }
+                    });
+                }, { threshold: 0.04 });
+
+                previewObserver.observe(preview);
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    pausePortfolioVideos();
+                }
+            });
         });
     </script>
     

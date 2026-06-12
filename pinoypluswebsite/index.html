@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Pinoy Plus — Filipino art &amp; design, gathered</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="woven-bg page-home" data-page="home">
+  <header class="site-header site-header--home">
+    <a href="index.html" class="logo" aria-label="Pinoy Plus home">
+      <img class="logo-img" src="assets/pinoy-plus-logo-light.svg" alt="Pinoy Plus">
+    </a>
+    <div class="site-header__end">
+      <nav class="weave-nav" id="weaveNav" aria-hidden="true" aria-label="Main"></nav>
+      <button class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="weaveNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+<main>
+    <section class="hero" aria-label="Pinoy Plus home">
+      <div class="hero-media">
+        <div class="hero-slideshow" id="heroSlideshow" aria-hidden="true"></div>
+        <div class="hero-media-overlay"></div>
+        <a class="hero-caption" id="heroCaption" href="#" aria-live="polite">
+          <span class="hero-caption__name"></span>
+          <span class="hero-caption__meta"></span>
+          <span class="hero-caption__cta">View profile →</span>
+        </a>
+      </div>
+
+      <div class="hero-ui">
+        <div class="cross-nav" role="navigation" aria-label="Featured creatives">
+          <div class="cross-nav__stage">
+            <div class="cross-nav__grid cross-nav__grid--static" id="crossGrid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/main.js" type="module"></script>
+</body>
+</html>
