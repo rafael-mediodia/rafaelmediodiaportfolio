@@ -17,6 +17,7 @@
     --sidebar-prose-width: 44ch;
     --info-bio-measure: 44ch;
     --sidebar-padding: 1rem;
+    --sidebar-padding-bottom: 3.5rem;
     --sidebar-width: min(
         calc(var(--sidebar-prose-width) + var(--sidebar-padding) * 2),
         calc(100vw - var(--grid-peek-width))
@@ -157,7 +158,7 @@ body.safari-no-custom-cursor * {
     height: 100vh;
     background: var(--bg);
     border-right: 0.25px solid var(--dotted-color);
-    padding: var(--sidebar-padding);
+    padding: var(--sidebar-padding) var(--sidebar-padding) calc(var(--sidebar-padding-bottom) + env(safe-area-inset-bottom, 0px));
     z-index: 99;
     overflow-y: auto;
     overflow-x: hidden;
@@ -374,7 +375,7 @@ body.safari-no-custom-cursor * {
     height: auto;
     max-height: 15rem;
     object-fit: cover;
-    object-position: 82% 64%;
+    object-position: 74% 58%;
 }
 
 .info-bio-more .info-about-extended {
@@ -424,10 +425,19 @@ body.safari-no-custom-cursor * {
     border-top: 0.25px solid var(--dotted-color);
 }
 
+.info-bio-footer {
+    padding-bottom: 0.5rem;
+}
+
 .info-bio-footer .info-links {
     margin-top: 0.65rem;
     padding-top: 0.65rem;
+    padding-bottom: 0.5rem;
     border-top: 0.25px solid var(--dotted-color);
+}
+
+.info-bio-footer .info-link:last-child {
+    padding-bottom: 0.15rem;
 }
 
 .info-container--more-open .info-bio-footer .info-current {
@@ -2994,6 +3004,7 @@ video:not([controls])::-webkit-media-controls-play-button {
         padding: 1rem;
         padding-left: max(1rem, env(safe-area-inset-left));
         padding-right: max(1rem, env(safe-area-inset-right));
+        padding-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
         max-height: min(88dvh, 88vh, 720px);
         overflow-y: auto;
         overscroll-behavior: contain;

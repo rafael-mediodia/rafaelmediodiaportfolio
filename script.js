@@ -18,13 +18,6 @@ const projects = [
         page: 'projects/pinoy-plus.html'
     },
     {
-        id: 'project-make-my-mark',
-        title: 'Make My Mark',
-        subtitle: 'Degree project book on fast making and assembly.',
-        thumbnail: 'MakeMyMark/MakeMyMark.mp4',
-        page: 'projects/make-my-mark.html'
-    },
-    {
         id: 'project-5',
         title: 'Self Declaration',
         subtitle: 'A reflection for immigrants in the United States.',
@@ -34,6 +27,20 @@ const projects = [
             'SelfDeclaration/Self-Declaration_1.jpg'
         ],
         page: 'projects/self-declaration.html'
+    },
+    {
+        id: 'project-providenceland',
+        title: 'Providenceland',
+        subtitle: 'Title card for Nora Guttman, by Nora Guttman.',
+        thumbnail: 'ProvidenceLand/ProvidenceLandTItleCard.mp4',
+        page: 'projects/providenceland.html'
+    },
+    {
+        id: 'project-make-my-mark',
+        title: 'Make My Mark',
+        subtitle: 'Degree project book on fast making and assembly.',
+        thumbnail: 'MakeMyMark/MakeMyMark.mp4',
+        page: 'projects/make-my-mark.html'
     },
     {
         id: 'project-risd-gdees',
@@ -55,13 +62,6 @@ const projects = [
         subtitle: 'Ongoing brand identity for Brown\'s student-run radio.',
         thumbnail: 'Brown Student Radio/BSRShirt_thumb.jpg',
         page: 'projects/brown-student-radio.html'
-    },
-    {
-        id: 'project-providenceland',
-        title: 'Providenceland',
-        subtitle: 'Title card for Nora Guttman, by Nora Guttman.',
-        thumbnail: 'ProvidenceLand/ProvidenceLandTItleCard.mp4',
-        page: 'projects/providenceland.html'
     },
     {
         id: 'project-3',
