@@ -2,6 +2,8 @@
 const isSafariMotion = typeof isSafari !== 'undefined' ? isSafari : /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 const motionVideos = [
+    { src: 'MYCELIUM_TITLECARD.mp4', file: 'MYCELIUM_TITLECARD.mp4', tooltip: 'Mycelium Title Card', tooltipSubtitle: 'Film title for MYCELIUM, by Veronica Egas.' },
+    { src: 'CHASINGSUNSETS.mp4', file: 'CHASINGSUNSETS.mp4', tooltip: 'Chasing Sunsets', tooltipSubtitle: 'Film title card for Chasing Sunsets, by Veronica Egas.' },
     { file: 'LOGO1-FULL.mp4', tooltip: 'Cortis Fan Motion' },
     { file: 'LOGO2-FULL.mp4', tooltip: 'Cortis Fan Motion' },
     { file: 'Whats at the core.mp4', tooltip: 'Whats At The Core' },
@@ -26,6 +28,7 @@ function getMotionVideoFile(videoData) {
 }
 
 function getMotionVideoSrc(videoData) {
+    if (typeof videoData === 'object' && videoData.src) return videoData.src;
     const file = getMotionVideoFile(videoData);
     return file.includes('/') ? file : `Motion/${file}`;
 }
@@ -210,6 +213,18 @@ function playLazyArchiveVideo(vid, options = {}) {
     vid.play().catch(() => {});
 }
 
+function renderMotionTooltip(item) {
+    const title = item.dataset.tooltip || 'More Motion';
+    const subtitle = item.dataset.tooltipSubtitle || '';
+    if (subtitle) {
+        motionArchiveTooltip.classList.add('project-tooltip--multiline');
+        motionArchiveTooltip.innerHTML = `<div class="project-tooltip-title">${title}</div><div class="project-tooltip-subtitle">${subtitle}</div>`;
+    } else {
+        motionArchiveTooltip.classList.remove('project-tooltip--multiline');
+        motionArchiveTooltip.innerHTML = `<div class="project-tooltip-title">${title}</div>`;
+    }
+}
+
 function initMotionGallery() {
     const gallery = document.getElementById('motionGallery');
     if (!gallery || gallery.dataset.ready === 'true') return;
@@ -250,6 +265,9 @@ function initMotionGallery() {
         videoContainer.className = 'motion-video-item';
         videoContainer.dataset.videoSrc = videoSrc;
         videoContainer.dataset.tooltip = tooltipText;
+        if (videoData.tooltipSubtitle) {
+            videoContainer.dataset.tooltipSubtitle = videoData.tooltipSubtitle;
+        }
 
         const video = document.createElement('video');
         video.setAttribute('data-src', videoSrc);
@@ -270,7 +288,7 @@ function initMotionGallery() {
     gallery.addEventListener('mouseover', (e) => {
         const item = e.target.closest('.motion-video-item');
         if (!item || !gallery.contains(item)) return;
-        motionArchiveTooltip.innerHTML = `<div class="project-tooltip-title">${item.dataset.tooltip}</div>`;
+        renderMotionTooltip(item);
         motionArchiveTooltip.style.opacity = '1';
         motionArchiveTooltip.style.left = `${e.clientX + 5}px`;
         motionArchiveTooltip.style.top = `${e.clientY + 5}px`;

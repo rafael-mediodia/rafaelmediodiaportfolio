@@ -103,20 +103,6 @@ const projects = [
         page: 'projects/american-dream-series.html'
     },
     {
-        id: 'project-mycelium-titlecard',
-        title: 'Mycelium Title Card',
-        subtitle: 'Film Title for MYCELIUM, by Veronica Egas.',
-        thumbnail: 'MYCELIUM_TITLECARD.mp4',
-        page: 'projects/mycelium-titlecard.html'
-    },
-    {
-        id: 'project-chasing-sunsets',
-        title: 'Chasing Sunsets',
-        subtitle: 'Film Title Card for Chasing Sunsets, by Veronica Egas.',
-        thumbnail: 'CHASINGSUNSETS.mp4',
-        page: 'projects/chasing-sunsets.html'
-    },
-    {
         id: 'typefaces',
         title: 'Typefaces',
         subtitle: 'Original typefaces and lettering.',

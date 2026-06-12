@@ -2586,15 +2586,11 @@ video:not([controls])::-webkit-media-controls-play-button {
     transition: opacity 0.2s ease;
 }
 
-.project-thumb[data-project-id="project-chasing-sunsets"],
-.project-thumb[data-project-id="project-mycelium-titlecard"],
 .project-thumb[data-project-id="project-providenceland"] {
     background: #111 !important;
     border: 0.25px solid var(--dotted-color) !important;
 }
 
-.project-thumb[data-project-id="project-chasing-sunsets"] video,
-.project-thumb[data-project-id="project-mycelium-titlecard"] video,
 .project-thumb[data-project-id="project-providenceland"] video {
     background: #111 !important;
     transition: opacity 0.2s ease;
@@ -2822,6 +2818,11 @@ video:not([controls])::-webkit-media-controls-play-button {
     font-size: 9px;
     opacity: 0.7;
     line-height: 1.1;
+}
+
+.project-tooltip--multiline {
+    white-space: normal;
+    max-width: 24ch;
 }
 
 
