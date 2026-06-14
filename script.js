@@ -59,7 +59,7 @@ const projects = [
     {
         id: 'project-brown-student-radio',
         title: 'Brown Student Radio',
-        subtitle: 'Ongoing brand identity for Brown\'s student-run radio.',
+        subtitle: 'Campaign identity and motion for BSR\'s 4/20 event.',
         thumbnail: 'Brown Student Radio/BSRShirt_thumb.jpg',
         page: 'projects/brown-student-radio.html'
     },

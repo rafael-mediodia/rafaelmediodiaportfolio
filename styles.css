@@ -604,16 +604,21 @@ body.safari-no-custom-cursor * {
     opacity: 0.9;
 }
 
-/* Brown Student Radio — shirt hero: cropped, centered (matches thumb focal bias).
-   Captions JS wraps media in .project-image-wrapper; first wrapper is the shirt.
-   Direct > img covers first paint before wrap. */
-.project-brown-student-radio-page .project-images-panel > img:first-of-type,
-.project-brown-student-radio-page .project-images-panel > .project-image-wrapper:first-of-type img {
+.project-brown-student-radio-page .project-portrait-row {
+    align-items: start;
+}
+
+/* Brown Student Radio — full shirt beside story reel (no pin crop) */
+.project-brown-student-radio-page .project-portrait-row .project-image-wrapper:has(.bsr-shirt-photo) {
+    align-self: start;
     width: 100%;
-    aspect-ratio: 5 / 4;
+}
+
+.project-brown-student-radio-page .bsr-shirt-photo {
+    width: 100%;
     height: auto;
-    object-fit: cover;
-    object-position: center 38%;
+    object-fit: contain;
+    object-position: center top;
     display: block;
 }
 
@@ -2584,6 +2589,17 @@ video:not([controls])::-webkit-media-controls-play-button {
 .project-thumb[data-project-id="project-6"] video {
     background: #1e4178 !important;
     transition: opacity 0.2s ease;
+}
+
+.project-providence-page .project-images-panel > video:first-child {
+    background: #111;
+}
+
+.project-providence-page .project-portrait-row img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #f6f6f6;
 }
 
 .project-thumb[data-project-id="project-providenceland"] {
