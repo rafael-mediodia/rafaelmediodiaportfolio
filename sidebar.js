@@ -225,7 +225,7 @@ function buildSidebarHTML(prefix) {
                     <div class="info-about-extended">
                         <p>Rafael is pursuing his BFA in graphic design at the Rhode Island School of Design, with a focus on Computation, Culture, and Technology. He is driven by connection with others and the power of feeling.</p>
                         <p>Rafael enjoys the act of play in serious and unserious ways, systems that connect people together, and putting the motion in emotion.</p>
-                        <p>He is willing to help out and connect by any means if that catches your fancy. <a href="mailto:rmediodi@risd.edu" class="info-link">Email me</a> for any freelance inquiries or questions.</p>
+                        <p>He is willing to help out and connect by any means if that catches your fancy. <a href="mailto:rafaelmediodiawork@gmail.com" class="info-link">Email me</a> for any freelance inquiries or questions.</p>
                     </div>
                     <section class="info-recognition" aria-label="Awards and exhibitions">
                         <h2 class="info-section-label">Awards & Exhibitions</h2>
@@ -240,7 +240,7 @@ function buildSidebarHTML(prefix) {
                         Previously @ <a href="https://mediocre.rodeo" class="info-link" target="_blank">Mediocre</a>, <a href="https://visions-mag.squarespace.com/" class="info-link" target="_blank">VISIONS</a>
                     </div>
                     <div class="info-links">
-                        <a href="mailto:rmediodi@risd.edu" class="info-link">EMAIL</a>
+                        <a href="mailto:rafaelmediodiawork@gmail.com" class="info-link">EMAIL</a>
                         <a href="${prefix}RafaelMediodia-RESUME.pdf" class="info-link">RESUME</a>
                         <a href="https://www.linkedin.com/in/rafael-mediodia-067b9418b/" class="info-link" target="_blank">LINKEDIN</a>
                         <a href="https://www.instagram.com/middledays/" class="info-link" target="_blank">INSTAGRAM</a>

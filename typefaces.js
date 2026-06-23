@@ -1,5 +1,5 @@
 const TYPEFACES_BASE = 'Typefaces';
-const TYPEFACE_EMAIL = 'rmediodi@risd.edu';
+const TYPEFACE_EMAIL = 'rafaelmediodiawork@gmail.com';
 
 const typefaces = [
     {
