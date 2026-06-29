@@ -1173,7 +1173,6 @@ function initTypefaceGalleryThumb(thumb) {
     slides.forEach((slide, index) => {
         const layer = createTypefaceThumbSlide(slide);
         layer.classList.add('typeface-thumb-slide--tile');
-        layer.style.opacity = '1';
         layer.style.pointerEvents = 'none';
         layer.style.setProperty('--typeface-thumb-tile', index);
         thumb.appendChild(layer);
