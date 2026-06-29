@@ -281,6 +281,12 @@ function initIllustrationFilters(gallery) {
 }
 
 function applyIllustrationFilter(gallery, filter) {
+    if (filter === 'all') {
+        delete gallery.dataset.activeFilter;
+    } else {
+        gallery.dataset.activeFilter = filter;
+    }
+
     gallery.querySelectorAll('.illustration-item').forEach((item) => {
         const itemFilters = (item.dataset.filters || '').split(' ');
         const show = filter === 'all' || itemFilters.includes(filter);
