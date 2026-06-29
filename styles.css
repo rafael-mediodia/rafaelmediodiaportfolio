@@ -5134,6 +5134,26 @@ video:not([controls])::-webkit-media-controls-play-button {
         padding: 1rem 0.5rem;
     }
 
+    .typefaces-focus-page {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    .typefaces-focus-page .typefaces-list--page {
+        gap: 1.25rem;
+    }
+
+    .typefaces-focus-page .typeface-focus-section,
+    .typefaces-focus-page .typeface-section-specimens,
+    .typefaces-focus-page .typeface-title-panel,
+    .typefaces-focus-page .typeface-section-specimen,
+    .typefaces-focus-page .typeface-glyph-panel,
+    .typefaces-focus-page .typeface-section-tester-panel {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
     .typeface-specimen-card-sample {
         font-size: clamp(2rem, 14vw, 4.5rem);
     }
@@ -5213,6 +5233,24 @@ video:not([controls])::-webkit-media-controls-play-button {
     .typeface-title-panel {
         grid-column: auto;
         min-height: 220px;
+        justify-content: flex-start;
+        gap: 1.2rem;
+        padding: 1rem;
+    }
+
+    .typefaces-focus-page .typeface-focus-name {
+        padding: 0;
+        font-size: clamp(2.8rem, 15vw, 4.75rem);
+        line-height: 0.92;
+        letter-spacing: -0.04em;
+    }
+
+    .typeface-focus-description {
+        max-width: 32ch;
+        padding: 0;
+        font-size: 11px;
+        line-height: 1.4;
+        opacity: 0.88;
     }
 
     .typeface-section-specimen--1,
@@ -5233,12 +5271,12 @@ video:not([controls])::-webkit-media-controls-play-button {
 
     .typefaces-focus-page .typeface-focus-section {
         gap: 1rem;
-        padding: 0.85rem;
+        padding: 0.5rem;
         box-shadow: 4px 4px 0 var(--text);
     }
 
     .typefaces-focus-page .typeface-detail {
-        padding: 0.85rem;
+        padding: 0;
     }
 
     .typefaces-focus-page .typeface-detail-panel--tester {
