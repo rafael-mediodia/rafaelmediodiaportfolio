@@ -1,5 +1,55 @@
 // Cache browser detection to avoid repeated regex calls
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const homeVideoLoadQueue = [];
+let activeHomeVideoLoads = 0;
+const MAX_HOME_VIDEO_LOADS = 2;
+
+function queueHomeVideoLoad(video, options = {}) {
+    const { preload = 'metadata', onReady } = options;
+    const lazySrc = video.getAttribute('data-src');
+
+    if (!lazySrc) {
+        onReady?.();
+        return;
+    }
+
+    if (video.dataset.loadQueued === 'true') return;
+
+    video.dataset.loadQueued = 'true';
+    homeVideoLoadQueue.push({ video, preload, onReady });
+    drainHomeVideoLoadQueue();
+}
+
+function drainHomeVideoLoadQueue() {
+    while (activeHomeVideoLoads < MAX_HOME_VIDEO_LOADS && homeVideoLoadQueue.length) {
+        const { video, preload, onReady } = homeVideoLoadQueue.shift();
+        const lazySrc = video.getAttribute('data-src');
+
+        if (!lazySrc) {
+            delete video.dataset.loadQueued;
+            onReady?.();
+            continue;
+        }
+
+        activeHomeVideoLoads += 1;
+        let settled = false;
+        const done = () => {
+            if (settled) return;
+            settled = true;
+            activeHomeVideoLoads = Math.max(0, activeHomeVideoLoads - 1);
+            delete video.dataset.loadQueued;
+            onReady?.();
+            drainHomeVideoLoadQueue();
+        };
+
+        video.addEventListener('loadedmetadata', done, { once: true });
+        video.addEventListener('error', done, { once: true });
+        video.src = lazySrc;
+        video.removeAttribute('data-src');
+        video.preload = preload;
+        video.load();
+    }
+}
 
 // Reuse motion.js list when available (motion.js loads before script.js on homepage)
 function getRandomMotionVideo() {
@@ -149,13 +199,10 @@ function observeReadMediaVideo(video) {
             entries.forEach((entry) => {
                 const vid = entry.target;
                 if (entry.isIntersecting) {
-                    const src = vid.getAttribute('data-src');
-                    if (src) {
-                        vid.src = src;
-                        vid.removeAttribute('data-src');
-                        vid.load();
-                    }
-                    vid.play().catch(() => {});
+                    queueHomeVideoLoad(vid, {
+                        preload: isSafari ? 'auto' : 'metadata',
+                        onReady: () => vid.play().catch(() => {}),
+                    });
                 } else {
                     vid.pause();
                 }
@@ -455,29 +502,19 @@ function initGallery() {
                 }
                 
                 const firstVideoSrc = project.thumbnailVideos[currentVideoIndex];
-                activeVideo.src = firstVideoSrc;
-                activeVideo.load();
+                activeVideo.setAttribute('data-src', firstVideoSrc);
                 
                 const handleFirstVideoReady = () => {
-                    activeVideo.removeEventListener('canplay', handleFirstVideoReady);
-                    activeVideo.removeEventListener('loadeddata', handleFirstVideoReady);
                     playVideo(activeVideo);
                     activeVideo.addEventListener('ended', handleVideoEnd, { once: true });
                     // Preload next video immediately
                     preloadNextVideo();
                 };
                 
-                if (isSafari) {
-                    if (activeVideo.readyState >= 3) {
-                        handleFirstVideoReady();
-                    } else {
-                        activeVideo.addEventListener('canplaythrough', handleFirstVideoReady, { once: true });
-                        activeVideo.addEventListener('canplay', handleFirstVideoReady, { once: true });
-                        activeVideo.addEventListener('loadeddata', handleFirstVideoReady, { once: true });
-                    }
-                } else {
-                    activeVideo.addEventListener('loadeddata', handleFirstVideoReady, { once: true });
-                }
+                queueHomeVideoLoad(activeVideo, {
+                    preload: isSafari ? 'auto' : 'metadata',
+                    onReady: handleFirstVideoReady,
+                });
             }
             
             const thumbObserver = new IntersectionObserver((entries) => {
@@ -556,23 +593,21 @@ function initGallery() {
                         const vid = entry.target;
                         const lazySrc = vid.getAttribute('data-src');
                         if (entry.isIntersecting) {
+                            const playThumbVideo = () => {
+                                vid.play().catch(() => {});
+                            };
                             if (lazySrc && !vid.src) {
-                                vid.src = lazySrc;
-                                vid.removeAttribute('data-src');
                                 attachClipLoop(vid);
-                                if (isSafari) {
-                                    vid.preload = 'auto';
-                                } else {
-                                    vid.preload = 'metadata';
-                                }
+                                queueHomeVideoLoad(vid, {
+                                    preload: isSafari ? 'auto' : 'metadata',
+                                    onReady: playThumbVideo,
+                                });
+                                return;
                             }
                             if (!vid.src) return;
                             if (isSafari) {
                                 vid.preload = 'auto';
                             }
-                            const playThumbVideo = () => {
-                                vid.play().catch(() => {});
-                            };
                             if (isSafari) {
                                 if (vid.readyState >= 3) {
                                     playThumbVideo();

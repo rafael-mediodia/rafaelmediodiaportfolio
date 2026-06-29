@@ -37,6 +37,7 @@ let motionInitialized = false;
 let motionGalleryObserver = null;
 let motionArchiveTooltip = null;
 let activeArchiveVideoLoads = 0;
+const archiveVideoLoadQueue = [];
 const MAX_ARCHIVE_VIDEO_LOADS = 2;
 
 function scheduleMotionWork(fn) {
@@ -90,6 +91,7 @@ function initMotionVisibilityHandler() {
 function setupMotionOnPage() {
     if (!document.getElementById('motionGallery')) return;
     initArchiveJumpNavActiveState();
+    initMotionArchivePreviewVideos();
 
     if (!document.getElementById('archivePanels') && document.getElementById('videoZoomModal')) {
         initVideoZoom();
@@ -141,6 +143,29 @@ if (document.readyState === 'loading') {
 }
 
 let featuredVideo = null;
+
+function initMotionArchivePreviewVideos() {
+    const videos = document.querySelectorAll('.motion-archive-project-media video[data-src]');
+    if (!videos.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+        videos.forEach((video) => playLazyArchiveVideo(video, { randomStart: false }));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            const video = entry.target;
+            if (entry.isIntersecting) {
+                playLazyArchiveVideo(video, { randomStart: false });
+            } else {
+                video.pause();
+            }
+        });
+    }, { rootMargin: '80px 0px', threshold: 0.1 });
+
+    videos.forEach((video) => observer.observe(video));
+}
 
 function initMotionFeatured() {
     const featuredContainer = document.getElementById('motionFeatured');
@@ -223,29 +248,65 @@ function initMotionFeatured() {
     });
 }
 
-function playLazyArchiveVideo(vid, options = {}) {
+function queueArchiveVideoLoad(vid, options) {
+    if (vid.dataset.loadQueued === 'true') return;
+    vid.dataset.loadQueued = 'true';
+    archiveVideoLoadQueue.push({ vid, options });
+    drainArchiveVideoLoadQueue();
+}
+
+function drainArchiveVideoLoadQueue() {
+    while (activeArchiveVideoLoads < MAX_ARCHIVE_VIDEO_LOADS && archiveVideoLoadQueue.length) {
+        const { vid, options } = archiveVideoLoadQueue.shift();
+        delete vid.dataset.loadQueued;
+        loadLazyArchiveVideo(vid, options);
+    }
+}
+
+function loadLazyArchiveVideo(vid, options = {}) {
     const { prioritize = false, randomStart = true } = options;
+    const lazySrc = vid.getAttribute('data-src');
+    if (!lazySrc) {
+        vid.play().catch(() => {});
+        return;
+    }
+
+    activeArchiveVideoLoads += 1;
+    let settled = false;
+    const done = () => {
+        if (settled) return;
+        settled = true;
+        activeArchiveVideoLoads = Math.max(0, activeArchiveVideoLoads - 1);
+        drainArchiveVideoLoadQueue();
+    };
+
+    vid.src = lazySrc;
+    vid.removeAttribute('data-src');
+    vid.preload = prioritize ? 'auto' : 'metadata';
+    vid.load();
+    vid.addEventListener('loadedmetadata', () => {
+        const duration = vid.duration;
+        if (randomStart && duration > 3) {
+            vid.currentTime = Math.random() * Math.max(0, duration - 3);
+        }
+        vid.play().catch(() => {});
+        done();
+    }, { once: true });
+    vid.addEventListener('error', done, { once: true });
+}
+
+function playLazyArchiveVideo(vid, options = {}) {
+    const { prioritize = false } = options;
     const panel = vid.closest('.archive-panel[data-panel="motion"]');
     if (panel && !panel.classList.contains('archive-panel--open')) return;
 
     const lazySrc = vid.getAttribute('data-src');
     if (lazySrc) {
-        if (!prioritize && activeArchiveVideoLoads >= MAX_ARCHIVE_VIDEO_LOADS) return;
-        activeArchiveVideoLoads += 1;
-        vid.src = lazySrc;
-        vid.removeAttribute('data-src');
-        vid.preload = prioritize ? 'auto' : 'metadata';
-        vid.load();
-        vid.addEventListener('loadedmetadata', () => {
-            const duration = vid.duration;
-            if (randomStart && duration > 3) {
-                vid.currentTime = Math.random() * Math.max(0, duration - 3);
-            }
-            vid.play().catch(() => {});
-        }, { once: true });
-        vid.addEventListener('pause', () => {
-            activeArchiveVideoLoads = Math.max(0, activeArchiveVideoLoads - 1);
-        }, { once: true });
+        if (!prioritize && activeArchiveVideoLoads >= MAX_ARCHIVE_VIDEO_LOADS) {
+            queueArchiveVideoLoad(vid, options);
+            return;
+        }
+        loadLazyArchiveVideo(vid, options);
         return;
     }
     vid.play().catch(() => {});
@@ -284,9 +345,6 @@ function initMotionGallery() {
                 if (entry.isIntersecting) {
                     playLazyArchiveVideo(vid);
                 } else {
-                    if (vid.src) {
-                        activeArchiveVideoLoads = Math.max(0, activeArchiveVideoLoads - 1);
-                    }
                     vid.pause();
                 }
             });
