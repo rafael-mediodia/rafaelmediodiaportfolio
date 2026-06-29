@@ -197,8 +197,22 @@ function renderSpotlightList(items, linkClass) {
         .join('')}</ul>`;
 }
 
-function buildSidebarHTML(prefix) {
+function buildSidebarHTML(prefix, currentPath = window.location.pathname) {
     const recognition = getSidebarRecognition();
+    const isIllustrationPage = currentPath.includes('/illustration/');
+    const isTypefacesPage = currentPath.includes('typefaces.html');
+    const isArchivePage = currentPath.includes('motion.html');
+    const designCurrent = isIllustrationPage || isTypefacesPage || isArchivePage ? '' : ' info-portfolio-link--active';
+    const illustrationCurrent = isIllustrationPage ? ' info-portfolio-link--active' : '';
+    const typefacesCurrent = isTypefacesPage ? ' info-portfolio-link--active' : '';
+    const archiveCurrent = isArchivePage ? ' info-portfolio-link--active' : '';
+    const designAria = isIllustrationPage || isTypefacesPage || isArchivePage ? '' : ' aria-current="page"';
+    const illustrationAria = isIllustrationPage ? ' aria-current="page"' : '';
+    const typefacesAria = isTypefacesPage ? ' aria-current="page"' : '';
+    const archiveAria = isArchivePage ? ' aria-current="page"' : '';
+    const motionReelLink = isIllustrationPage
+        ? ''
+        : `<a href="${prefix}RAFAELMEDIODIA_MOTIONREEL.mp4" class="info-link" download>MOTION REEL</a>`;
 
     return `
         <button type="button" class="info-sidebar-toggle" aria-expanded="false" aria-controls="infoSidebarInner">
@@ -233,15 +247,22 @@ function buildSidebarHTML(prefix) {
                     </section>
                 </div>
                 <div class="info-bio-footer">
+                    <nav class="info-portfolio-switch" aria-label="Portfolio switcher">
+                        <a href="${prefix}index.html" class="info-portfolio-link${designCurrent}"${designAria}>Design</a>
+                        <a href="${prefix}illustration/" class="info-portfolio-link${illustrationCurrent}"${illustrationAria}>Illustration</a>
+                        <a href="${prefix}typefaces.html" class="info-portfolio-link${typefacesCurrent}"${typefacesAria}>Typefaces</a>
+                        <a href="${prefix}motion.html" class="info-portfolio-link${archiveCurrent}"${archiveAria}>Archive</a>
+                    </nav>
                     <div class="info-current">
-                        Designing @ <a href="https://bsrlive.com/" class="info-link" target="_blank">${nb('Brown', 'Student', 'Radio')}</a> ˚ ༘
+                        Designing @ TBD ˚ ༘
                     </div>
                     <div class="info-previous">
-                        Previously @ <a href="https://mediocre.rodeo" class="info-link" target="_blank">Mediocre</a>, <a href="https://visions-mag.squarespace.com/" class="info-link" target="_blank">VISIONS</a>
+                        Previously @ <a href="https://bsrlive.com/" class="info-link" target="_blank">${nb('Brown', 'Student', 'Radio')}</a>, <a href="https://mediocre.rodeo" class="info-link" target="_blank">Mediocre</a>, <a href="https://visions-mag.squarespace.com/" class="info-link" target="_blank">VISIONS</a>
                     </div>
                     <div class="info-links">
                         <a href="mailto:rafaelmediodiawork@gmail.com" class="info-link">EMAIL</a>
                         <a href="${prefix}RafaelMediodia-RESUME.pdf" class="info-link">RESUME</a>
+                        ${motionReelLink}
                         <a href="https://www.linkedin.com/in/rafael-mediodia-067b9418b/" class="info-link" target="_blank">LINKEDIN</a>
                         <a href="https://www.instagram.com/middledays/" class="info-link" target="_blank">INSTAGRAM</a>
                     </div>
@@ -254,13 +275,15 @@ function buildSidebarHTML(prefix) {
 function initSidebar() {
     const path = window.location.pathname;
     const isInSubdirectory =
-        path.includes('/projects/') || path.split('/').filter(Boolean).length > 1;
+        path.includes('/projects/') ||
+        path.includes('/illustration/') ||
+        path.split('/').filter(Boolean).length > 1;
     const prefix = isInSubdirectory ? '../' : '';
 
     const infoContainer = document.querySelector('.info-container');
     if (!infoContainer) return;
 
-    infoContainer.innerHTML = buildSidebarHTML(prefix);
+    infoContainer.innerHTML = buildSidebarHTML(prefix, path);
     initMobileSidebar(infoContainer);
     initKnowMore(infoContainer);
     initNameTypefaceHover(infoContainer, prefix);
@@ -385,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initRandomAccentHovers();
 });
 
-/** Random accent on hover — one delegated listener pair, no per-element handlers */
+/** Accent hover — cycle while hovering, choose randomly on click. */
 function initRandomAccentHovers() {
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -416,15 +439,21 @@ function initRandomAccentHovers() {
         { selector: '.gallery .project-thumb', mode: 'border' },
         { selector: '.illustrations-gallery .illustration-item', mode: 'border' },
         { selector: '.motion-gallery .motion-video-item', mode: 'text' },
+        { selector: '.motion-archive-download', mode: 'text' },
+        { selector: '.motion-archive-card-title a', mode: 'text' },
+        { selector: '.motion-archive-project-thumb', mode: 'border' },
         { selector: '.project-blurb a', mode: 'text' },
         { selector: '.project-text a', mode: 'text' },
         { selector: '.writing-chapter a', mode: 'text' },
     ];
 
     const ROOT_SELECTOR = TARGETS.map((config) => config.selector).join(', ');
-    const ACCENT_MODES = ['text', 'name', 'spotlight', 'pill', 'border'];
+    const ACCENT_MODES = ['text', 'name', 'spotlight', 'pill', 'border', 'button'];
 
     let activeEl = null;
+    let activeMode = null;
+    let cycleTimer = null;
+    let accentIndex = 0;
 
     function resolveTarget(from) {
         if (!(from instanceof Element)) return null;
@@ -443,8 +472,14 @@ function initRandomAccentHovers() {
         return ACCENT_POOL[(Math.random() * ACCENT_POOL.length) | 0];
     }
 
-    function applyAccent(el, mode) {
-        const { accent, soft } = pickAccent();
+    function nextAccent() {
+        const accent = ACCENT_POOL[accentIndex % ACCENT_POOL.length];
+        accentIndex += 1;
+        return accent;
+    }
+
+    function applyAccent(el, mode, accentConfig) {
+        const { accent, soft } = accentConfig;
         el.style.setProperty('--accent-hover', accent);
         el.style.setProperty('--accent-hover-soft', soft);
         if (!el.classList.contains('has-accent-hover')) {
@@ -458,14 +493,35 @@ function initRandomAccentHovers() {
         el.classList.add(`accent-hover--${mode}`);
     }
 
+    function stopAccentCycle() {
+        if (cycleTimer) {
+            clearInterval(cycleTimer);
+            cycleTimer = null;
+        }
+    }
+
+    function startAccentCycle() {
+        stopAccentCycle();
+        if (!activeEl || !activeMode) return;
+        cycleTimer = setInterval(() => {
+            if (!activeEl || !activeMode) {
+                stopAccentCycle();
+                return;
+            }
+            applyAccent(activeEl, activeMode, nextAccent());
+        }, 1200);
+    }
+
     function clearAccent(el) {
+        stopAccentCycle();
         el.classList.remove(
             'has-accent-hover',
             'accent-hover--text',
             'accent-hover--name',
             'accent-hover--spotlight',
             'accent-hover--pill',
-            'accent-hover--border'
+            'accent-hover--border',
+            'accent-hover--button'
         );
         el.style.removeProperty('--accent-hover');
         el.style.removeProperty('--accent-hover-soft');
@@ -474,7 +530,12 @@ function initRandomAccentHovers() {
     function setActive(next, mode) {
         if (activeEl && activeEl !== next) clearAccent(activeEl);
         activeEl = next;
-        if (activeEl) applyAccent(activeEl, mode);
+        activeMode = mode;
+        if (activeEl) {
+            accentIndex = 0;
+            applyAccent(activeEl, activeMode, nextAccent());
+            startAccentCycle();
+        }
     }
 
     document.addEventListener(
@@ -496,6 +557,20 @@ function initRandomAccentHovers() {
             if (activeEl.contains(e.relatedTarget)) return;
             clearAccent(activeEl);
             activeEl = null;
+            activeMode = null;
+        },
+        { passive: true }
+    );
+
+    document.addEventListener(
+        'click',
+        (e) => {
+            const hit = resolveTarget(e.target);
+            if (!hit) return;
+            stopAccentCycle();
+            activeEl = hit.el;
+            activeMode = hit.mode;
+            applyAccent(activeEl, activeMode, pickAccent());
         },
         { passive: true }
     );

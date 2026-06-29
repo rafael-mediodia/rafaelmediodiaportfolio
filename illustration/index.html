@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Illustration - Rafael Mediodia</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="illustration-page">
+    <div class="info-container">
+        <!-- Sidebar content will be injected here -->
+    </div>
+
+    <main class="gallery-container standalone-archive-page illustration-portfolio-page">
+        <div class="illustration-gallery-controls">
+            <nav class="illustration-filter-nav" aria-label="Illustration filters" id="illustrationFilterNav"></nav>
+            <button type="button" class="illustration-reshuffle-btn" id="illustrationReshuffleBtn">Reshuffle</button>
+        </div>
+
+        <div class="illustrations-gallery illustrations-gallery--page" id="illustrationsGallery" data-base="../Illustrations"></div>
+    </main>
+
+    <div class="image-zoom-modal" id="imageZoomModal">
+        <div class="image-zoom-close" id="imageZoomClose"></div>
+        <div class="image-zoom-container">
+            <img id="zoomedImage" alt="Illustration">
+            <video id="zoomedIllustrationVideo" controls playsinline webkit-playsinline hidden></video>
+        </div>
+    </div>
+
+    <script src="../sidebar.js" defer></script>
+    <script src="../illustrations.js" defer></script>
+</body>
+</html>

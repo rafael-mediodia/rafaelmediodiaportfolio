@@ -8,54 +8,15 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="home-page">
-    <div class="cursor"></div>
     
     <div class="info-container">
         <!-- Sidebar content will be injected here -->
     </div>
 
     <div class="home-layout">
-        <div class="archive-panels" id="archivePanels">
-            <aside class="archive-panel" data-panel="typefaces" aria-label="Typefaces">
-                <button type="button" class="archive-panel-toggle" aria-expanded="false" aria-controls="typefacesPanelInner">
-                    <span class="archive-panel-toggle-label">Typefaces</span>
-                </button>
-                <div class="archive-panel-inner" id="typefacesPanelInner">
-                    <div class="typefaces-list" id="typefacesList"></div>
-                </div>
-            </aside>
-
-            <aside class="archive-panel" data-panel="motion" aria-label="Motion">
-                <button type="button" class="archive-panel-toggle" aria-expanded="false" aria-controls="motionPanelInner">
-                    <span class="archive-panel-toggle-label">Motion</span>
-                </button>
-                <div class="archive-panel-inner" id="motionPanelInner">
-                    <div class="motion-featured" id="motionFeatured"></div>
-                    <div class="motion-gallery" id="motionGallery"></div>
-                </div>
-            </aside>
-
-            <aside class="archive-panel" data-panel="illustrations" aria-label="Illustrations">
-                <button type="button" class="archive-panel-toggle" aria-expanded="false" aria-controls="illustrationsPanelInner">
-                    <span class="archive-panel-toggle-label">Illustration</span>
-                </button>
-                <div class="archive-panel-inner" id="illustrationsPanelInner">
-                    <div class="illustrations-gallery" id="illustrationsGallery"></div>
-                </div>
-            </aside>
-
-            <aside class="archive-panel" data-panel="writing" aria-label="Writing">
-                <button type="button" class="archive-panel-toggle" aria-expanded="false" aria-controls="writingPanelInner">
-                    <span class="archive-panel-toggle-label">Writing</span>
-                </button>
-                <div class="archive-panel-inner" id="writingPanelInner">
-                    <div class="writing-list-wrap" id="writingList"></div>
-                </div>
-            </aside>
-        </div>
-
         <main class="gallery-container">
-            <div class="gallery" id="gallery">
+            <nav class="design-jump-nav" aria-label="Design projects" id="designJumpNav"></nav>
+            <div class="gallery gallery--list" id="gallery">
                 <!-- Projects will be injected here -->
             </div>
         </main>
@@ -83,11 +44,8 @@
     <!-- Safari play all button for homepage -->
     <button class="safari-play-all-button safari-play-all-thumbnails" id="safariPlayAllThumbnails" style="display: none;">PLAY ALL</button>
 
-    <script src="cursor.js" defer></script>
     <script src="sidebar.js" defer></script>
-    <script src="archive-panels.js" defer></script>
     <script src="typefaces.js" defer></script>
-    <script src="writing.js" defer></script>
     <script src="script.js" defer></script>
 </body>
 </html>

@@ -13,123 +13,105 @@ const projects = [
     {
         id: 'project-1',
         title: 'Pinoy Plus',
-        subtitle: 'A campaign for mga Pinoy creatives.',
-        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4', // Video thumbnail
-        page: 'projects/pinoy-plus.html'
+        subtitle: 'A campaign and web experience for mga Pinoy creatives.',
+        thumbnail: 'PinoyPlus/PinoyPlus-Intro.mp4',
+        page: 'projects/pinoy-plus.html',
+        skills: ['Campaign identity', 'Web design', 'Motion', 'Community systems'],
+        previewMedia: [
+            { src: 'PinoyPlus/Instagram Posts.mp4', type: 'video' },
+            { src: 'PinoyPlus/PinoyPlusDocuIntros.mp4', type: 'video' },
+            { src: 'PinoyPlus/PinoyPlus_Signage_1.png', type: 'image' },
+        ],
     },
     {
         id: 'project-5',
         title: 'Self Declaration',
-        subtitle: 'A reflection for immigrants in the United States.',
-        thumbnail: null,
-        thumbnailImages: [
-            'SelfDeclaration/Self-Declaration_4.jpg',
-            'SelfDeclaration/Self-Declaration_1.jpg'
+        subtitle: 'A publication for immigrants in the United States.',
+        thumbnail: 'SelfDeclaration/Self-Declaration_4.jpg',
+        page: 'projects/self-declaration.html',
+        skills: ['Editorial design', 'Book design', 'Research', 'Writing'],
+        previewMedia: [
+            { src: 'SelfDeclaration/Self-Declaration_3.jpg', type: 'image' },
+            { src: 'SelfDeclaration/selfdeclaration_grandfather_1.jpg', type: 'image' },
+            { src: 'SelfDeclaration/Self-Declaration_1.jpg', type: 'image' },
         ],
-        page: 'projects/self-declaration.html'
     },
     {
         id: 'project-providenceland',
         title: 'Providenceland',
-        subtitle: 'Title card for Nora Guttman, by Nora Guttman.',
+        subtitle: 'Title card and hand-built lettering for Nora Guttman.',
         thumbnail: 'ProvidenceLand/ProvidenceLandTItleCard.mp4',
-        page: 'projects/providenceland.html'
+        page: 'projects/providenceland.html',
+        skills: ['Title design', 'Lettering', 'Motion', 'Material exploration'],
+        featured: true,
+        previewMedia: [
+            { src: 'ProvidenceLand/OnceUponATimeHandlettering.png', type: 'image' },
+            { src: 'ProvidenceLand/FinalTitleCard_Still.png', type: 'image' },
+            { src: 'ProvidenceLand/PR.png', type: 'image' },
+        ],
     },
     {
         id: 'project-make-my-mark',
         title: 'Make My Mark',
         subtitle: 'Degree project book on fast making and assembly.',
         thumbnail: 'MakeMyMark/MakeMyMark.mp4',
-        page: 'projects/make-my-mark.html'
+        page: 'projects/make-my-mark.html',
+        skills: ['Publication design', 'Process systems', 'Typography', 'Production'],
+        previewMedia: [],
     },
     {
         id: 'project-risd-gdees',
         title: "RISD GDee's",
-        subtitle: 'Ongoing identity and motion for RISD GD\'s student showcase.',
-        thumbnail: "RISDGDee's/RISDGDee's_Thumbnail.mp4",
-        page: 'projects/risd-gdees.html'
+        subtitle: 'Identity and motion for RISD Graphic Design\'s student showcase.',
+        thumbnail: null,
+        page: 'projects/risd-gdees.html',
+        skills: ['Identity', 'Motion system', 'Event graphics', 'Art direction'],
+        previewMedia: [
+            { src: "RISDGDee's/16 by 9 reel.mp4", type: 'video' },
+            { src: "RISDGDee's/storyreel.mp4", type: 'video', portrait: true },
+        ],
     },
     {
         id: 'project-field',
         title: 'field',
         subtitle: 'A site for interviews, discussions, and music.',
         thumbnail: 'Field/Field-Thumbnail.mp4',
-        page: 'projects/field.html'
+        page: 'projects/field.html',
+        skills: ['Web design', 'Editorial system', 'Interaction', 'Front-end'],
+        previewMedia: [
+            { src: 'Field/Field-ArtistIntros.mp4', type: 'video' },
+        ],
     },
     {
         id: 'project-brown-student-radio',
         title: 'Brown Student Radio',
         subtitle: 'Campaign identity and motion for BSR\'s 4/20 event.',
-        thumbnail: 'Brown Student Radio/BSRShirt_thumb.jpg',
-        page: 'projects/brown-student-radio.html'
+        thumbnail: 'Brown Student Radio/BSR420_MainFeed.mp4',
+        page: 'projects/brown-student-radio.html',
+        skills: ['Campaign design', 'Motion', 'Merch', 'Social graphics'],
+        previewMedia: [
+            { src: 'Brown Student Radio/BSR420_Story:Reel.mp4', type: 'video', portrait: true },
+        ],
     },
     {
         id: 'project-3',
         title: 'Breakout Games',
         subtitle: 'Discovery and exploration motion identity work.',
-        thumbnail: 'Breakout/Breakout-Transition.mp4',
-        page: 'projects/breakout-games.html'
-    },
-    {
-        id: 'project-8',
-        title: 'superstition superstition superstition',
-        subtitle: 'Film about systems and growing up.',
-        thumbnail: null,
-        thumbnailVideos: [
-            'superstitionsuperstitionsuperstition/Mini Clips.mp4',
-            'superstitionsuperstitionsuperstition/MiniClip2.mp4',
-            'superstitionsuperstitionsuperstition/preview3.mp4'
+        thumbnail: 'Breakout/BreakoutMotion1.mp4',
+        page: 'projects/breakout-games.html',
+        skills: ['Motion identity', 'Brand studies', 'Animation'],
+        previewMedia: [
+            { src: 'Breakout/Breakout-Transition.mp4', type: 'video' },
         ],
-        page: 'projects/superstition-superstition-superstition.html'
-    },
-    {
-        id: 'project-4',
-        title: 'bounce museum of rubber',
-        subtitle: 'An identity for a museum full of elasticity.',
-        thumbnail: null,
-        thumbnailVideos: [
-            'BounceMuseum/BounceThumbnail.mp4',
-            'BounceMuseum/bouncethumbnail2.mp4'
-        ],
-        page: 'projects/bounce-museum.html'
-    },
-    {
-        id: 'project-6',
-        title: 'American Dream Series: Part 0',
-        subtitle: 'A pilot episode exploring what the American Dream is.',
-        thumbnail: 'AmericanDream/American Dream Series Part 0.mp4',
-        thumbnailStartTime: 2,
-        thumbnailEndTime: 4,
-        page: 'projects/american-dream-series.html'
     },
     {
         id: 'typefaces',
         title: 'Typefaces',
-        subtitle: 'Original typefaces and lettering.',
+        subtitle: 'I love drawing and seeing how they become systems. This lead me to type design!',
         thumbnailType: 'typefaces',
-        archivePanel: 'typefaces',
-    },
-    {
-        id: 'illustrations',
-        title: 'Illustrations',
-        subtitle: 'Illustration Collection',
-        thumbnail: null,
-        thumbnailImages: [
-            'Illustrations/frogs.jpg',
-            'Illustrations/mountain_and_tree_and_car_friends.jpg',
-            'Illustrations/astronaut_forest jpg.jpg',
-            'Illustrations/beetle3.jpg',
-            'Illustrations/mockup.jpg',
-            'Illustrations/IMG_7604.PNG'
-        ],
-        archivePanel: 'illustrations'
-    },
-    {
-        id: 'motion',
-        title: 'Motion',
-        subtitle: 'Take a peek at what I\'ve made move!',
-        thumbnail: getRandomMotionVideo(),
-        archivePanel: 'motion'
+        page: 'typefaces.html',
+        skills: ['Typeface design', 'Variable fonts', 'Lettering', 'Interactive specimens'],
+        previewMedia: [],
     },
 ];
 
@@ -148,6 +130,87 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+let readMediaVideoObserver = null;
+
+function observeReadMediaVideo(video) {
+    if (!('IntersectionObserver' in window)) {
+        const src = video.getAttribute('data-src');
+        if (src) {
+            video.src = src;
+            video.removeAttribute('data-src');
+            video.load();
+        }
+        return;
+    }
+
+    if (!readMediaVideoObserver) {
+        readMediaVideoObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                const vid = entry.target;
+                if (entry.isIntersecting) {
+                    const src = vid.getAttribute('data-src');
+                    if (src) {
+                        vid.src = src;
+                        vid.removeAttribute('data-src');
+                        vid.load();
+                    }
+                    vid.play().catch(() => {});
+                } else {
+                    vid.pause();
+                }
+            });
+        }, { rootMargin: '160px' });
+    }
+
+    readMediaVideoObserver.observe(video);
+}
+
+function createReadMediaItem(media, projectTitle) {
+    const item = document.createElement('div');
+    item.className = 'home-project-media';
+    if (media.portrait) item.classList.add('home-project-media--portrait');
+
+    if (media.type === 'vimeo') {
+        item.classList.add('home-project-media--vimeo');
+        const iframe = document.createElement('iframe');
+        iframe.src = media.src;
+        iframe.title = projectTitle;
+        iframe.setAttribute('frameborder', '0');
+        iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture');
+        iframe.setAttribute('allowfullscreen', '');
+        item.appendChild(iframe);
+    } else if (media.type === 'video' || media.src.toLowerCase().endsWith('.mp4')) {
+        const video = document.createElement('video');
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.autoplay = true;
+        video.preload = 'metadata';
+        video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
+        video.setAttribute('muted', '');
+        video.setAttribute('loop', '');
+        video.removeAttribute('controls');
+        video.controls = false;
+        video.setAttribute('disablePictureInPicture', '');
+        video.setAttribute('disableRemotePlayback', '');
+        video.setAttribute('x-webkit-airplay', 'deny');
+        video.setAttribute('data-src', media.src);
+        video.setAttribute('aria-label', projectTitle);
+        observeReadMediaVideo(video);
+        item.appendChild(video);
+    } else {
+        const img = document.createElement('img');
+        img.src = media.src;
+        img.alt = projectTitle;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        item.appendChild(img);
+    }
+
+    return item;
+}
 
 function initSafariPlayOverlay() {
     const overlay = document.getElementById('safariPlayOverlay');
@@ -226,34 +289,38 @@ function initSafariPlayOverlay() {
 function initGallery() {
     const gallery = document.getElementById('gallery');
     if (!gallery) return;
-    
-    // Lazy tooltip creation - only create on first hover
-    let tooltip = null;
-    let tooltipTitle = null;
-    let tooltipSubtitle = null;
-    const getTooltip = () => {
-        if (!tooltip) {
-            tooltip = document.createElement('div');
-            tooltip.className = 'project-tooltip';
-            tooltipTitle = document.createElement('div');
-            tooltipTitle.className = 'project-tooltip-title';
-            tooltipSubtitle = document.createElement('div');
-            tooltipSubtitle.className = 'project-tooltip-subtitle';
-            tooltip.appendChild(tooltipTitle);
-            tooltip.appendChild(tooltipSubtitle);
-            document.body.appendChild(tooltip);
-        }
-        return tooltip;
-    };
-    
+    const designJumpNav = document.getElementById('designJumpNav');
+    const navFragment = document.createDocumentFragment();
+
     // Use document fragment for batch DOM insertion
     const fragment = document.createDocumentFragment();
     
     projects.forEach((project) => {
+        const card = document.createElement('article');
+        card.className = 'home-project-card';
+        if (project.featured) card.classList.add('home-project-card--featured');
+        card.setAttribute('data-project-id', project.id);
+        card.id = `design-${project.id}`;
+        if (project.page) {
+            card.tabIndex = 0;
+            card.setAttribute('role', 'link');
+            card.setAttribute('aria-label', `Open ${project.title}`);
+        }
+
+        if (designJumpNav) {
+            const navLink = document.createElement('a');
+            navLink.className = 'design-jump-link';
+            navLink.href = `#design-${project.id}`;
+            navLink.textContent = project.title;
+            navFragment.appendChild(navLink);
+        }
+
         const thumb = document.createElement('div');
         thumb.className = 'project-thumb';
         thumb.setAttribute('data-project-id', project.id);
-        thumb.onclick = () => {
+        thumb.classList.add('home-project-media');
+
+        const openProject = () => {
             if (project.inProgress) {
                 return;
             }
@@ -265,6 +332,23 @@ function initGallery() {
                 window.location.href = project.page;
             }
         };
+
+        thumb.onclick = (e) => {
+            e.stopPropagation();
+            openProject();
+        };
+        card.addEventListener('click', (e) => {
+            if (!project.page && !project.archivePanel) return;
+            if (e.target.closest('button, a')) return;
+            openProject();
+        });
+        card.addEventListener('keydown', (e) => {
+            if (!project.page && !project.archivePanel) return;
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openProject();
+            }
+        });
         
         if (project.thumbnailType === 'typefaces' && typeof window.initTypefaceGalleryThumb === 'function') {
             window.initTypefaceGalleryThumb(thumb);
@@ -446,7 +530,7 @@ function initGallery() {
                 video.setAttribute('x-webkit-airplay', 'deny');
                 video.controls = false;
                 video.setAttribute('data-src', project.thumbnail);
-                if (project.id === 'project-6' && project.thumbnailStartTime !== undefined) {
+                if (project.thumbnailStartTime !== undefined) {
                     video.setAttribute('data-clip-start', String(project.thumbnailStartTime));
                     video.setAttribute('data-clip-end', String(project.thumbnailEndTime));
                 }
@@ -636,48 +720,68 @@ function initGallery() {
             });
         }
         
-        // Lazy tooltip event listeners - only attach on first hover
-        let tooltipAttached = false;
-        let rafId = null;
-        thumb.addEventListener('mouseenter', (e) => {
-            if (!tooltipAttached) {
-                tooltipAttached = true;
-                const tip = getTooltip();
-                thumb.addEventListener('mousemove', (e) => {
-                    // Cancel any pending animation frame
-                    if (rafId) cancelAnimationFrame(rafId);
-                    // Use requestAnimationFrame for smooth updates
-                    rafId = requestAnimationFrame(() => {
-                        // Use left/top for fixed positioning
-                        tip.style.left = (e.clientX + 5) + 'px';
-                        tip.style.top = (e.clientY + 5) + 'px';
-                        tip.style.transform = 'none';
-                        rafId = null;
-                    });
-                });
-                thumb.addEventListener('mouseleave', () => {
-                    if (rafId) cancelAnimationFrame(rafId);
-                    tip.style.opacity = '0';
-                    tip.style.willChange = 'auto';
-                });
-            }
-            const tip = getTooltip();
-            // Always update tooltip content when hovering over a thumbnail
-            tooltipTitle.textContent = project.title;
-            tooltipSubtitle.textContent = project.subtitle;
-            tip.style.willChange = 'left, top, opacity';
-            tip.style.opacity = '1';
-            // Use left/top for fixed positioning
-            tip.style.left = (e.clientX + 5) + 'px';
-            tip.style.top = (e.clientY + 5) + 'px';
-            tip.style.transform = 'none';
+        const meta = document.createElement('div');
+        meta.className = 'home-project-meta';
+
+        const title = document.createElement('h2');
+        title.className = 'home-project-title';
+        title.textContent = project.title;
+
+        const titleRow = document.createElement('div');
+        titleRow.className = 'home-project-title-row';
+        titleRow.appendChild(title);
+
+        const subtitle = document.createElement('p');
+        subtitle.className = 'home-project-subtitle';
+        subtitle.textContent = project.subtitle || '';
+
+        const skills = document.createElement('ul');
+        skills.className = 'home-project-skills';
+        skills.addEventListener('click', (e) => {
+            e.stopPropagation();
         });
-        
+        skills.addEventListener('keydown', (e) => {
+            e.stopPropagation();
+        });
+        (project.skills || []).forEach((skill) => {
+            const item = document.createElement('li');
+            item.textContent = skill;
+            skills.appendChild(item);
+        });
+
+        meta.appendChild(titleRow);
+        meta.appendChild(subtitle);
+        if (project.skills?.length) meta.appendChild(skills);
+
+        const mediaStrip = document.createElement('div');
+        mediaStrip.className = 'home-project-media-strip';
+        const previewMedia = project.previewMedia || [];
+        const shouldLeadWithPreviewMedia = previewMedia[0]?.type === 'vimeo';
+        const hasThumbnail =
+            project.thumbnailType ||
+            project.thumbnailVideos?.length ||
+            project.thumbnailImages?.length ||
+            (project.thumbnail && project.thumbnail.trim() !== '');
+        if (!shouldLeadWithPreviewMedia && hasThumbnail) {
+            mediaStrip.appendChild(thumb);
+        }
+        previewMedia.forEach((media) => {
+            mediaStrip.appendChild(createReadMediaItem(media, project.title));
+        });
+
+        card.appendChild(meta);
+        card.appendChild(mediaStrip);
+
         // Add to fragment instead of directly to gallery
-        fragment.appendChild(thumb);
+        fragment.appendChild(card);
     });
     
     // Batch append all thumbnails at once
+    if (designJumpNav) {
+        designJumpNav.appendChild(navFragment);
+        initDesignJumpNavActiveState(designJumpNav);
+        initDesignJumpNavScrollVisibility(designJumpNav);
+    }
     gallery.appendChild(fragment);
     
     function resumeVisibleGalleryVideos() {
@@ -697,4 +801,55 @@ function initGallery() {
             resumeVisibleGalleryVideos();
         }
     });
+}
+
+function initDesignJumpNavActiveState(nav) {
+    const links = Array.from(nav.querySelectorAll('.design-jump-link[href^="#"]'));
+    if (!links.length) return;
+
+    const setActive = (activeLink) => {
+        links.forEach((link) => {
+            const active = link === activeLink;
+            link.classList.toggle('design-jump-link--active', active);
+            link.setAttribute('aria-current', active ? 'true' : 'false');
+        });
+    };
+
+    const hashLink = links.find((link) => link.hash && link.hash === window.location.hash);
+    setActive(hashLink || links[0]);
+
+    nav.addEventListener('click', (e) => {
+        const link = e.target.closest('.design-jump-link[href^="#"]');
+        if (!link || !nav.contains(link)) return;
+        e.stopPropagation();
+        setActive(link);
+    });
+}
+
+function initDesignJumpNavScrollVisibility(nav) {
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const update = () => {
+        const currentY = window.scrollY;
+        const scrollingDown = currentY > lastY + 8;
+        const scrollingUp = currentY < lastY - 8;
+        if (currentY < 80 || scrollingUp) {
+            nav.classList.remove('design-jump-nav--hidden');
+        } else if (scrollingDown) {
+            nav.classList.add('design-jump-nav--hidden');
+        }
+        lastY = currentY;
+        ticking = false;
+    };
+
+    window.addEventListener(
+        'scroll',
+        () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(update);
+        },
+        { passive: true }
+    );
 }

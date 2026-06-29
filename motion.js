@@ -89,6 +89,7 @@ function initMotionVisibilityHandler() {
 
 function setupMotionOnPage() {
     if (!document.getElementById('motionGallery')) return;
+    initArchiveJumpNavActiveState();
 
     if (!document.getElementById('archivePanels') && document.getElementById('videoZoomModal')) {
         initVideoZoom();
@@ -105,6 +106,32 @@ function setupMotionOnPage() {
         bootMotion();
         initMotionVisibilityHandler();
     }
+}
+
+function initArchiveJumpNavActiveState() {
+    const nav = document.querySelector('.archive-jump-nav');
+    if (!nav || nav.dataset.ready === 'true') return;
+    nav.dataset.ready = 'true';
+
+    const links = Array.from(nav.querySelectorAll('.archive-jump-link[href^="#"]'));
+    if (!links.length) return;
+
+    const setActive = (activeLink) => {
+        links.forEach((link) => {
+            const active = link === activeLink;
+            link.classList.toggle('archive-jump-link--active', active);
+            link.setAttribute('aria-current', active ? 'true' : 'false');
+        });
+    };
+
+    const hashLink = links.find((link) => link.hash && link.hash === window.location.hash);
+    setActive(hashLink || links[0]);
+
+    nav.addEventListener('click', (e) => {
+        const link = e.target.closest('.archive-jump-link[href^="#"]');
+        if (!link || !nav.contains(link)) return;
+        setActive(link);
+    });
 }
 
 if (document.readyState === 'loading') {
@@ -134,6 +161,8 @@ function initMotionFeatured() {
     featuredContainer.dataset.videoSrc = featuredSrc;
     featuredContainer.dataset.tooltip = 'Rafael Mediodia Motion Reel 2026!';
     featuredContainer.setAttribute('aria-label', 'Motion Reel');
+    featuredContainer.setAttribute('role', 'button');
+    featuredContainer.tabIndex = 0;
 
     const panelInner = featuredContainer.closest('.archive-panel-inner');
     const featuredObserver = new IntersectionObserver((entries) => {
@@ -158,13 +187,22 @@ function initMotionFeatured() {
         document.body.appendChild(motionArchiveTooltip);
     }
 
-    const featuredCaption = document.createElement('div');
-    featuredCaption.className = 'motion-featured-caption';
-    featuredCaption.textContent = 'Rafael Mediodia Motion Reel 2026!';
-    featuredContainer.insertAdjacentElement('afterend', featuredCaption);
+    if (!featuredContainer.closest('.motion-archive-card')) {
+        const featuredCaption = document.createElement('div');
+        featuredCaption.className = 'motion-featured-caption';
+        featuredCaption.textContent = 'Rafael Mediodia Motion Reel 2026!';
+        featuredContainer.insertAdjacentElement('afterend', featuredCaption);
+    }
 
     featuredContainer.addEventListener('click', () => {
         openVideoZoom(featuredSrc);
+    });
+
+    featuredContainer.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openVideoZoom(featuredSrc);
+        }
     });
 
     featuredContainer.addEventListener('mouseover', (e) => {
@@ -265,6 +303,9 @@ function initMotionGallery() {
         videoContainer.className = 'motion-video-item';
         videoContainer.dataset.videoSrc = videoSrc;
         videoContainer.dataset.tooltip = tooltipText;
+        videoContainer.setAttribute('role', 'button');
+        videoContainer.setAttribute('aria-label', `Open ${tooltipText}`);
+        videoContainer.tabIndex = 0;
         if (videoData.tooltipSubtitle) {
             videoContainer.dataset.tooltipSubtitle = videoData.tooltipSubtitle;
         }
@@ -309,6 +350,14 @@ function initMotionGallery() {
         if (item?.dataset.videoSrc) {
             openVideoZoom(item.dataset.videoSrc);
         }
+    });
+
+    gallery.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        const item = e.target.closest('.motion-video-item');
+        if (!item?.dataset.videoSrc) return;
+        e.preventDefault();
+        openVideoZoom(item.dataset.videoSrc);
     });
 }
 
