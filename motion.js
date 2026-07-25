@@ -1,5 +1,31 @@
-// Use cached Safari detection from script.js if available, otherwise detect
-const isSafariMotion = typeof isSafari !== 'undefined' ? isSafari : /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const motionPosters = {
+    'RAFAELMEDIODIA_MOTIONREEL.mp4': 'motion-posters/RAFAELMEDIODIA_MOTIONREEL.jpg',
+    'AmericanDream/American Dream Series Part 0.mp4': 'motion-posters/American-Dream-Series-Part-0.jpg',
+    'BounceMuseum/BounceThumbnail.mp4': 'motion-posters/BounceThumbnail.jpg',
+    'BounceMuseum/bouncethumbnail2.mp4': 'motion-posters/bouncethumbnail2.jpg',
+    'superstitionsuperstitionsuperstition/Mini Clips.mp4': 'motion-posters/Mini-Clips.jpg',
+    'superstitionsuperstitionsuperstition/MiniClip2.mp4': 'motion-posters/MiniClip2.jpg',
+    'superstitionsuperstitionsuperstition/preview3.mp4': 'motion-posters/preview3.jpg',
+    'MYCELIUM_TITLECARD.mp4': 'motion-posters/MYCELIUM_TITLECARD.jpg',
+    'CHASINGSUNSETS.mp4': 'motion-posters/CHASINGSUNSETS.jpg',
+    'Motion/cutitout.mp4': 'motion-posters/cutitout.jpg',
+    'Motion/Bubbles (2).mp4': 'motion-posters/Bubbles-2.jpg',
+    'Motion/LOGO1-FULL.mp4': 'motion-posters/LOGO1-FULL.jpg',
+    'Motion/RAFAELMEDIODIA_ASSIGNMENT4_COLORLIGHTSHADOW.mp4': 'motion-posters/RAFAELMEDIODIA_ASSIGNMENT4_COLORLIGHTSHADOW.jpg',
+    'Motion/Whats at the core.mp4': 'motion-posters/Whats-at-the-core.jpg',
+    'Motion/StudioRafael.mp4': 'motion-posters/StudioRafael.jpg',
+    'Motion/LOGO2-FULL.mp4': 'motion-posters/LOGO2-FULL.jpg',
+    'Motion/girldinneranimation2-gs-color-addedtext.mp4': 'motion-posters/girldinneranimation2-gs-color-addedtext.jpg',
+    'Motion/Chemistry.mp4': 'motion-posters/Chemistry.jpg',
+    'Motion/2nd Ad.mp4': 'motion-posters/2nd-Ad.jpg',
+    'Motion/MagicalMischief.mp4': 'motion-posters/MagicalMischief.jpg',
+    'Motion/RAFAELMEDIODIA_FORMINMOTION.mp4': 'motion-posters/RAFAELMEDIODIA_FORMINMOTION.jpg',
+    'Motion/Comp 3.mp4': 'motion-posters/Comp-3.jpg',
+    'Motion/EXPIRATIONDATE-POST-GREEN.mp4': 'motion-posters/EXPIRATIONDATE-POST-GREEN.jpg',
+    'Motion/Comp 2.mp4': 'motion-posters/Comp-2.jpg',
+    'Motion/DingDongProductions.mp4': 'motion-posters/DingDongProductions.jpg',
+    'Motion/newstar!studio.mp4': 'motion-posters/newstar-studio.jpg',
+};
 
 const motionVideos = [
     { src: 'MYCELIUM_TITLECARD.mp4', file: 'MYCELIUM_TITLECARD.mp4', tooltip: 'Mycelium Title Card', tooltipSubtitle: 'Film title for MYCELIUM, by Veronica Egas.' },
@@ -33,12 +59,20 @@ function getMotionVideoSrc(videoData) {
     return file.includes('/') ? file : `Motion/${file}`;
 }
 
+function getMotionPoster(src) {
+    if (!src) return null;
+    return motionPosters[src.split('#')[0]] || null;
+}
+
+function prefersHoverPreview() {
+    return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+}
+
 let motionInitialized = false;
-let motionGalleryObserver = null;
 let motionArchiveTooltip = null;
 let activeArchiveVideoLoads = 0;
 const archiveVideoLoadQueue = [];
-const MAX_ARCHIVE_VIDEO_LOADS = 2;
+const MAX_ARCHIVE_VIDEO_LOADS = 1;
 
 function scheduleMotionWork(fn) {
     if ('requestIdleCallback' in window) {
@@ -72,7 +106,7 @@ function initMotionVisibilityHandler() {
             requestAnimationFrame(() => {
                 if (featuredVideo) {
                     const r = featuredVideo.getBoundingClientRect();
-                    if (r.bottom > 0 && r.top < window.innerHeight) {
+                    if (r.bottom > 0 && r.top < window.innerHeight && !featuredVideo.getAttribute('data-src')) {
                         featuredVideo.play().catch(() => {});
                     }
                 }
@@ -144,44 +178,74 @@ if (document.readyState === 'loading') {
 
 let featuredVideo = null;
 
-function initMotionArchivePreviewVideos() {
-    const videos = document.querySelectorAll('.motion-archive-project-media video[data-src]');
-    if (!videos.length) return;
+function bindArchivePreviewInteraction(video, options = {}) {
+    const { heavy = false } = options;
+    const host = video.closest('a, .motion-featured, .motion-video-item') || video;
+
+    if (prefersHoverPreview()) {
+        const start = () => playLazyArchiveVideo(video, { randomStart: false });
+        host.addEventListener('pointerenter', start, { once: true });
+        return;
+    }
+
+    // Touch: keep heavy masters as posters; only stream lighter clips near viewport.
+    if (heavy || video.dataset.heavy === 'true') {
+        return;
+    }
 
     if (!('IntersectionObserver' in window)) {
-        videos.forEach((video) => playLazyArchiveVideo(video, { randomStart: false }));
+        playLazyArchiveVideo(video, { randomStart: false });
         return;
     }
 
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-            const video = entry.target;
             if (entry.isIntersecting) {
                 playLazyArchiveVideo(video, { randomStart: false });
             } else {
                 video.pause();
             }
         });
-    }, { rootMargin: '80px 0px', threshold: 0.1 });
+    }, { rootMargin: '40px 0px', threshold: 0.15 });
 
-    videos.forEach((video) => observer.observe(video));
+    observer.observe(video);
+}
+
+function initMotionArchivePreviewVideos() {
+    const videos = document.querySelectorAll('.motion-archive-project-media video[data-src]');
+    if (!videos.length) return;
+
+    videos.forEach((video) => {
+        const src = video.getAttribute('data-src') || '';
+        const poster = getMotionPoster(src);
+        if (poster && !video.getAttribute('poster')) {
+            video.setAttribute('poster', poster);
+        }
+        bindArchivePreviewInteraction(video, {
+            heavy: video.dataset.heavy === 'true' || src.includes('American Dream'),
+        });
+    });
 }
 
 function initMotionFeatured() {
     const featuredContainer = document.getElementById('motionFeatured');
     if (!featuredContainer) return;
-    
-    featuredVideo = document.createElement('video');
-    featuredVideo.setAttribute('data-src', 'RAFAELMEDIODIA_MOTIONREEL.mp4');
+
     const featuredSrc = 'RAFAELMEDIODIA_MOTIONREEL.mp4';
+    const featuredPoster = getMotionPoster(featuredSrc);
+
+    featuredVideo = document.createElement('video');
+    featuredVideo.setAttribute('data-src', featuredSrc);
+    if (featuredPoster) featuredVideo.setAttribute('poster', featuredPoster);
     featuredVideo.muted = true;
     featuredVideo.loop = true;
     featuredVideo.playsInline = true;
-    featuredVideo.preload = 'auto';
+    featuredVideo.preload = 'none';
     featuredVideo.setAttribute('playsinline', '');
     featuredVideo.setAttribute('webkit-playsinline', '');
     featuredVideo.setAttribute('loop', '');
     featuredVideo.setAttribute('muted', '');
+    featuredVideo.dataset.heavy = 'true';
     featuredVideo.className = 'motion-featured-video';
     featuredContainer.dataset.videoSrc = featuredSrc;
     featuredContainer.dataset.tooltip = 'Rafael Mediodia Motion Reel 2026!';
@@ -189,22 +253,8 @@ function initMotionFeatured() {
     featuredContainer.setAttribute('role', 'button');
     featuredContainer.tabIndex = 0;
 
-    const panelInner = featuredContainer.closest('.archive-panel-inner');
-    const featuredObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                playLazyArchiveVideo(featuredVideo, {
-                    prioritize: true,
-                    randomStart: false,
-                });
-            } else {
-                featuredVideo.pause();
-            }
-        });
-    }, { root: panelInner || null, rootMargin: '0px', threshold: 0.1 });
-    
     featuredContainer.appendChild(featuredVideo);
-    featuredObserver.observe(featuredContainer);
+    bindArchivePreviewInteraction(featuredVideo, { heavy: true });
 
     if (!motionArchiveTooltip) {
         motionArchiveTooltip = document.createElement('div');
@@ -271,11 +321,14 @@ function loadLazyArchiveVideo(vid, options = {}) {
         return;
     }
 
+    if (vid.dataset.loading === 'true') return;
+    vid.dataset.loading = 'true';
     activeArchiveVideoLoads += 1;
     let settled = false;
     const done = () => {
         if (settled) return;
         settled = true;
+        delete vid.dataset.loading;
         activeArchiveVideoLoads = Math.max(0, activeArchiveVideoLoads - 1);
         drainArchiveVideoLoadQueue();
     };
@@ -335,27 +388,12 @@ function initMotionGallery() {
         document.body.appendChild(motionArchiveTooltip);
     }
 
-    const panelInner = gallery.closest('.archive-panel-inner');
-    const observerRoot = panelInner || null;
-
-    if (!motionGalleryObserver) {
-        motionGalleryObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                const vid = entry.target;
-                if (entry.isIntersecting) {
-                    playLazyArchiveVideo(vid);
-                } else {
-                    vid.pause();
-                }
-            });
-        }, { root: observerRoot, rootMargin: '40px 0px', threshold: 0.2 });
-    }
-
     const fragment = document.createDocumentFragment();
 
     motionVideos.forEach((videoData) => {
         const videoSrc = getMotionVideoSrc(videoData);
         const tooltipText = videoData.tooltip || 'More Motion';
+        const poster = getMotionPoster(videoSrc);
 
         const videoContainer = document.createElement('div');
         videoContainer.className = 'motion-video-item';
@@ -370,6 +408,7 @@ function initMotionGallery() {
 
         const video = document.createElement('video');
         video.setAttribute('data-src', videoSrc);
+        if (poster) video.setAttribute('poster', poster);
         video.muted = true;
         video.loop = true;
         video.playsInline = true;
@@ -379,7 +418,7 @@ function initMotionGallery() {
 
         videoContainer.appendChild(video);
         fragment.appendChild(videoContainer);
-        motionGalleryObserver.observe(video);
+        bindArchivePreviewInteraction(video, { heavy: true });
     });
 
     gallery.appendChild(fragment);
@@ -427,7 +466,7 @@ function initVideoZoom() {
     const closeBtn = document.getElementById('videoZoomClose');
     const video = document.getElementById('zoomedVideo');
     if (!modal || !closeBtn || !video) return;
-    
+
     const closeModal = () => {
         modal.style.display = 'none';
         modal.classList.remove('active');
@@ -435,9 +474,9 @@ function initVideoZoom() {
         video.currentTime = 0;
         document.removeEventListener('keydown', handleVideoKeydown);
     };
-    
+
     closeBtn.addEventListener('click', closeModal);
-    
+
     modal.addEventListener('click', (e) => {
         if (e.target === modal || e.target.closest('.video-zoom-container') === null) {
             closeModal();
@@ -463,11 +502,11 @@ function handleVideoKeydown(e) {
 
 function navigateVideo(direction) {
     if (videoZoomArray.length === 0) return;
-    
+
     currentVideoIndex = (currentVideoIndex + direction + videoZoomArray.length) % videoZoomArray.length;
     const video = document.getElementById('zoomedVideo');
     const videoFile = getMotionVideoSrc(videoZoomArray[currentVideoIndex]);
-    
+
     video.src = videoFile;
     video.load();
     video.addEventListener('loadedmetadata', () => {
@@ -478,24 +517,22 @@ function navigateVideo(direction) {
 function openVideoZoom(videoSrc) {
     const modal = document.getElementById('videoZoomModal');
     const video = document.getElementById('zoomedVideo');
-    
+
     videoZoomArray = motionVideos;
     currentVideoIndex = motionVideos.findIndex(v => getMotionVideoSrc(v) === videoSrc);
-    
+
     if (currentVideoIndex === -1) {
         currentVideoIndex = 0;
     }
-    
+
     video.src = videoSrc;
     video.load();
     modal.style.display = 'flex';
     modal.classList.add('active');
-    
+
     document.addEventListener('keydown', handleVideoKeydown);
-    
+
     video.addEventListener('loadedmetadata', () => {
         video.play();
     }, { once: true });
 }
-
-

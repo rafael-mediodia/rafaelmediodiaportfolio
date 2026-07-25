@@ -234,7 +234,7 @@ function buildSidebarHTML(prefix, currentPath = window.location.pathname) {
                 </div>
                 <div class="info-bio-more" id="infoBioMore" aria-hidden="true">
                     <figure class="info-portrait">
-                        <img src="${prefix}ItsMe.jpg" alt="Rafael Mediodia in the studio" width="608" height="1080" loading="lazy" decoding="async">
+                        <img src="${prefix}ItsMe.jpg" alt="Rafael Mediodia in the studio" width="618" height="900" loading="lazy" decoding="async">
                     </figure>
                     <div class="info-about-extended">
                         <p>Rafael is pursuing his BFA in graphic design at the Rhode Island School of Design, with a focus on Computation, Culture, and Technology. He is driven by connection with others and the power of feeling.</p>

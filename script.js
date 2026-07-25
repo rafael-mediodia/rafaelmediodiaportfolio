@@ -269,6 +269,10 @@ function initSafariPlayOverlay() {
     
     const playAllVideos = () => {
         document.querySelectorAll('#gallery video').forEach((video) => {
+            const rect = video.getBoundingClientRect();
+            const inView = rect.bottom > 0 && rect.top < window.innerHeight + 200;
+            if (!inView) return;
+
             const lazySrc = video.getAttribute('data-src');
             if (lazySrc && !video.src) {
                 video.src = lazySrc;

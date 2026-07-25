@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Illustration - Rafael Mediodia</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body class="illustration-page">
@@ -21,11 +24,23 @@
         <div class="illustrations-gallery illustrations-gallery--page" id="illustrationsGallery" data-base="../Illustrations"></div>
     </main>
 
-    <div class="image-zoom-modal" id="imageZoomModal">
-        <div class="image-zoom-close" id="imageZoomClose"></div>
-        <div class="image-zoom-container">
-            <img id="zoomedImage" alt="Illustration">
-            <video id="zoomedIllustrationVideo" controls playsinline webkit-playsinline hidden></video>
+    <div class="image-zoom-modal" id="imageZoomModal" role="dialog" aria-modal="true" aria-labelledby="imageZoomTitle">
+        <button type="button" class="image-zoom-close" id="imageZoomClose" aria-label="Close"></button>
+        <button type="button" class="image-zoom-nav image-zoom-nav--prev" id="imageZoomPrev" aria-label="Previous illustration">←</button>
+        <button type="button" class="image-zoom-nav image-zoom-nav--next" id="imageZoomNext" aria-label="Next illustration">→</button>
+
+        <div class="image-zoom-stage">
+            <div class="image-zoom-container">
+                <img id="zoomedImage" alt="Illustration">
+                <video id="zoomedIllustrationVideo" controls playsinline webkit-playsinline hidden></video>
+            </div>
+            <div class="image-zoom-meta">
+                <div class="image-zoom-copy">
+                    <p class="image-zoom-title" id="imageZoomTitle"></p>
+                    <p class="image-zoom-format" id="imageZoomMeta"></p>
+                </div>
+                <p class="image-zoom-counter" id="imageZoomCounter"></p>
+            </div>
         </div>
     </div>
 
