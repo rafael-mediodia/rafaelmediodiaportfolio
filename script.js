@@ -67,6 +67,18 @@ function getRandomMotionVideo() {
 
 const projects = [
     {
+        id: 'project-risd-gdees',
+        title: "RISD GDee's",
+        subtitle: 'Identity and motion for RISD Graphic Design\'s student showcase.',
+        thumbnail: null,
+        page: 'projects/risd-gdees.html',
+        skills: ['Identity', 'Motion system', 'Event graphics', 'Art direction'],
+        previewMedia: [
+            { src: "RISDGDee's/16 by 9 reel.mp4", type: 'video' },
+            { src: "RISDGDee's/storyreel.mp4", type: 'video', portrait: true },
+        ],
+    },
+    {
         id: 'project-pinoy-plus',
         title: 'Pinoy Plus',
         subtitle: 'A campaign and web experience for mga Pinoy creatives.',
@@ -85,7 +97,7 @@ const projects = [
         subtitle: 'A publication for immigrants in the United States.',
         thumbnail: 'SelfDeclaration/Self-Declaration_4.jpg',
         page: 'projects/self-declaration.html',
-        skills: ['Editorial design', 'Book design', 'Research', 'Writing'],
+        skills: ['Book design', 'Print design'],
         previewMedia: [
             { src: 'SelfDeclaration/Self-Declaration_3.jpg', type: 'image' },
             { src: 'SelfDeclaration/selfdeclaration_grandfather_1.jpg', type: 'image' },
@@ -112,20 +124,8 @@ const projects = [
         subtitle: 'Degree project book on fast making and assembly.',
         thumbnail: 'MakeMyMark/MakeMyMark.mp4',
         page: 'projects/make-my-mark.html',
-        skills: ['Publication design', 'Process systems', 'Typography', 'Production'],
+        skills: ['Publication design', 'Typography', 'Print production'],
         previewMedia: [],
-    },
-    {
-        id: 'project-risd-gdees',
-        title: "RISD GDee's",
-        subtitle: 'Identity and motion for RISD Graphic Design\'s student showcase.',
-        thumbnail: null,
-        page: 'projects/risd-gdees.html',
-        skills: ['Identity', 'Motion system', 'Event graphics', 'Art direction'],
-        previewMedia: [
-            { src: "RISDGDee's/16 by 9 reel.mp4", type: 'video' },
-            { src: "RISDGDee's/storyreel.mp4", type: 'video', portrait: true },
-        ],
     },
     {
         id: 'project-field',
@@ -133,7 +133,7 @@ const projects = [
         subtitle: 'A site for interviews, discussions, and music.',
         thumbnail: 'Field/Field-Thumbnail.mp4',
         page: 'projects/field.html',
-        skills: ['Web design', 'Editorial system', 'Interaction', 'Front-end'],
+        skills: ['Brand identity', 'Motion design', 'Type design'],
         previewMedia: [
             { src: 'Field/Field-ArtistIntros.mp4', type: 'video' },
         ],
@@ -144,7 +144,7 @@ const projects = [
         subtitle: 'Campaign identity and motion for BSR\'s 4/20 event.',
         thumbnail: 'Brown Student Radio/BSR420_MainFeed.mp4',
         page: 'projects/brown-student-radio.html',
-        skills: ['Campaign design', 'Motion', 'Merch', 'Social graphics'],
+        skills: ['Campaign design', 'Motion', 'Social graphics'],
         previewMedia: [
             { src: 'Brown Student Radio/BSR420_Story-Reel.mp4', type: 'video', portrait: true },
         ],
@@ -166,7 +166,7 @@ const projects = [
         subtitle: 'I love drawing and seeing how they become systems. This lead me to type design!',
         thumbnailType: 'typefaces',
         page: 'typefaces.html',
-        skills: ['Typeface design', 'Variable fonts', 'Lettering', 'Interactive specimens'],
+        skills: ['Typeface design', 'Variable fonts', 'Lettering'],
         previewMedia: [],
     },
 ];
