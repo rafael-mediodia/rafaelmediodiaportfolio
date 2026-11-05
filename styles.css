@@ -14,7 +14,7 @@
 
 :root {
     --font-family: 'Areal', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    --bg: #f4efe6;
+    --bg: #ffffff;
     --text: #1c1c1c;
     --dotted-color: #000;
     --spacing: 2rem;
@@ -51,6 +51,10 @@
     --accent-orange-strong: #f9ddc0;
     --accent-green-strong: #d5edb8;
     --accent-transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+html {
+    background: var(--bg);
 }
 
 body {
@@ -3056,7 +3060,7 @@ body:has(.project-images-panel) .project-back-link {
     max-width: 100%;
     padding: 0.4rem 0.7rem 0.5rem 0.55rem;
     border: 0.25px solid var(--dotted-color);
-    background: #eee8dc;
+    background: var(--bg);
     box-sizing: border-box;
     transform: rotate(var(--title-tilt, 0.4deg));
     transform-origin: 18% 70%;
@@ -3095,7 +3099,7 @@ body:has(.project-images-panel) .project-back-link {
     aspect-ratio: 4 / 3;
     overflow: hidden;
     border: 0.25px solid var(--dotted-color);
-    background: #f6f6f6;
+    background: var(--bg);
     box-sizing: border-box;
 }
 
@@ -3132,7 +3136,7 @@ body:has(.project-images-panel) .project-back-link {
     display: block;
     object-fit: contain;
     object-position: center;
-    background: #f6f6f6;
+    background: var(--bg);
 }
 
 .home-project-media video {
@@ -4857,7 +4861,7 @@ video:not([controls])::-webkit-media-controls-play-button {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    background: #f6f6f6;
+    background: var(--bg);
 }
 
 .project-thumb[data-project-id="project-providenceland"] {
