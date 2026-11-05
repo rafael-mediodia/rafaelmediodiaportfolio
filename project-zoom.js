@@ -335,7 +335,6 @@ function openVideoZoom(videoSrc, hasControls = false) {
     
     const currentVideo = videoZoomArray[currentVideoIndex];
     
-    // Optimize for Safari - use transform instead of opacity for better performance
     video.style.transform = 'scale(0.95)';
     video.style.opacity = '0';
     video.src = currentVideo.src;

@@ -5,100 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Archive - Rafael Mediodia</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="preload" href="ABCArealVariable.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="archive-page">
     <div class="info-container">
-        <!-- Sidebar content will be injected here -->
     </div>
 
     <main class="gallery-container standalone-archive-page motion-archive-page">
-        <nav class="archive-jump-nav" aria-label="Archive sections">
-            <a href="#motion-reel" class="archive-jump-link">Motion Reel</a>
-            <a href="#bounce-museum" class="archive-jump-link">Bounce Museum</a>
-            <a href="#american-dream-series" class="archive-jump-link">American Dream</a>
-            <a href="#superstition" class="archive-jump-link">Superstition</a>
-            <a href="#motion-studies" class="archive-jump-link">Motion Studies</a>
-            <a href="#writing" class="archive-jump-link">Writing</a>
-        </nav>
+        <div class="illustration-gallery-controls">
+            <nav class="illustration-filter-nav" aria-label="Archive sections" id="archiveJumpNav">
+                <a href="#motion-reel" class="illustration-filter-btn">Motion Reel</a>
+                <a href="#bounce-museum" class="illustration-filter-btn">Bounce Museum</a>
+                <a href="#american-dream-series" class="illustration-filter-btn">American Dream</a>
+                <a href="#superstition" class="illustration-filter-btn">Superstition</a>
+                <a href="#motion-studies" class="illustration-filter-btn">Motion Studies</a>
+                <a href="#writing" class="illustration-filter-btn">Writing</a>
+            </nav>
+        </div>
 
-        <section class="motion-archive-collection" aria-label="Archive collection">
-            <article class="motion-archive-card motion-archive-card--reel" id="motion-reel">
-                <div class="motion-archive-card-copy">
-                    <p class="motion-archive-card-kicker">Motion Reel</p>
-                    <h2 class="motion-archive-card-title">Rafael Mediodia Motion Reel</h2>
-                    <a href="RAFAELMEDIODIA_MOTIONREEL.mp4" class="motion-archive-download" download>Download reel</a>
-                </div>
-                <div class="motion-featured" id="motionFeatured"></div>
-            </article>
+        <div class="archive-gallery">
+                    <section class="motion-archive-collection" aria-label="Archive collection">
+                        <article class="motion-archive-card motion-archive-card--reel" id="motion-reel">
+                            <div class="motion-archive-card-copy">
+                                <p class="motion-archive-card-kicker">Motion Reel</p>
+                                <h2 class="motion-archive-card-title">Rafael Mediodia Motion Reel</h2>
+                                <a href="RAFAELMEDIODIA_MOTIONREEL.mp4" class="motion-archive-download" download>Download reel</a>
+                            </div>
+                            <div class="motion-featured" id="motionFeatured"></div>
+                        </article>
 
-            <article class="motion-archive-card" id="bounce-museum">
-                <div class="motion-archive-card-copy">
-                    <p class="motion-archive-card-kicker">Archived Project</p>
-                    <h2 class="motion-archive-card-title">
-                        <a href="projects/bounce-museum.html">bounce museum of rubber</a>
-                    </h2>
-                    <p>An identity for a museum full of elasticity.</p>
-                </div>
-                <div class="motion-archive-project-media">
-                    <a href="projects/bounce-museum.html" class="motion-archive-project-thumb" aria-label="Open bounce museum of rubber project">
-                        <video data-src="BounceMuseum/BounceThumbnail.mp4" poster="motion-posters/BounceThumbnail.jpg" muted loop playsinline webkit-playsinline preload="none"></video>
-                    </a>
-                    <a href="projects/bounce-museum.html" class="motion-archive-project-thumb" aria-label="Open bounce museum of rubber project alternate motion">
-                        <video data-src="BounceMuseum/bouncethumbnail2.mp4" poster="motion-posters/bouncethumbnail2.jpg" muted loop playsinline webkit-playsinline preload="none"></video>
-                    </a>
-                </div>
-            </article>
+                        <article class="motion-archive-card" id="bounce-museum">
+                            <div class="motion-archive-project-media">
+                                <a href="projects/bounce-museum.html" class="motion-archive-project-thumb" aria-label="Open bounce museum of rubber project">
+                                    <video data-src="BounceMuseum/BounceThumbnail.mp4" poster="motion-posters/BounceThumbnail.jpg" muted loop playsinline webkit-playsinline preload="none"></video>
+                                </a>
+                                <a href="projects/bounce-museum.html" class="motion-archive-project-thumb" aria-label="Open bounce museum of rubber project alternate motion">
+                                    <video data-src="BounceMuseum/BounceThumbnail2.mp4" poster="motion-posters/bouncethumbnail2.jpg" muted loop playsinline webkit-playsinline preload="none"></video>
+                                </a>
+                            </div>
+                            <div class="motion-archive-card-copy">
+                                <p class="motion-archive-card-kicker">Archived Project</p>
+                                <h2 class="motion-archive-card-title">
+                                    <a href="projects/bounce-museum.html">bounce museum of rubber</a>
+                                </h2>
+                                <p>An identity for a museum full of elasticity.</p>
+                            </div>
+                        </article>
 
-            <article class="motion-archive-card" id="american-dream-series">
-                <div class="motion-archive-card-copy">
-                    <p class="motion-archive-card-kicker">Archived Project</p>
-                    <h2 class="motion-archive-card-title">
-                        <a href="projects/american-dream-series.html">American Dream Series: Part 0</a>
-                    </h2>
-                    <p>A pilot episode exploring what the American Dream is.</p>
-                </div>
-                <div class="motion-archive-project-media">
-                    <a href="projects/american-dream-series.html" class="motion-archive-project-thumb motion-archive-project-thumb--wide" aria-label="Open American Dream Series project">
-                        <video data-src="AmericanDream/American Dream Series Part 0.mp4#t=2" poster="motion-posters/American-Dream-Series-Part-0.jpg" muted loop playsinline webkit-playsinline preload="none" data-heavy="true"></video>
-                    </a>
-                </div>
-            </article>
+                        <article class="motion-archive-card" id="american-dream-series">
+                            <div class="motion-archive-project-media">
+                                <a href="projects/american-dream-series.html" class="motion-archive-project-thumb motion-archive-project-thumb--wide" aria-label="Open American Dream Series project">
+                                    <video data-src="AmericanDream/American Dream Series Part 0.mp4#t=2" poster="motion-posters/American-Dream-Series-Part-0.jpg" muted loop playsinline webkit-playsinline preload="none" data-heavy="true"></video>
+                                </a>
+                            </div>
+                            <div class="motion-archive-card-copy">
+                                <p class="motion-archive-card-kicker">Archived Project</p>
+                                <h2 class="motion-archive-card-title">
+                                    <a href="projects/american-dream-series.html">American Dream Series: Part 0</a>
+                                </h2>
+                                <p>A pilot episode exploring what the American Dream is.</p>
+                            </div>
+                        </article>
 
-            <article class="motion-archive-card" id="superstition">
-                <div class="motion-archive-card-copy">
-                    <p class="motion-archive-card-kicker">Archived Film</p>
-                    <h2 class="motion-archive-card-title">
-                        <a href="https://vimeo.com/1147527349" target="_blank" rel="noopener">superstition superstition superstition</a>
-                    </h2>
-                    <p>Film about systems and growing up.</p>
-                </div>
-                <div class="motion-archive-project-media">
-                    <a href="https://vimeo.com/1147527349" target="_blank" rel="noopener" class="motion-archive-project-thumb motion-archive-project-thumb--wide" aria-label="Open superstition superstition superstition on Vimeo">
-                        <video data-src="superstitionsuperstitionsuperstition/Mini Clips.mp4" poster="motion-posters/Mini-Clips.jpg" muted loop playsinline webkit-playsinline preload="none"></video>
-                    </a>
-                    <a href="https://vimeo.com/1147527349" target="_blank" rel="noopener" class="motion-archive-project-thumb" aria-label="Open superstition superstition superstition alternate clip on Vimeo">
-                        <video data-src="superstitionsuperstitionsuperstition/MiniClip2.mp4" poster="motion-posters/MiniClip2.jpg" muted loop playsinline webkit-playsinline preload="none"></video>
-                    </a>
-                    <a href="https://vimeo.com/1147527349" target="_blank" rel="noopener" class="motion-archive-project-thumb" aria-label="Open superstition superstition superstition third clip on Vimeo">
-                        <video data-src="superstitionsuperstitionsuperstition/preview3.mp4" poster="motion-posters/preview3.jpg" muted loop playsinline webkit-playsinline preload="none"></video>
-                    </a>
-                </div>
-            </article>
-        </section>
+                        <article class="motion-archive-card motion-archive-card--wide" id="superstition">
+                            <div class="motion-archive-project-media">
+                                <a href="https://vimeo.com/1147527349" target="_blank" rel="noopener" class="motion-archive-project-thumb motion-archive-project-thumb--wide" aria-label="Open superstition superstition superstition on Vimeo">
+                                    <video data-src="superstitionsuperstitionsuperstition/Mini Clips.mp4" poster="motion-posters/Mini-Clips.jpg" muted loop playsinline webkit-playsinline preload="none"></video>
+                                </a>
+                                <a href="https://vimeo.com/1147527349" target="_blank" rel="noopener" class="motion-archive-project-thumb" aria-label="Open superstition superstition superstition alternate clip on Vimeo">
+                                    <video data-src="superstitionsuperstitionsuperstition/MiniClip2.mp4" poster="motion-posters/MiniClip2.jpg" muted loop playsinline webkit-playsinline preload="none"></video>
+                                </a>
+                                <a href="https://vimeo.com/1147527349" target="_blank" rel="noopener" class="motion-archive-project-thumb" aria-label="Open superstition superstition superstition third clip on Vimeo">
+                                    <video data-src="superstitionsuperstitionsuperstition/preview3.mp4" poster="motion-posters/preview3.jpg" muted loop playsinline webkit-playsinline preload="none"></video>
+                                </a>
+                            </div>
+                            <div class="motion-archive-card-copy">
+                                <p class="motion-archive-card-kicker">Archived Film</p>
+                                <h2 class="motion-archive-card-title">
+                                    <a href="https://vimeo.com/1147527349" target="_blank" rel="noopener">superstition superstition superstition</a>
+                                </h2>
+                                <p>Film about systems and growing up.</p>
+                            </div>
+                        </article>
+                    </section>
 
-        <section class="motion-archive-studies" aria-labelledby="motion-studies-heading" id="motion-studies">
-            <h2 id="motion-studies-heading" class="motion-archive-card-kicker">Motion Studies</h2>
-            <div class="motion-gallery" id="motionGallery"></div>
-        </section>
+                    <section class="motion-archive-studies" aria-labelledby="motion-studies-heading" id="motion-studies">
+                        <h2 id="motion-studies-heading" class="motion-archive-card-kicker">Motion Studies</h2>
+                        <div class="motion-gallery" id="motionGallery"></div>
+                    </section>
 
-        <section class="motion-archive-writing" aria-labelledby="writing-heading" id="writing">
-            <h2 id="writing-heading" class="motion-archive-card-kicker">Writing</h2>
-            <div class="writing-list-wrap" id="writingList"></div>
-        </section>
+                    <section class="motion-archive-writing" aria-labelledby="writing-heading" id="writing">
+                        <h2 id="writing-heading" class="motion-archive-card-kicker">Writing</h2>
+                        <div class="writing-list-wrap" id="writingList"></div>
+                    </section>
+        </div>
     </main>
 
     <div class="video-zoom-modal" id="videoZoomModal">

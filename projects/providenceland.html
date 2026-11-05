@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Providenceland - Rafael Mediodia</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="preload" href="../ABCArealVariable.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body class="project-providence-page single-video-project">
     <div class="info-container">
-        <!-- Sidebar content will be injected here -->
     </div>
 
     <div class="project-text-panel">
@@ -24,20 +21,11 @@
             </div>
         </div>
 
-        <div class="project-meta">
-            <div class="project-meta-item">
-                <div class="project-meta-label">Year</div>
-                <div class="project-meta-value">2026</div>
-            </div>
-            <div class="project-meta-item">
-                <div class="project-meta-label">Role</div>
-                <div class="project-meta-value">Motion &amp; Lettering</div>
-            </div>
-            <div class="project-meta-item">
-                <div class="project-meta-label">Type</div>
-                <div class="project-meta-value">Title Card</div>
-            </div>
-        </div>
+        <ul class="project-meta">
+            <li>2026</li>
+            <li>Motion &amp; Lettering</li>
+            <li>Title Card</li>
+        </ul>
     </div>
 
     <div class="project-images-panel">
@@ -87,7 +75,7 @@
                     video.removeAttribute('data-src');
 
                     if (isSafari) {
-                        video.preload = 'auto';
+                        video.preload = 'metadata';
                     }
                     video.load();
                     video.addEventListener('loadeddata', () => {

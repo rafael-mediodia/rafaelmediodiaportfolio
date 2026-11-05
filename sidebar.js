@@ -147,7 +147,6 @@ function wrapNameLetters(nameEl, text) {
     }
 }
 
-/** Edit this list to update awards & exhibitions in the expanded panel */
 function getSidebarRecognition() {
     return [
         {
@@ -213,58 +212,56 @@ function buildSidebarHTML(prefix, currentPath = window.location.pathname) {
     const motionReelLink = isIllustrationPage
         ? ''
         : `<a href="${prefix}RAFAELMEDIODIA_MOTIONREEL.mp4" class="info-link" download>MOTION REEL</a>`;
-
     return `
-        <button type="button" class="info-sidebar-toggle" aria-expanded="false" aria-controls="infoSidebarInner">
-            <span class="info-sidebar-toggle-label">RAFAEL MEDIODIA</span>
-        </button>
-        <div class="info-sidebar-inner" id="infoSidebarInner">
-            <div class="info-sidebar-primary">
-                <div class="info-name-row">
-                    <a href="${prefix}index.html" class="info-name-link">
-                        <div class="info-name">RAFAEL MEDIODIA</div>
-                    </a>
-                    <span class="info-birth">(b.2004) ✧</span>
-                </div>
-                <div class="info-about">
-                    is a Filipino-American designer, artist, illustrator, and filmmaker from Louisville, Kentucky. (◕‿◕)
-                    <button type="button" class="info-read-more-btn" aria-expanded="false" aria-controls="infoBioMore">
-                        <span class="info-read-more-label">read more</span>
-                    </button>
-                </div>
-                <div class="info-bio-more" id="infoBioMore" aria-hidden="true">
-                    <figure class="info-portrait">
-                        <img src="${prefix}ItsMe.jpg" alt="Rafael Mediodia in the studio" width="618" height="900" loading="lazy" decoding="async">
-                    </figure>
-                    <div class="info-about-extended">
-                        <p>Rafael is pursuing his BFA in graphic design at the Rhode Island School of Design, with a focus on Computation, Culture, and Technology. He is driven by connection with others and the power of feeling.</p>
-                        <p>Rafael enjoys the act of play in serious and unserious ways, systems that connect people together, and putting the motion in emotion.</p>
-                        <p>He is willing to help out and connect by any means if that catches your fancy. <a href="mailto:rafaelmediodiawork@gmail.com" class="info-link">Email me</a> for any freelance inquiries or questions.</p>
+        <div class="info-about-paper">
+            <nav class="info-portfolio-switch" aria-label="Portfolio switcher">
+                <a href="${prefix}index.html" class="info-portfolio-link${designCurrent}"${designAria}>Design</a>
+                <a href="${prefix}illustration/" class="info-portfolio-link${illustrationCurrent}"${illustrationAria}>Illustration</a>
+                <a href="${prefix}typefaces.html" class="info-portfolio-link${typefacesCurrent}"${typefacesAria}>Typefaces</a>
+                <a href="${prefix}motion.html" class="info-portfolio-link${archiveCurrent}"${archiveAria}>Archive</a>
+                <button type="button" class="info-sidebar-toggle" aria-expanded="false" aria-controls="infoSidebarInner">
+                    <span class="info-sidebar-toggle-label">Rafael Mediodia</span>
+                </button>
+            </nav>
+            <a href="${prefix}index.html" class="info-name-link">
+                <div class="info-name">RAFAEL MEDIODIA</div>
+                <span class="info-birth">(b.2004) ✧</span>
+            </a>
+            <div class="info-sidebar-inner" id="infoSidebarInner">
+                <div class="info-sidebar-primary">
+                    <div class="info-about">
+                        is a Filipino-American designer, artist, illustrator, and filmmaker from ${nb('Louisville,', 'Kentucky')}. (◕‿◕)
+                        <button type="button" class="info-read-more-btn" aria-expanded="false" aria-controls="infoBioMore">
+                            <span class="info-read-more-label">read more</span>
+                        </button>
                     </div>
-                    <section class="info-recognition" aria-label="Awards and exhibitions">
-                        <h2 class="info-section-label">Awards & Exhibitions</h2>
-                        ${renderSpotlightList(recognition, 'info-spotlight-link')}
-                    </section>
-                </div>
-                <div class="info-bio-footer">
-                    <nav class="info-portfolio-switch" aria-label="Portfolio switcher">
-                        <a href="${prefix}index.html" class="info-portfolio-link${designCurrent}"${designAria}>Design</a>
-                        <a href="${prefix}illustration/" class="info-portfolio-link${illustrationCurrent}"${illustrationAria}>Illustration</a>
-                        <a href="${prefix}typefaces.html" class="info-portfolio-link${typefacesCurrent}"${typefacesAria}>Typefaces</a>
-                        <a href="${prefix}motion.html" class="info-portfolio-link${archiveCurrent}"${archiveAria}>Archive</a>
-                    </nav>
-                    <div class="info-current">
-                        Designing @ TBD ˚ ༘
+                    <div class="info-bio-more" id="infoBioMore" aria-hidden="true">
+                        <figure class="info-portrait">
+                            <img src="${prefix}ItsMe.jpg" alt="Rafael Mediodia in the studio" width="618" height="900" loading="lazy" decoding="async">
+                        </figure>
+                        <div class="info-about-extended">
+                            <p>He enjoys the power and magic of iteration to lead to a polished product. Rafael holds a BFA from RISD in Graphic Design with a focus on Computation, Culture, and Technology. He loves video games, KPop, stationery, and his dog, Lila.</p>
+                            <p>Rafael would love to get to know you and chat about your potential projects. <a href="mailto:rafaelmediodiawork@gmail.com" class="info-link">Email him</a> for any freelance inquiries or questions.</p>
+                        </div>
+                        <section class="info-recognition" aria-label="Awards and exhibitions">
+                            <h2 class="info-section-label">Awards & Exhibitions</h2>
+                            ${renderSpotlightList(recognition, 'info-spotlight-link')}
+                        </section>
                     </div>
-                    <div class="info-previous">
-                        Previously @ <a href="https://bsrlive.com/" class="info-link" target="_blank">${nb('Brown', 'Student', 'Radio')}</a>, <a href="https://mediocre.rodeo" class="info-link" target="_blank">Mediocre</a>, <a href="https://visions-mag.squarespace.com/" class="info-link" target="_blank">VISIONS</a>
-                    </div>
-                    <div class="info-links">
-                        <a href="mailto:rafaelmediodiawork@gmail.com" class="info-link">EMAIL</a>
-                        <a href="${prefix}RafaelMediodia-RESUME.pdf" class="info-link">RESUME</a>
-                        ${motionReelLink}
-                        <a href="https://www.linkedin.com/in/rafael-mediodia-067b9418b/" class="info-link" target="_blank">LINKEDIN</a>
-                        <a href="https://www.instagram.com/middledays/" class="info-link" target="_blank">INSTAGRAM</a>
+                    <div class="info-bio-footer">
+                        <div class="info-current">
+                            Designing @ TBD ˚ ༘
+                        </div>
+                        <div class="info-previous">
+                            Previously @ <a href="https://bsrlive.com/" class="info-link" target="_blank">${nb('Brown', 'Student', 'Radio')}</a>, <a href="https://mediocre.rodeo" class="info-link" target="_blank">Mediocre</a>, <a href="https://visions-mag.squarespace.com/" class="info-link" target="_blank">VISIONS</a>
+                        </div>
+                        <div class="info-links">
+                            <a href="mailto:rafaelmediodiawork@gmail.com" class="info-link">EMAIL</a>
+                            <a href="${prefix}RafaelMediodia-RESUME.pdf" class="info-link">RESUME</a>
+                            ${motionReelLink}
+                            <a href="https://www.linkedin.com/in/rafael-mediodia-067b9418b/" class="info-link" target="_blank">LINKEDIN</a>
+                            <a href="https://www.instagram.com/middledays/" class="info-link" target="_blank">INSTAGRAM</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -303,7 +300,11 @@ function setMobileSidebarOpen(container, open) {
         inner.hidden = false;
     }
 
-    if (open && prefersTouchInteraction()) {
+    if (!open) {
+        setKnowMoreOpen(container, false);
+    }
+
+    if (open && prefersTouchInteraction() && !document.body.classList.contains('home-page')) {
         requestAnimationFrame(() => {
             container.scrollIntoView({ block: 'start', behavior: 'smooth' });
         });
@@ -342,6 +343,14 @@ function initMobileSidebar(container) {
         setMobileSidebarOpen(container, open);
     });
 
+    container.querySelectorAll('.info-portfolio-link').forEach((link) => {
+        link.addEventListener('click', () => {
+            if (container.classList.contains('info-container--open')) {
+                setMobileSidebarOpen(container, false);
+            }
+        });
+    });
+
     toggle?.addEventListener(
         'touchstart',
         () => toggle.classList.add('info-sidebar-toggle--pressed'),
@@ -358,6 +367,21 @@ function initMobileSidebar(container) {
         container.dataset.mobileToggled = '';
         applyMode();
     });
+
+    document.addEventListener('click', (e) => {
+        if (!mq.matches) return;
+        if (!container.classList.contains('info-container--open')) return;
+        if (container.contains(e.target)) return;
+        setMobileSidebarOpen(container, false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (!mq.matches) return;
+        if (!container.classList.contains('info-container--open')) return;
+        setMobileSidebarOpen(container, false);
+    });
+
     applyMode();
 }
 
@@ -403,7 +427,354 @@ function initKnowMore(container) {
     });
 }
 
+function layoutFolderTabs(nav, bottomNav) {
+    if (!nav || !bottomNav) return;
+    while (bottomNav.firstChild) nav.appendChild(bottomNav.firstChild);
+    if (window.matchMedia('(max-width: 768px)').matches) {
+        bottomNav.hidden = true;
+        return;
+    }
+    const tabs = Array.from(nav.querySelectorAll('.design-jump-link'));
+    const avail = nav.clientWidth;
+    const gap = parseFloat(getComputedStyle(nav).gap) || 0;
+    let used = 0;
+    let split = tabs.length;
+    for (let i = 0; i < tabs.length; i += 1) {
+        const width = tabs[i].getBoundingClientRect().width;
+        const next = i === 0 ? width : used + gap + width;
+        if (i > 0 && next > avail + 0.5) {
+            split = i;
+            break;
+        }
+        used = next;
+    }
+    for (let i = split; i < tabs.length; i += 1) {
+        bottomNav.appendChild(tabs[i]);
+    }
+    bottomNav.hidden = bottomNav.childElementCount === 0;
+}
+
+function initFileFolder(config) {
+    const folder = config.folder;
+    if (!folder) return;
+
+    const pages = Array.from(folder.querySelectorAll(config.pageSelector || '.file-page'));
+    const nav = document.getElementById(config.navId);
+    const bottomNav = document.getElementById(config.bottomNavId);
+    const linkSelector = config.linkSelector || '.design-jump-link';
+    const currentClass = config.currentClass || 'file-page--current';
+    const passedClass = config.passedClass || 'file-page--passed';
+    const popClass = config.popClass || 'file-page--pop';
+    const mode = config.mode || 'pages';
+    const wheelMode = config.wheelMode === undefined ? 'edge' : config.wheelMode;
+    const bodyClass = config.bodyClass;
+    const onShow = config.onShow;
+    const onTab = config.onTab;
+    const stage = folder.closest('.gallery-container') || folder;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (mode === 'pages' && !pages.length) return;
+
+    let index = 0;
+    let locked = false;
+    let wheelDelta = 0;
+    let wheelReset = 0;
+    let touchX = 0;
+    let touchY = 0;
+    let layingOutTabs = false;
+
+    const getLinks = () => Array.from(folder.querySelectorAll(linkSelector));
+
+    const linkMatchesPage = (link, page) => {
+        if (config.matchLink) return config.matchLink(link, page);
+        if (link.hash && page?.id) return link.hash === `#${page.id}`;
+        if (link.dataset.filter) {
+            return link.dataset.filter === (page?.dataset.filter || page?.id);
+        }
+        return false;
+    };
+
+    const placeTabs = (activeIndex) => {
+        const page = pages[activeIndex];
+        const activeLink = config.activeLink
+            ? config.activeLink(getLinks(), page, activeIndex)
+            : null;
+        getLinks().forEach((link) => {
+            const active = activeLink ? link === activeLink : Boolean(page && linkMatchesPage(link, page));
+            link.classList.toggle('design-jump-link--active', active);
+            if (active) {
+                link.setAttribute('aria-current', 'true');
+            } else {
+                link.removeAttribute('aria-current');
+            }
+        });
+    };
+
+    const relayoutTabs = () => {
+        if (layingOutTabs) return;
+        layingOutTabs = true;
+        layoutFolderTabs(nav, bottomNav);
+        window.requestAnimationFrame(() => {
+            layingOutTabs = false;
+        });
+    };
+
+    const isTypingTarget = (el) => {
+        if (!el) return false;
+        const tag = el.tagName;
+        if (tag && /INPUT|TEXTAREA|SELECT/.test(tag)) return true;
+        if (el.isContentEditable) return true;
+        return Boolean(el.closest?.('[contenteditable="true"]'));
+    };
+
+    const zoomOpen = () => {
+        const image = document.getElementById('imageZoomModal');
+        const video = document.getElementById('videoZoomModal');
+        if (image && (image.classList.contains('active') || image.style.display === 'flex')) return true;
+        if (video && (video.classList.contains('active') || video.style.display === 'flex')) return true;
+        return false;
+    };
+
+    const nestedCanScroll = (start, page, deltaY) => {
+        let node = start;
+        while (node && node !== page && node !== folder && node !== document.body) {
+            if (node.nodeType === 1) {
+                const style = getComputedStyle(node);
+                const oy = style.overflowY;
+                if ((oy === 'auto' || oy === 'scroll') && node.scrollHeight > node.clientHeight + 1) {
+                    if (deltaY > 0 && node.scrollTop < node.scrollHeight - node.clientHeight - 1) return true;
+                    if (deltaY < 0 && node.scrollTop > 1) return true;
+                }
+            }
+            node = node.parentElement;
+        }
+        return false;
+    };
+
+    const pageCanScroll = (page, deltaY) => {
+        if (page) {
+            const max = page.scrollHeight - page.clientHeight;
+            if (max > 1) {
+                if (deltaY > 0 && page.scrollTop < max - 1) return true;
+                if (deltaY < 0 && page.scrollTop > 1) return true;
+            }
+        }
+        const doc = document.scrollingElement || document.documentElement;
+        const docMax = doc.scrollHeight - window.innerHeight;
+        if (docMax > 1) {
+            if (deltaY > 0) return doc.scrollTop < docMax - 1;
+            if (deltaY < 0) return doc.scrollTop > 1;
+        }
+        return false;
+    };
+
+    const show = (next) => {
+        if (mode !== 'pages' || !pages.length) {
+            placeTabs(next || 0);
+            relayoutTabs();
+            return;
+        }
+        index = Math.max(0, Math.min(pages.length - 1, next));
+        wheelDelta = 0;
+        pages.forEach((page, i) => {
+            const current = i === index;
+            page.classList.remove(popClass);
+            page.classList.toggle(currentClass, current);
+            page.classList.toggle(passedClass, !current);
+            page.setAttribute('aria-hidden', current ? 'false' : 'true');
+            page.querySelectorAll('video').forEach((video) => {
+                if (current && video.src && !video.getAttribute('data-src')) {
+                    video.play().catch(() => {});
+                } else {
+                    video.pause();
+                }
+            });
+            if (current && !reduceMotion) {
+                void page.offsetWidth;
+                page.classList.add(popClass);
+            }
+        });
+        relayoutTabs();
+        placeTabs(index);
+        const currentPage = pages[index];
+        if (currentPage) {
+            currentPage.scrollTop = 0;
+            onShow?.(currentPage, index);
+        }
+        const id = currentPage?.id;
+        if (id && window.location.hash !== `#${id}`) {
+            history.replaceState(null, '', `#${id}`);
+        }
+    };
+
+    const flip = (dir) => {
+        if (mode !== 'pages' || locked) return;
+        const next = index + dir;
+        if (next < 0 || next >= pages.length) return;
+        locked = true;
+        show(next);
+        window.setTimeout(() => {
+            locked = false;
+        }, 180);
+    };
+
+    const activateLink = (link) => {
+        if (mode === 'tabs') {
+            getLinks().forEach((item) => {
+                const active = item === link;
+                item.classList.toggle('design-jump-link--active', active);
+                if (active) item.setAttribute('aria-current', 'true');
+                else item.removeAttribute('aria-current');
+            });
+            relayoutTabs();
+            onTab?.(link);
+            if (link.hash && window.location.hash !== link.hash) {
+                history.replaceState(null, '', link.hash);
+            }
+            return;
+        }
+        const next = pages.findIndex((page) => linkMatchesPage(link, page));
+        if (next < 0) return;
+        if (next === index) return;
+        show(next);
+    };
+
+    if (wheelMode) {
+        stage.addEventListener(
+            'wheel',
+            (e) => {
+                if (mode !== 'pages') return;
+                if (e.target.closest('.design-jump-nav') && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                    return;
+                }
+                if (isTypingTarget(e.target) || zoomOpen()) return;
+                const primary = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+                const page = pages[index];
+                if (wheelMode === 'edge') {
+                    if (nestedCanScroll(e.target, page, primary)) return;
+                    if (pageCanScroll(page, primary)) return;
+                }
+                e.preventDefault();
+                wheelDelta += primary;
+                window.clearTimeout(wheelReset);
+                wheelReset = window.setTimeout(() => {
+                    wheelDelta = 0;
+                }, 280);
+                if (Math.abs(wheelDelta) < 48) return;
+                const dir = wheelDelta > 0 ? 1 : -1;
+                wheelDelta = 0;
+                flip(dir);
+            },
+            { passive: false }
+        );
+    }
+
+    if (mode === 'pages') {
+        folder.addEventListener(
+            'touchmove',
+            (e) => {
+                if (e.target.closest('.design-jump-nav')) return;
+                const page = pages[index];
+                const dy = touchY - (e.touches[0]?.clientY || touchY);
+                if (nestedCanScroll(e.target, page, dy) || pageCanScroll(page, dy)) return;
+                e.preventDefault();
+            },
+            { passive: false }
+        );
+        folder.addEventListener(
+            'touchstart',
+            (e) => {
+                if (!e.touches[0]) return;
+                touchX = e.touches[0].clientX;
+                touchY = e.touches[0].clientY;
+            },
+            { passive: true }
+        );
+        folder.addEventListener(
+            'touchend',
+            (e) => {
+                if (e.target.closest('.design-jump-nav')) return;
+                const touch = e.changedTouches[0];
+                if (!touch) return;
+                const dx = touchX - touch.clientX;
+                const dy = touchY - touch.clientY;
+                if (Math.max(Math.abs(dx), Math.abs(dy)) < 36) return;
+                const page = pages[index];
+                const primary = Math.abs(dy) >= Math.abs(dx) ? dy : dx;
+                if (nestedCanScroll(e.target, page, primary) || pageCanScroll(page, primary)) return;
+                const dir = Math.abs(dy) >= Math.abs(dx) ? (dy > 0 ? 1 : -1) : (dx > 0 ? 1 : -1);
+                flip(dir);
+            },
+            { passive: true }
+        );
+    }
+
+    stage.addEventListener('click', (e) => {
+        const link = e.target.closest(`${linkSelector}`);
+        if (!link || !stage.contains(link)) return;
+        if (link.hash || link.dataset.filter) {
+            e.preventDefault();
+            e.stopPropagation();
+            activateLink(link);
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (bodyClass && !document.body.classList.contains(bodyClass)) return;
+        if (isTypingTarget(e.target) || zoomOpen()) return;
+        if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            if (mode === 'pages') flip(1);
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'ArrowLeft') {
+            e.preventDefault();
+            if (mode === 'pages') flip(-1);
+        }
+    });
+
+    const refit = () => {
+        relayoutTabs();
+        placeTabs(index);
+    };
+    window.addEventListener('resize', refit);
+    if (typeof ResizeObserver === 'function') {
+        const observer = new ResizeObserver(() => {
+            if (!layingOutTabs) refit();
+        });
+        observer.observe(stage);
+        observer.observe(folder);
+    }
+
+    if (mode === 'tabs') {
+        const links = getLinks();
+        const hashLink = links.find((link) => link.hash && link.hash === window.location.hash);
+        const startLink = hashLink || links[0];
+        if (startLink) activateLink(startLink);
+        else relayoutTabs();
+        return;
+    }
+
+    const startId = window.location.hash.slice(1);
+    const start = pages.findIndex((page) => page.id === startId);
+    show(start >= 0 ? start : 0);
+}
+
+function wrapProjectFilePaper() {
+    if (document.body.classList.contains('writing-page')) return;
+    const panel = document.querySelector('.project-text-panel');
+    if (!panel || panel.querySelector('.project-about-paper')) return;
+    if (!document.querySelector('.project-images-panel')) return;
+
+    const paper = document.createElement('div');
+    paper.className = 'project-about-paper';
+    const back = panel.querySelector('.project-back-link');
+    Array.from(panel.children).forEach((child) => {
+        if (child !== back) paper.appendChild(child);
+    });
+    panel.appendChild(paper);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    wrapProjectFilePaper();
     initSidebar();
     initRandomAccentHovers();
 });
@@ -422,8 +793,8 @@ function initRandomAccentHovers() {
 
     const TARGETS = [
         { selector: '.info-name-link', mode: 'name' },
-        { selector: '.info-spotlight-item', mode: 'spotlight' },
         { selector: '.info-read-more-btn', mode: 'text' },
+        { selector: '.info-about-extended .info-link', mode: 'text' },
         { selector: '.info-bio-footer .info-link', mode: 'text' },
         { selector: '.info-current .info-link', mode: 'text' },
         { selector: '.info-previous .info-link', mode: 'text' },

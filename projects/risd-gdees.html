@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>RISD GDee's</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="preload" href="../ABCArealVariable.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../styles.css">
     <style>
         .gdees-awards-slideshow {
@@ -38,7 +36,6 @@
 <body>
     
     <div class="info-container">
-        <!-- Sidebar content will be injected here -->
     </div>
     
     <div class="project-text-panel">
@@ -51,20 +48,11 @@
             </div>
         </div>
         
-        <div class="project-meta">
-            <div class="project-meta-item">
-                <div class="project-meta-label">Year</div>
-                <div class="project-meta-value">2026</div>
-            </div>
-            <div class="project-meta-item">
-                <div class="project-meta-label">Role</div>
-                <div class="project-meta-value">Designer</div>
-            </div>
-            <div class="project-meta-item">
-                <div class="project-meta-label">Client</div>
-                <div class="project-meta-value">RISD Graphic Design</div>
-            </div>
-        </div>
+        <ul class="project-meta">
+            <li>2026</li>
+            <li>Designer</li>
+            <li>RISD Graphic Design</li>
+        </ul>
         
         <div class="project-text-content">
             <div class="project-section">
@@ -77,9 +65,9 @@
     
     <div class="project-images-panel">
         <video data-src="../RISDGDee%27s/TheRISDGDee%27s_MainFeedPromo.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Primary Instagram feed loop to anchor the campaign and introduces the typographic motion language at full width."></video>
-        <video data-src="../RISDGDee%27s/16%20by%209%20reel.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="16:9 motion reel for projection and shareable landscape cuts — the identity scaled to a cinematic frame."></video>
+        <video data-src="../RISDGDee%27s/16%20by%209%20reel.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Motion sketches were developed to be used within the framework of the identity for open call promotional material. (1/2)"></video>
         <div class="project-portrait-row">
-            <video class="project-video-portrait" data-src="../RISDGDee%27s/storyreel.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Portrait story reel — separate graphics and layouts built for the story format, not a crop or resize of the landscape work."></video>
+            <video class="project-video-portrait" data-src="../RISDGDee%27s/storyreel.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Motion sketches were developed to be used within the framework of the identity for open call promotional material. (2/2)"></video>
             <video class="project-video-portrait" data-src="../RISDGDee%27s/AdMain-Story.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Story-format companion piece; tight vertical composition that pairs with the feed hero for a consistent social set."></video>
         </div>
         <video data-src="../RISDGDee%27s/GDEES_ONSCREEN_PRESHOW.mp4" muted loop playsinline webkit-playsinline autoplay preload="metadata" data-modal-controls="true" data-caption="Campaign language extended into event space."></video>
@@ -107,7 +95,7 @@
                         video.removeAttribute('data-src');
                         
                         if (isSafari) {
-                            video.preload = 'auto';
+                            video.preload = 'metadata';
                             video.load();
                             const playVideo = () => {
                                 video.play().catch(() => {});

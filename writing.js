@@ -1,9 +1,3 @@
-/**
- * Add your writing here. Each entry appears in the Writing archive panel.
- *
- * href: full URL or site path (e.g. writing/my-essay.html)
- * external: true opens in a new tab (default for http links)
- */
 const writings = [
     {
         id: 'words-on-making-my-mark',
@@ -42,8 +36,7 @@ function isExternalHref(href) {
 
 function renderWritingList(container) {
     if (!writings.length) {
-        container.innerHTML =
-            '<p class="archive-panel-placeholder">Add pieces in <code>writing.js</code> — title, year, excerpt, and link.</p>';
+        container.innerHTML = '';
         return;
     }
 

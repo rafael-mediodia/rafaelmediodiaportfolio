@@ -202,7 +202,6 @@ function initIllustrationsGallery() {
     }
 
     const fragment = document.createDocumentFragment();
-    initIllustrationFilters(gallery);
 
     illustrations.forEach((imageData, index) => {
         const fullSrc = encodeIllustrationPath(illustrationsBase, imageData.file);
@@ -252,6 +251,7 @@ function initIllustrationsGallery() {
     });
 
     gallery.appendChild(fragment);
+    initIllustrationFilters(gallery);
     updateIllustrationCount(gallery);
 
     if (useFloatingTooltip) {
@@ -296,30 +296,52 @@ function initIllustrationFilters(gallery) {
     if (!nav || nav.dataset.ready === 'true') return;
     nav.dataset.ready = 'true';
 
+    const folder = gallery.closest('.file-folder');
+    const useFolder = Boolean(folder);
+
     illustrationFilters.forEach((filter, index) => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'illustration-filter-btn';
-        if (index === 0) button.classList.add('illustration-filter-btn--active');
-        button.dataset.filter = filter.id;
-        button.textContent = filter.label;
-        button.setAttribute('aria-pressed', index === 0 ? 'true' : 'false');
-        nav.appendChild(button);
+        if (useFolder) {
+            const link = document.createElement('a');
+            link.className = 'design-jump-link';
+            link.href = `#${filter.id}`;
+            link.dataset.filter = filter.id;
+            link.textContent = filter.label;
+            if (index === 0) link.classList.add('design-jump-link--active');
+            nav.appendChild(link);
+        } else {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'illustration-filter-btn';
+            if (index === 0) button.classList.add('illustration-filter-btn--active');
+            button.dataset.filter = filter.id;
+            button.textContent = filter.label;
+            button.setAttribute('aria-pressed', index === 0 ? 'true' : 'false');
+            nav.appendChild(button);
+        }
     });
 
-    nav.addEventListener('click', (e) => {
-        const button = e.target.closest('.illustration-filter-btn');
-        if (!button || !nav.contains(button)) return;
-        const filter = button.dataset.filter;
+    const activeFilterFromNav = () => {
+        if (useFolder) {
+            return folder.querySelector('.design-jump-link--active')?.dataset.filter || 'all';
+        }
+        return nav.querySelector('.illustration-filter-btn--active')?.dataset.filter || 'all';
+    };
 
-        nav.querySelectorAll('.illustration-filter-btn').forEach((btn) => {
-            const active = btn === button;
-            btn.classList.toggle('illustration-filter-btn--active', active);
-            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    if (!useFolder) {
+        nav.addEventListener('click', (e) => {
+            const button = e.target.closest('.illustration-filter-btn');
+            if (!button || !nav.contains(button)) return;
+            const filter = button.dataset.filter;
+
+            nav.querySelectorAll('.illustration-filter-btn').forEach((btn) => {
+                const active = btn === button;
+                btn.classList.toggle('illustration-filter-btn--active', active);
+                btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+
+            applyIllustrationFilter(gallery, filter);
         });
-
-        applyIllustrationFilter(gallery, filter);
-    });
+    }
 
     reshuffleBtn?.addEventListener('click', () => {
         const items = Array.from(gallery.querySelectorAll('.illustration-item'));
@@ -328,9 +350,23 @@ function initIllustrationFilters(gallery) {
             [items[i], items[j]] = [items[j], items[i]];
         }
         items.forEach((item) => gallery.appendChild(item));
-        const activeFilter = nav.querySelector('.illustration-filter-btn--active')?.dataset.filter || 'all';
-        applyIllustrationFilter(gallery, activeFilter);
+        applyIllustrationFilter(gallery, activeFilterFromNav());
     });
+
+    if (useFolder && typeof initFileFolder === 'function') {
+        initFileFolder({
+            folder,
+            pageSelector: '.file-page',
+            navId: 'illustrationFilterNav',
+            bottomNavId: 'illustrationFilterNavBottom',
+            bodyClass: 'illustration-page',
+            mode: 'tabs',
+            wheelMode: false,
+            onTab(link) {
+                applyIllustrationFilter(gallery, link.dataset.filter || 'all');
+            },
+        });
+    }
 }
 
 function applyIllustrationFilter(gallery, filter) {

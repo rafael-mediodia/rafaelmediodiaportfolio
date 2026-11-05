@@ -2,7 +2,7 @@ const motionPosters = {
     'RAFAELMEDIODIA_MOTIONREEL.mp4': 'motion-posters/RAFAELMEDIODIA_MOTIONREEL.jpg',
     'AmericanDream/American Dream Series Part 0.mp4': 'motion-posters/American-Dream-Series-Part-0.jpg',
     'BounceMuseum/BounceThumbnail.mp4': 'motion-posters/BounceThumbnail.jpg',
-    'BounceMuseum/bouncethumbnail2.mp4': 'motion-posters/bouncethumbnail2.jpg',
+    'BounceMuseum/BounceThumbnail2.mp4': 'motion-posters/bouncethumbnail2.jpg',
     'superstitionsuperstitionsuperstition/Mini Clips.mp4': 'motion-posters/Mini-Clips.jpg',
     'superstitionsuperstitionsuperstition/MiniClip2.mp4': 'motion-posters/MiniClip2.jpg',
     'superstitionsuperstitionsuperstition/preview3.mp4': 'motion-posters/preview3.jpg',
@@ -145,29 +145,58 @@ function setupMotionOnPage() {
 }
 
 function initArchiveJumpNavActiveState() {
-    const nav = document.querySelector('.archive-jump-nav');
+    const nav = document.getElementById('archiveJumpNav') || document.querySelector('.archive-jump-nav');
     if (!nav || nav.dataset.ready === 'true') return;
     nav.dataset.ready = 'true';
 
-    const links = Array.from(nav.querySelectorAll('.archive-jump-link[href^="#"]'));
-    if (!links.length) return;
+    const getLinks = () => Array.from(
+        nav.querySelectorAll('.illustration-filter-btn[href^="#"], .archive-jump-link[href^="#"], .design-jump-link[href^="#"]')
+    );
 
     const setActive = (activeLink) => {
-        links.forEach((link) => {
+        getLinks().forEach((link) => {
             const active = link === activeLink;
+            link.classList.toggle('illustration-filter-btn--active', active);
             link.classList.toggle('archive-jump-link--active', active);
-            link.setAttribute('aria-current', active ? 'true' : 'false');
+            if (active) link.setAttribute('aria-current', 'true');
+            else link.removeAttribute('aria-current');
         });
     };
 
-    const hashLink = links.find((link) => link.hash && link.hash === window.location.hash);
-    setActive(hashLink || links[0]);
-
     nav.addEventListener('click', (e) => {
-        const link = e.target.closest('.archive-jump-link[href^="#"]');
+        const link = e.target.closest('.illustration-filter-btn[href^="#"], .archive-jump-link[href^="#"], .design-jump-link[href^="#"]');
         if (!link || !nav.contains(link)) return;
+        const target = document.getElementById(link.hash.slice(1));
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', link.hash);
         setActive(link);
     });
+
+    const sections = getLinks()
+        .map((link) => document.getElementById(link.hash.slice(1)))
+        .filter(Boolean);
+
+    if (typeof IntersectionObserver === 'function' && sections.length) {
+        const observer = new IntersectionObserver((entries) => {
+            const visible = entries
+                .filter((entry) => entry.isIntersecting)
+                .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (!visible) return;
+            const link = getLinks().find((item) => item.hash === `#${visible.target.id}`);
+            if (link) setActive(link);
+        }, { rootMargin: '-15% 0px -65% 0px', threshold: [0.15, 0.4] });
+        sections.forEach((section) => observer.observe(section));
+    }
+
+    const hashLink = getLinks().find((link) => link.hash && link.hash === window.location.hash);
+    setActive(hashLink || getLinks()[0]);
+    if (hashLink) {
+        requestAnimationFrame(() => {
+            document.getElementById(hashLink.hash.slice(1))?.scrollIntoView({ block: 'start' });
+        });
+    }
 }
 
 if (document.readyState === 'loading') {
@@ -335,7 +364,7 @@ function loadLazyArchiveVideo(vid, options = {}) {
 
     vid.src = lazySrc;
     vid.removeAttribute('data-src');
-    vid.preload = prioritize ? 'auto' : 'metadata';
+    vid.preload = 'metadata';
     vid.load();
     vid.addEventListener('loadedmetadata', () => {
         const duration = vid.duration;

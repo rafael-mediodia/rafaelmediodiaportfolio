@@ -5,21 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Typefaces - Rafael Mediodia</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link rel="preload" href="ABCArealVariable.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="typefaces-page">
+<body class="typefaces-page file-folder-page">
     <div class="info-container">
-        <!-- Sidebar content will be injected here -->
     </div>
 
-    <main class="gallery-container typefaces-project-page typefaces-focus-page">
-        <nav class="typefaces-jump-nav" aria-label="Typeface sections" id="typefacesJumpNav"></nav>
-
-        <div class="typefaces-list typefaces-list--page" id="typefacesList"></div>
-    </main>
+    <div class="home-layout">
+        <main class="gallery-container typefaces-project-page typefaces-focus-page">
+            <div class="file-folder">
+                <nav class="design-jump-nav" aria-label="Typefaces" id="typefacesJumpNav"></nav>
+                <div class="typefaces-list typefaces-list--page file-pages" id="typefacesList"></div>
+                <nav class="design-jump-nav design-jump-nav--bottom" aria-label="More typefaces" id="typefacesJumpNavBottom" hidden></nav>
+            </div>
+        </main>
+    </div>
 
     <script src="sidebar.js" defer></script>
     <script src="typefaces.js" defer></script>

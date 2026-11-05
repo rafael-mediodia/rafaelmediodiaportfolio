@@ -7,7 +7,6 @@ const typefaces = [
         name: 'Istorya',
         stack: 'sans-serif',
         specimenText: 'Once upon a time, stories found their own shape.',
-        specimenLabel: 'text face',
         specimenChars: 'ABCDEFGHIJKLM\nNOPQRSTUVWXYZ\nabcdefghi',
         description:
             "Istorya is Ilonggo for “story.” A textface designed for holding children's book stories. Created from a study of ATF Garamond and Century Schoolbook.",
@@ -17,7 +16,6 @@ const typefaces = [
         name: 'Clayletter',
         stack: 'sans-serif',
         specimenText: 'Once upon a time, there was a silly knight.',
-        specimenLabel: 'clay display',
         specimenChars: 'ABCDEFGHIJKLM\nNOPQRSTUVWXYZ\n0123456789',
         description: 'Clayletter is a display typeface constructed from real clayforms.',
     },
@@ -37,7 +35,6 @@ const typefaces = [
             { label: 'wdth 900', coords: { wdth: 900 } },
         ],
         specimenText: 'All these little letters become their own neighborhoods',
-        specimenLabel: 'variable pixel',
         specimenChars: 'ABCDEFGHIJKLM\nNOPQRSTUVWXYZ\n0123456789',
         description:
             'Suburb is a pixel typeface whose units are drawn as houses rather than pixels, with their proportions shifting along a variable House axis.',
@@ -47,7 +44,6 @@ const typefaces = [
         name: 'PearFace',
         stack: 'sans-serif',
         specimenText: 'Curvy, topsy-turvy, twisted, and fun for everyone.',
-        specimenLabel: 'fruit outline',
         specimenChars: 'ABCDEFGHIJKLM\nNOPQRSTUVWXYZ\n0123456789',
         description:
             'PearFace is a funky display typeface drawn from the outlines of a pear.',
@@ -57,7 +53,6 @@ const typefaces = [
         name: 'Rough Pixel',
         stack: 'monospace',
         specimenText: 'Drawn to the digital in more ways than one.',
-        specimenLabel: 'analog bitmap',
         specimenChars: 'ABCDEFGHIJKLM\nNOPQRSTUVWXYZ\n!?:;,.',
         description:
             'Rough Pixel is a typeface born from curiosity about combining digital and analog marks with pixels.',
@@ -67,7 +62,6 @@ const typefaces = [
         name: 'Sketchface',
         stack: 'sans-serif',
         specimenText: 'draw texture',
-        specimenLabel: 'glyph texture',
         specimenChars: 'ABCDEFGHIJKLM\nNOPQRSTUVWXYZ\nabcdefghijk',
         description:
             'Sketchface is a set of glyphs designed for building texture and drawings.',
@@ -77,7 +71,6 @@ const typefaces = [
         name: 'Warp Woven',
         stack: 'sans-serif',
         specimenText: 'These letterforms were made from a wacky grid.',
-        specimenLabel: 'line grid',
         specimenChars: 'ABCDEFGHIJKLM\nNOPQRSTUVWXYZ\n0123456789',
         description:
             'Warp Woven is a typeface created from an odd array of lines that form a grid.',
@@ -96,37 +89,29 @@ function typefaceFamily(face) {
     return `'${face.name.replace(/'/g, "\\'")}', ${stack}`;
 }
 
-async function waitForTypeface(face) {
-    const family = typefaceFamily(face);
-    try {
-        await Promise.all(
-            ['32px', '48px'].map((size) =>
-                document.fonts.load(`${size} ${family}`).catch(() => {})
-            )
-        );
-        await document.fonts.ready;
-    } catch (_) {
-        /* fonts API unavailable */
+const injectedTypefaceIds = new Set();
+
+function injectTypefaceFonts(faces = typefaces) {
+    let style = document.getElementById('typeface-font-styles');
+    if (!style) {
+        style = document.createElement('style');
+        style.id = 'typeface-font-styles';
+        document.head.appendChild(style);
     }
-}
 
-function injectTypefaceFonts() {
-    const existing = document.getElementById('typeface-font-styles');
-    if (existing) existing.remove();
+    const rules = [];
+    faces.forEach((face) => {
+        if (!face || injectedTypefaceIds.has(face.id)) return;
+        injectedTypefaceIds.add(face.id);
+        const family = face.name.replace(/'/g, "\\'");
+        const url = typefaceFontUrl(face);
+        const stretch = face.variableFont ? 'font-stretch:40% 90%;' : '';
+        rules.push(
+            `@font-face{font-family:'${family}';src:url('${url}') format('woff2');font-weight:normal;font-style:normal;${stretch}font-display:swap;}`
+        );
+    });
 
-    const rules = typefaces
-        .map((face) => {
-            const family = face.name.replace(/'/g, "\\'");
-            const url = typefaceFontUrl(face);
-            const stretch = face.variableFont ? 'font-stretch:40% 90%;' : '';
-            return `@font-face{font-family:'${family}';src:url('${url}') format('woff2');font-weight:normal;font-style:normal;${stretch}font-display:swap;}`;
-        })
-        .join('');
-
-    const style = document.createElement('style');
-    style.id = 'typeface-font-styles';
-    style.textContent = rules;
-    document.head.appendChild(style);
+    if (rules.length) style.appendChild(document.createTextNode(rules.join('')));
 }
 
 function loadOpentype() {
@@ -226,9 +211,7 @@ function finalizeCharset(chars, cmap) {
 
 async function loadCharsetFromJson(face) {
     try {
-        const res = await fetch(`${TYPEFACES_BASE}/${face.id}/charset.json`, {
-            cache: 'no-cache',
-        });
+        const res = await fetch(`${TYPEFACES_BASE}/${face.id}/charset.json`);
         if (!res.ok) return null;
 
         const data = await res.json();
@@ -286,8 +269,7 @@ function getVariableInstances(font) {
 async function loadGlyphSet(face) {
     if (glyphCache.has(face.id)) return glyphCache.get(face.id);
 
-    injectTypefaceFonts();
-    await waitForTypeface(face);
+    injectTypefaceFonts([face]);
 
     let data = await loadCharsetFromJson(face);
 
@@ -315,19 +297,18 @@ async function loadGlyphSet(face) {
             axes,
             instances,
         };
-    } else if (face.variableFont) {
-        try {
-            const ot = await loadOpentype();
-            const font = await ot.load(typefaceFontUrl(face));
-            let axes = getVariableAxes(font);
-            const instances = getVariableInstances(font);
-            if (!axes.length && face.variationFallback?.length) {
-                axes = face.variationFallback;
+    } else if (face.variableFont && !data.axes?.length) {
+        if (face.variationFallback?.length) {
+            data.axes = face.variationFallback;
+        } else {
+            try {
+                const ot = await loadOpentype();
+                const font = await ot.load(typefaceFontUrl(face));
+                data.axes = getVariableAxes(font);
+                data.instances = getVariableInstances(font);
+            } catch (_) {
+                data.axes = [];
             }
-            data.axes = axes;
-            data.instances = instances;
-        } catch (_) {
-            /* keep json defaults */
         }
     }
 
@@ -719,7 +700,7 @@ function expandEntryDetail(entry, face, opts = {}) {
         descEl.textContent = face.description?.trim() || '';
     }
 
-    glyphsEl.innerHTML = '<p class="typeface-glyphs-loading">Loading characters…</p>';
+    glyphsEl.textContent = '';
 
     if (scroll) {
         requestAnimationFrame(() => {
@@ -757,7 +738,6 @@ function initTypefacesList() {
     const jumpNav = document.getElementById('typefacesJumpNav');
 
     injectTypefaceFonts();
-    loadOpentype().catch(() => {});
 
     const fragment = document.createDocumentFragment();
     const navFragment = document.createDocumentFragment();
@@ -769,37 +749,22 @@ function initTypefacesList() {
         entry.className = 'typeface-entry';
         if (isStandalonePage) entry.classList.add('typeface-focus-section');
         if (isStandalonePage) entry.id = `typeface-${face.id}`;
+        if (isStandalonePage) entry.classList.add('file-page');
         entry.classList.add(ENTRY_ACCENT_CLASSES[faceIndex % ENTRY_ACCENT_CLASSES.length]);
         if (face.listScale) entry.classList.add('typeface-entry--scaled');
 
-        const item = document.createElement('button');
-        item.type = 'button';
+        const item = document.createElement(isStandalonePage ? 'h2' : 'button');
+        if (!isStandalonePage) item.type = 'button';
         item.className = 'typeface-item';
         if (isStandalonePage) item.classList.add('typeface-focus-name');
         if (face.listScale) item.classList.add('typeface-item--scaled');
         item.setAttribute('data-typeface-id', face.id);
-        item.setAttribute('aria-expanded', 'false');
         item.style.fontFamily = typefaceFamily(face);
         item.style.color = '#000';
         item.textContent = face.name;
 
-        const sectionSpecimens = isStandalonePage
-            ? makeTypefaceSectionSpecimens(face, faceIndex)
-            : null;
-
-        const detail = createDetailPanel(face, isStandalonePage ? 'tester' : 'set');
-
-        item.addEventListener('click', () => {
-            const isStandalonePage = !document.getElementById('archivePanels');
-            if (item.classList.contains('typeface-item--open')) {
-                if (isStandalonePage) collapseEntryDetail(entry, face);
-                return;
-            }
-
-            expandEntryDetail(entry, face, { scroll: true });
-        });
-
         if (isStandalonePage) {
+            const sectionSpecimens = makeTypefaceSectionSpecimens(face, faceIndex);
             const intro = document.createElement('div');
             intro.className = 'typeface-focus-intro';
             const description = document.createElement('p');
@@ -813,14 +778,20 @@ function initTypefacesList() {
             intro.append(sectionSpecimens);
             entry.appendChild(intro);
         } else {
+            item.setAttribute('aria-expanded', 'false');
+            const detail = createDetailPanel(face, 'set');
+            item.addEventListener('click', () => {
+                if (item.classList.contains('typeface-item--open')) return;
+                expandEntryDetail(entry, face, { scroll: true });
+            });
             entry.appendChild(item);
+            entry.appendChild(detail);
         }
-        entry.appendChild(detail);
         fragment.appendChild(entry);
 
         if (isStandalonePage && jumpNav) {
             const link = document.createElement('a');
-            link.className = 'typefaces-jump-link';
+            link.className = 'design-jump-link';
             link.href = `#typeface-${face.id}`;
             link.textContent = face.name;
             navFragment.appendChild(link);
@@ -830,7 +801,28 @@ function initTypefacesList() {
     list.appendChild(fragment);
     if (jumpNav) {
         jumpNav.appendChild(navFragment);
-        initJumpNavActiveState(jumpNav, 'typefaces-jump-link--active');
+        const folder = list.closest('.file-folder');
+        if (folder && typeof initFileFolder === 'function') {
+            initFileFolder({
+                folder,
+                pageSelector: '.typeface-focus-section',
+                navId: 'typefacesJumpNav',
+                bottomNavId: 'typefacesJumpNavBottom',
+                bodyClass: 'typefaces-page',
+                wheelMode: 'edge',
+                onShow(page) {
+                    hydrateTypefacePage(page);
+                    const bg = getComputedStyle(page).backgroundColor;
+                    folder.style.setProperty('--folder-fill', bg || 'var(--bg)');
+                    const top = folder.getBoundingClientRect().top + window.scrollY - 12;
+                    if (Math.abs(window.scrollY - top) > 8) {
+                        window.scrollTo({ top: Math.max(0, top) });
+                    }
+                },
+            });
+        } else {
+            initJumpNavActiveState(jumpNav, 'design-jump-link--active');
+        }
     }
 
     if (isStandalonePage) return;
@@ -854,10 +846,7 @@ function initTypefacesList() {
     };
 
     document.addEventListener('archive-panel-open', (e) => {
-        if (e.detail === 'typefaces') {
-            loadOpentype().catch(() => {});
-            tryAutoExpand();
-        }
+        if (e.detail === 'typefaces') tryAutoExpand();
     });
 
     requestAnimationFrame(() => tryAutoExpand());
@@ -910,15 +899,10 @@ function makeTypefaceSpecimenCard(face, opts = {}) {
     const palette =
         opts.palette || TYPEFACE_SECTION_PALETTES[index % TYPEFACE_SECTION_PALETTES.length];
     const text = opts.text || face.specimenText || face.name;
-    const label = opts.label || face.specimenLabel || face.name;
     const card = document.createElement('div');
     card.className = opts.className || 'typeface-specimen-card';
     card.style.backgroundColor = palette.bg;
     card.style.color = palette.fg;
-
-    const meta = document.createElement('span');
-    meta.className = 'typeface-specimen-card-meta';
-    meta.textContent = label;
 
     const sample = document.createElement('strong');
     sample.className = 'typeface-specimen-card-sample';
@@ -927,11 +911,7 @@ function makeTypefaceSpecimenCard(face, opts = {}) {
     sample.style.fontVariationSettings = opts.fontVariationSettings || specimenSettingsForFace(face, index);
     sample.classList.toggle('typeface-specimen-card-sample--scaled', !!face.listScale);
 
-    const name = document.createElement('span');
-    name.className = 'typeface-specimen-card-name';
-    name.textContent = face.name;
-
-    card.append(meta, sample, name);
+    card.append(sample);
 
     return card;
 }
@@ -943,33 +923,57 @@ function makeTypefaceGlyphPanel(face) {
     panel.style.backgroundColor = '#ffffff';
     panel.style.color = '#000000';
 
-    const meta = document.createElement('span');
-    meta.className = 'typeface-specimen-card-meta';
-    meta.textContent = 'available glyphs';
-
     const glyphs = document.createElement('div');
     glyphs.className = 'typeface-glyph-panel-grid';
-    glyphs.textContent = 'Loading glyphs...';
     glyphs.style.fontFamily = typefaceFamily(face);
     if (face.variableFont) {
         glyphs.style.fontVariationSettings = specimenSettingsForFace(face, 2);
     }
 
-    panel.append(meta, glyphs);
+    panel.append(glyphs);
+    return panel;
+}
+
+const hydratedTypefacePages = new Set();
+
+function hydrateTypefacePage(page) {
+    const id = page?.id?.replace(/^typeface-/, '');
+    const face = typefaces.find((item) => item.id === id);
+    if (!face || hydratedTypefacePages.has(face.id)) return;
+    hydratedTypefacePages.add(face.id);
+
+    const glyphs = page.querySelector('.typeface-glyph-panel-grid');
+    const tester = page.querySelector('.typeface-section-tester-text');
+    const axesWrap = page.querySelector('.typeface-section-tester-axes');
 
     loadGlyphSet(face)
         .then((charset) => {
-            if (!panel.isConnected) return;
-            glyphs.innerHTML = charset.chars.length
-                ? renderGlyphCells(charset.chars)
-                : '<span>No characters found.</span>';
+            if (!page.isConnected) return;
+            if (glyphs) {
+                glyphs.innerHTML = charset.chars.length ? renderGlyphCells(charset.chars) : '';
+            }
+            if (tester) {
+                tester.addEventListener('input', () => {
+                    const filtered = filterToAllowed(tester.textContent, charset.allowed);
+                    if (filtered !== tester.textContent) tester.textContent = filtered;
+                });
+            }
+            const axes = getVariationAxes(face, charset);
+            if (axesWrap && face.variableFont && axes.length) {
+                setupAxisControls(axesWrap, axes, {
+                    idPrefix: `typeface-section-axis-${face.id}`,
+                    onChange: (coords) => {
+                        tester?.classList.add('typeface-section-tester-text--manual-axis');
+                        if (tester) tester.style.fontVariationSettings = buildVariationSettings(coords);
+                    },
+                });
+                if (face.titleAxisAnimation) {
+                    tester?.classList.remove('typeface-section-tester-text--manual-axis');
+                    if (tester) tester.style.fontVariationSettings = '';
+                }
+            }
         })
-        .catch(() => {
-            if (!panel.isConnected) return;
-            glyphs.textContent = 'Could not load glyphs.';
-        });
-
-    return panel;
+        .catch(() => {});
 }
 
 function makeTypefaceTesterPanel(face, faceIndex) {
@@ -1013,9 +1017,9 @@ function makeTypefaceTesterPanel(face, faceIndex) {
     sizeInput.type = 'range';
     sizeInput.id = sizeId;
     sizeInput.className = 'typeface-axis-range';
-    sizeInput.min = face.listScale ? '32' : '18';
-    sizeInput.max = face.listScale ? '120' : '82';
-    sizeInput.value = face.listScale ? '56' : '42';
+    sizeInput.min = face.listScale ? '28' : '18';
+    sizeInput.max = face.listScale ? '96' : '72';
+    sizeInput.value = face.listScale ? '52' : '40';
     sizeInput.setAttribute('aria-label', `${face.name} tester scale`);
 
     const sizeValue = document.createElement('span');
@@ -1037,31 +1041,6 @@ function makeTypefaceTesterPanel(face, faceIndex) {
     axesWrap.hidden = true;
     controls.appendChild(axesWrap);
 
-    loadGlyphSet(face)
-        .then((charset) => {
-            if (!panel.isConnected) return;
-            tester.addEventListener('input', () => {
-                const filtered = filterToAllowed(tester.textContent, charset.allowed);
-                if (filtered !== tester.textContent) tester.textContent = filtered;
-            });
-
-            const axes = getVariationAxes(face, charset);
-            if (face.variableFont && axes.length) {
-                setupAxisControls(axesWrap, axes, {
-                    idPrefix: `typeface-section-axis-${face.id}`,
-                    onChange: (coords) => {
-                        tester.classList.add('typeface-section-tester-text--manual-axis');
-                        tester.style.fontVariationSettings = buildVariationSettings(coords);
-                    },
-                });
-                if (face.titleAxisAnimation) {
-                    tester.classList.remove('typeface-section-tester-text--manual-axis');
-                    tester.style.fontVariationSettings = '';
-                }
-            }
-        })
-        .catch(() => {});
-
     panel.append(meta, tester, controls);
     return panel;
 }
@@ -1078,7 +1057,6 @@ function makeTypefaceSectionSpecimens(face, faceIndex) {
     ];
     const samples = [
         {
-            label: face.specimenLabel || 'specimen',
             text: face.specimenText || face.name,
             settings: specimenSettingsForFace(face, faceIndex),
             animated: !!face.titleAxisAnimation,
@@ -1091,7 +1069,6 @@ function makeTypefaceSectionSpecimens(face, faceIndex) {
                 index: faceIndex + specimenIndex,
                 palette: palettes[specimenIndex],
                 text: sample.text,
-                label: sample.label,
                 className: `typeface-specimen-card typeface-section-specimen typeface-section-specimen--${specimenIndex + 1}`,
                 fontVariationSettings: sample.settings,
             })
@@ -1176,12 +1153,6 @@ function initTypefaceGalleryThumb(thumb) {
         layer.style.pointerEvents = 'none';
         layer.style.setProperty('--typeface-thumb-tile', index);
         thumb.appendChild(layer);
-    });
-
-    requestAnimationFrame(() => {
-        slides.forEach((slide) => {
-            document.fonts?.load?.(`16px ${slide.family}`);
-        });
     });
 }
 
