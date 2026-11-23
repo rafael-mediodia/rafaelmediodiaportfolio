@@ -2711,9 +2711,21 @@ body:has(.project-images-panel) .project-back-link {
     min-height: 0;
 }
 
+.file-folder-page.typefaces-page .typeface-section-specimen--1:has(.typeface-specimen-card-sample--loose) {
+    aspect-ratio: auto;
+    height: auto;
+    overflow: visible;
+    contain: none;
+}
+
 .file-folder-page.typefaces-page .typeface-section-specimen .typeface-specimen-card-sample {
     font-size: clamp(1.55rem, 11.5cqw, 3.85rem);
     line-height: 0.95;
+}
+
+.file-folder-page.typefaces-page .typeface-section-specimen .typeface-specimen-card-sample--loose,
+.typeface-section-specimen .typeface-specimen-card-sample--loose {
+    line-height: var(--specimen-leading, 1.7);
 }
 
 .file-folder-page.typefaces-page .typeface-section-specimen .typeface-specimen-card-sample--scaled {
@@ -3418,20 +3430,27 @@ body:has(.project-images-panel) .project-back-link {
 
 .illustrations-gallery.illustrations-gallery--page,
 .illustrations-gallery.illustrations-gallery--page[data-active-filter='3d'] {
-    display: block;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    column-gap: 1.25rem;
     width: 100%;
-    columns: 5 180px;
-    column-gap: 0.45rem;
+    columns: unset;
+}
+
+.illustration-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-width: 0;
 }
 
 .illustrations-gallery.illustrations-gallery--page .illustration-item,
 .illustrations-gallery.illustrations-gallery--page[data-active-filter='3d'] .illustration-item {
     width: 100%;
-    margin: 0 0 0.45rem;
+    margin: 0;
     border: none;
     background: transparent;
-    break-inside: avoid;
-    -webkit-column-break-inside: avoid;
 }
 
 .typefaces-list--page {
@@ -4148,7 +4167,7 @@ body:has(.project-images-panel) .project-back-link {
     z-index: 20;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: flex-start;
     gap: 0.35rem;
     margin-bottom: 1.25rem;
@@ -4288,6 +4307,12 @@ body:has(.project-images-panel) .project-back-link {
     opacity: 1;
 }
 
+.illustration-item-media {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
 .illustration-item-badge {
     position: absolute;
     top: 0.45rem;
@@ -4320,13 +4345,63 @@ body:has(.project-images-panel) .project-back-link {
     pointer-events: none;
 }
 
+.illustrations-gallery--page .illustration-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: visible;
+}
+
+.illustrations-gallery--page .illustration-item-media {
+    z-index: 1;
+    align-self: stretch;
+}
+
+.illustrations-gallery--page .illustration-item img {
+    position: relative;
+    width: 100%;
+    border: 0.25px solid var(--dotted-color);
+}
+
+.illustrations-gallery--page .illustration-item-badge {
+    top: 0.85rem;
+}
+
 .illustrations-gallery--page .illustration-item-caption {
-    position: static;
-    opacity: 0.72;
+    order: -1;
+    position: relative;
+    z-index: 0;
+    align-self: flex-start;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 0 -8px;
+    padding: 0.4rem 0.6rem 1.15rem;
+    border: 0.25px solid var(--dotted-color);
+    border-bottom-color: var(--bg);
+    border-radius: 4px 4px 0 0;
+    background: var(--bg);
+    color: var(--text);
+    opacity: 1;
     transform: none;
-    background: transparent;
-    border: none;
-    padding: 0.22rem 0 0;
+    font-size: 10px;
+    line-height: 1.1;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.illustrations-gallery--page .illustration-item-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.illustrations-gallery--page .illustration-item:hover .illustration-item-caption,
+.illustrations-gallery--page .illustration-item:focus-within .illustration-item-caption,
+.illustrations-gallery--page .illustration-item.has-accent-hover .illustration-item-caption {
+    background: var(--nav-color, var(--accent-sky));
+    border-bottom-color: var(--nav-color, var(--accent-sky));
+    opacity: 1;
+    transform: none;
 }
 
 .illustration-item:hover .illustration-item-caption,
@@ -4517,6 +4592,7 @@ body:has(.project-images-panel) .project-back-link {
     width: 2.5rem;
     height: 2.5rem;
     border: 0.25px solid rgba(250, 250, 250, 0.35);
+    border-radius: 3px;
     background: rgba(12, 12, 12, 0.35);
     color: var(--bg);
     font-family: inherit;
@@ -4622,6 +4698,49 @@ body:has(.project-images-panel) .project-back-link {
 
 .image-zoom-counter {
     flex-shrink: 0;
+}
+
+.image-zoom-frames {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.45rem;
+}
+
+.image-zoom-frames[hidden] {
+    display: none;
+}
+
+.image-zoom-frame {
+    width: 4.75rem;
+    height: 3.6rem;
+    padding: 0;
+    border: 0.25px solid rgba(250, 250, 250, 0.35);
+    background: transparent;
+    cursor: pointer;
+    opacity: 0.55;
+    overflow: hidden;
+}
+
+.image-zoom-frame img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.image-zoom-frame:hover,
+.image-zoom-frame:focus-visible,
+.image-zoom-frame.is-active {
+    opacity: 1;
+    border-color: rgba(250, 250, 250, 0.9);
+    outline: none;
+}
+
+.image-zoom-modal.has-frames #zoomedImage,
+.image-zoom-modal.has-frames #zoomedIllustrationVideo {
+    max-height: min(68vh, 780px);
 }
 
 /* Skip painting the media column while lightbox is open (videos, slideshows, filters) */
@@ -5912,8 +6031,11 @@ video:not([controls])::-webkit-media-controls-play-button {
 
     .illustrations-gallery.illustrations-gallery--page,
     .illustrations-gallery.illustrations-gallery--page[data-active-filter='3d'] {
-        columns: 3 150px;
-        column-gap: 0.4rem;
+        column-gap: 0.85rem;
+    }
+
+    .illustration-column {
+        gap: 0.85rem;
     }
 
     .archive-panel {
@@ -6290,7 +6412,11 @@ video:not([controls])::-webkit-media-controls-play-button {
 
     .illustrations-gallery.illustrations-gallery--page,
     .illustrations-gallery.illustrations-gallery--page[data-active-filter='3d'] {
-        columns: 2 140px;
+        column-gap: 0.7rem;
+    }
+
+    .illustration-column {
+        gap: 0.7rem;
     }
 
     .illustration-item-caption {
@@ -6317,6 +6443,15 @@ video:not([controls])::-webkit-media-controls-play-button {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.35rem;
+    }
+
+    .image-zoom-modal.has-frames #zoomedImage {
+        max-height: min(52dvh, 52vh);
+    }
+
+    .image-zoom-frame {
+        width: 3.6rem;
+        height: 2.75rem;
     }
 
     .info-container.info-container--collapsible .info-sidebar-toggle {

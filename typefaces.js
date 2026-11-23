@@ -7,6 +7,7 @@ const typefaces = [
         name: 'Istorya',
         stack: 'sans-serif',
         specimenText: 'Once upon a time, stories found their own shape.',
+        specimenLeading: 1.7,
         specimenChars: 'ABCDEFGHIJKLM\nNOPQRSTUVWXYZ\nabcdefghi',
         description:
             "Istorya is Ilonggo for “story.” A textface designed for holding children's book stories. Created from a study of ATF Garamond and Century Schoolbook.",
@@ -16,6 +17,7 @@ const typefaces = [
         name: 'Clayletter',
         stack: 'sans-serif',
         specimenText: 'Once upon a time, there was a silly knight.',
+        specimenLeading: 1.85,
         specimenChars: 'ABCDEFGHIJKLM\nNOPQRSTUVWXYZ\n0123456789',
         description: 'Clayletter is a display typeface constructed from real clayforms.',
     },
@@ -910,6 +912,10 @@ function makeTypefaceSpecimenCard(face, opts = {}) {
     sample.style.fontFamily = typefaceFamily(face);
     sample.style.fontVariationSettings = opts.fontVariationSettings || specimenSettingsForFace(face, index);
     sample.classList.toggle('typeface-specimen-card-sample--scaled', !!face.listScale);
+    if (face.specimenLeading) {
+        sample.classList.add('typeface-specimen-card-sample--loose');
+        sample.style.lineHeight = String(face.specimenLeading);
+    }
 
     card.append(sample);
 
