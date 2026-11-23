@@ -15,6 +15,7 @@ const illustrations = [
         ],
     },
     { file: 'Robots Chatting_Vector.png', thumb: 'thumbs/Robots-Chatting-Vector.jpg', w: 8001, h: 4500, tooltip: 'Robots Chatting', filters: ['still', '2d'], format: 'Still / 2D' },
+    { file: 'Birt and Wirm.jpg', thumb: 'thumbs/Birt-and-Wirm.jpg', w: 2550, h: 3300, tooltip: 'Birt and Wirm', filters: ['still', '2d'], format: 'Still / 2D' },
     { file: 'Lelo and Pebs.jpg', thumb: 'thumbs/Lelo-and-Pebs.jpg', w: 3000, h: 2400, tooltip: 'Lelo and Pebs', filters: ['still', '2d'], format: 'Still / 2D' },
     { file: 'celly and blobert.jpg', thumb: 'thumbs/celly-and-blobert.jpg', w: 2778, h: 1940, tooltip: 'Celly and Blobert', filters: ['still', '2d'], format: 'Still / 2D' },
     { file: 'The Moon Makes The Way.jpg', thumb: 'thumbs/The-Moon-Makes-The-Way.jpg', w: 3000, h: 2400, tooltip: 'The Moon Makes The Way', filters: ['still', '2d'], format: 'Still / 2D' },
